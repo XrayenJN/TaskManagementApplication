@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, withRouter } from 'react-router-dom';
+import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
+import { LoginCallback, Security, SecureRoute } from '@okta/okta-react';
+import Home from './Home';
+import Profile from './Profile';
 
-function App() {
-  const [count, setCount] = useState(0)
+const oktaAuth = new OktaAuth({
+  // Required config
+  clientId: `${"0oahy8lw301q7WxSP5d7"}`,
+  issuer: `https://${"dev-20185654.okta.com"}/oauth2/default`,
+  redirectUri: `${window.location.origin}/login/callback`,
+});
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.restoreOriginalUri = async (_oktaAuth, originalUri) => {
+      props.history.replace(toRelativeUrl(originalUri || '/', window.location.origin));
+    };
+  }
+
+  render() {
+    return (
+      <Security oktaAuth={oktaAuth} restoreOriginalUri={this.restoreOriginalUri}>
+        <Route path="/" exact={true} component={Home}/>
+        <Route path="/login/callback" component={LoginCallback}/>
+        <Route path="/profile" component={Profile}/>
+      </Security>
+    );
+  }
 }
 
-export default App
+const AppWithRouterAccess = withRouter(App);
+
+class RouterApp extends Component {
+  render() {
+    return (<Router><AppWithRouterAccess/></Router>);
+  }
+}
+
+export default RouterApp;
