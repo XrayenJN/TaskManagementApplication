@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import { Header, Icon, Table } from 'semantic-ui-react';
+import { useHistory } from 'react-router-dom'
 
 const Profile = () => {
   const { authState, oktaAuth } = useOktaAuth();
   const [userInfo, setUserInfo] = useState(null);
+  const history = useHistory();
+
+  const goBack = () => {
+    history.goBack();
+  };
 
   useEffect(() => {
     if (!authState || !authState.isAuthenticated) {
@@ -23,6 +29,7 @@ const Profile = () => {
     return (
       <div>
         <p>Fetching user profile...</p>
+        <button onClick={goBack}>Back</button>
       </div>
     );
   }
@@ -71,6 +78,7 @@ const Profile = () => {
           </tbody>
         </Table>
       </div>
+      <button onClick={goBack}>Back</button>
     </div>
   );
 };
