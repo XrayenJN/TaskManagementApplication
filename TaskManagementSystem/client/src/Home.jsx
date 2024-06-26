@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { useOktaAuth, withOktaAuth } from '@okta/okta-react';
 import { useHistory } from 'react-router-dom'
 import './App.css';
 import reactLogo from './assets/react.svg'
+import { getAuth, signInWithCustomToken } from 'firebase/auth';
 
 export default function Home(){
   const { authState, oktaAuth } = useOktaAuth();
@@ -10,6 +11,7 @@ export default function Home(){
 
   const login = async () => {
     await oktaAuth.signInWithRedirect();
+
   }
 
   const logout = async () => {
@@ -36,6 +38,14 @@ export default function Home(){
         </div>
       );
     }
+
+  useEffect(() => {
+    if (authState?.isAuthenticated){
+        const oktaToken = oktaAuth.getUser().then((info) => {
+          console.log(info);
+        })
+    }
+  })
 
   return (
     <div className="App">
