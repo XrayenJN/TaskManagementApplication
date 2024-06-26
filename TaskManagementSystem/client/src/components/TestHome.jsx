@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
@@ -11,29 +12,33 @@ const Home = () => {
       </div>
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
 
-      <div style={{ backgroundColor: '#1BA098', color: 'black', padding: '20px', marginBottom: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <p style={{ margin: 0, fontWeight: 'bold' }}>Project ID: Project Name</p>
-            <p style={{ margin: 0 }}>Contributors</p>
-          </div>
-          <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
-            End Date
+      <Link to="/project" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <div style={{ backgroundColor: '#1BA098', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>Project ID: Project Name</p>
+              <p style={{ margin: 0, color: 'black' }}>Contributors</p>
+            </div>
+            <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
+              End Date
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
 
-      <div style={{ backgroundColor: '#BD7676', color: 'black', padding: '20px', marginBottom: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <p style={{ margin: 0, fontWeight: 'bold' }}>Project ID: Project Name</p>
-            <p style={{ margin: 0 }}>Contributors</p>
-          </div>
-          <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
-            End Date
+      <Link to="/project" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <div style={{ backgroundColor: '#BD7676', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>Project ID: Project Name</p>
+              <p style={{ margin: 0, color: 'black' }}>Contributors</p>
+            </div>
+            <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
+              End Date
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
 
     </div>
   );
