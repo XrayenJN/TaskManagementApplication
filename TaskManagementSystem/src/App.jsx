@@ -7,8 +7,8 @@ import Profile from './Profile';
 
 const oktaAuth = new OktaAuth({
   // Required config
-  clientId: `${'0oahy8lw301q7WxSP5d7'}`,
-  issuer: `https://${"dev-20185654.okta.com"}/oauth2/default`,
+  clientId: `${import.meta.env.VITE_OKTA_CLIENT_ID}`,
+  issuer: `https://${import.meta.env.VITE_OKTA_DOMAIN}/oauth2/default`,
   redirectUri: `${window.location.origin}/login/callback`,
 });
 
