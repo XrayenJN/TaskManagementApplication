@@ -14,7 +14,7 @@ const oktaAuth = new OktaAuth({
 });
 
 const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-  history.replace(toRelativeUrl(originalUri || '/', window.location.origin));
+  window.location.replace(toRelativeUrl(originalUri || '/', window.location.origin))
 };
 
 const AuthProvider = ({children}) => {
