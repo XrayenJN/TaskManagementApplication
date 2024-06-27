@@ -1,8 +1,8 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { Security } from '@okta/okta-react';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { toRelativeUrl } from '@okta/okta-auth-js';
-import { auth, customSignIn } from '../../server/firebase/firebase';
+import { auth, customSignIn} from '../../server/firebase/firebase';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -33,14 +33,38 @@ const AuthProvider = ({children}) => {
         axios.post("http://localhost:8888/api/auth/okta", { token: tokens.accessToken })
         .then(response => {
           const firebaseToken = response.data.firebaseToken;
-          // console.log(firebaseToken)
           return customSignIn(firebaseToken);
         })
+        // The userCredential is always null
+        // TODO: find a way to get the user from @firebase.js
+        // and then check if the user has the email or not
+        // if it has, then we don't need to have another axios connection again
+        // Right now, the mechanism is still working 
+        // (just small bug and it doesn't really affect the entire system)
         .then(userCredential => {
+          if (!userCredential){
+            // if it is undefined, then email, displayName doesn't exist yet.
+            // update it using firebase admin
+            const uid = tokens.accessToken.claims.uid;
+            const userIdentification = {
+              email: tokens.idToken.claims.email,
+              emailVerified: false,
+              displayName: tokens.idToken.claims.name
+            }
+            axios.post("http://localhost:8888/api/firebase/updateUser", 
+              { uid: uid, informations: userIdentification})
+              .then(response => {
+                console.log("Succefully update the user account");
+              })
+              .catch(err => {
+                console.log("Not updated");
+              })
+          }
           console.log('User signed in:', userCredential);
         })
         .catch(err => console.log('Error signing in:', err));
       }
+
     };
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
       if (firebaseUser) setUser(firebaseUser);

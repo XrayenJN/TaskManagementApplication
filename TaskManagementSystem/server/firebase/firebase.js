@@ -20,46 +20,44 @@ export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 export const googleSignIn = async () => {
-    await signInWithPopup(auth, provider)
+  await signInWithPopup(auth, provider)
     .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-        console.log(user)
-        console.log(token)
-        if (window.opener){
-          window.opener.postMessage({ user: result.user }, "*");
-          window.close();
-        }
-      }).catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-        console.log(errorCode);
-        console.log(errorMessage);
-      });
-    ;
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      // The signed-in user info.
+      const user = result.user;
+
+      // console.log(user)
+      // console.log(token)
+      if (window.opener) {
+        window.opener.postMessage({ user: result.user }, "*");
+        window.close();
+      }
+    }).catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const email = error.customData.email;
+      // The AuthCredential type that was used.
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      // ...
+      // console.log(errorCode);
+      // console.log(errorMessage);
+    });
+  ;
 }
 
 export const customSignIn = async (token) => {
-    await signInWithCustomToken(auth, token)
+  await signInWithCustomToken(auth, token)
     .then((result) => {
-        const user = result.user;
-        console.log(result);
-        console.log(user);
+      const user = result.user;
+      console.log(user);
     }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+      const errorCode = error.code;
+      const errorMessage = error.message;
 
-        console.log(errorCode, errorMessage);
+      console.log(errorCode, errorMessage);
     })
 }

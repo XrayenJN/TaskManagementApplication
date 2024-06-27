@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useOktaAuth } from '@okta/okta-react';
-import { Header, Icon, Table } from 'semantic-ui-react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom'
 import { AuthContext } from './AuthContext';
 

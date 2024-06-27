@@ -27,11 +27,16 @@ async function verifyOktaToken(token) {
   });
 }
 
-async function createFirebaseCustomToken(uid, customToken) {
-  return admin.auth().createCustomToken(uid, customToken);
+async function createFirebaseCustomToken(uid, additionalClaims) {
+  return admin.auth().createCustomToken(uid, additionalClaims);
+}
+
+async function updateFirebaseUser(uid, additionalClaims) {
+  return admin.auth().updateUser(uid, additionalClaims);
 }
 
 module.exports = {
   verifyOktaToken,
-  createFirebaseCustomToken
+  createFirebaseCustomToken,
+  updateFirebaseUser
 };

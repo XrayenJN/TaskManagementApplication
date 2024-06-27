@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require('body-parser');
-const { verifyOktaToken, createFirebaseCustomToken } = require('./auth')
+const { createFirebaseCustomToken, updateFirebaseUser } = require('./auth')
 const cors = require('cors');
 require('dotenv').config();
 
@@ -23,30 +23,45 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 
+/**
+ * Dealing with getting the firebase token from Okta token
+ */
 app.use(bodyParser.json());
 app.use(cors());
 app.post('/api/auth/okta', async (req, res) => {
   const oktaToken = req.body.token;
   console.log(oktaToken)
-　if (!oktaToken) {
+  if (!oktaToken) {
     return res.status(400).json({ error: 'Token is required' });
   }
-
-  // Here, you would typically verify the token and create a Firebase custom token
-  // For simplicity, we'll just return a mock custom token
-  // const mockFirebaseToken = 'mock-firebase-token';
-
-  // res.json({ firebaseToken: mockFirebaseToken });
   try {
-    // const decoded = await verifyOktaToken(oktaToken);
-    // const uid = decoded.sub
     const uid = oktaToken.claims.uid;
-    const email = oktaToken.claims.sub;
-    const customClaims = { email: email };
+    const userEmail = oktaToken.claims.sub;
+
+    // TODO: this customClaims doesnt work, 
+    // even though it's the same with the documentation
+    const customClaims = { email: userEmail };
     const firebaseToken = await createFirebaseCustomToken(uid, customClaims);
 
     res.json({ firebaseToken })
   } catch (err) {
     res.status(400).json({ error: err.message })
   }
+})
+
+/**
+ * Dealing with updating email identification on the firebase db
+ */
+app.post('/api/firebase/updateUser', async (req, res) => {
+  try {
+    const uid = req.body.uid;
+    const additionalInformations = req.body.informations;
+
+    await updateFirebaseUser(uid, additionalInformations);
+
+    res.json({ result: "successfull" })
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+
 })
