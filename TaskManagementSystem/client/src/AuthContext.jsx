@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { Security, useOktaAuth } from '@okta/okta-react';
+import React, { createContext, useState, useEffect } from 'react';
+import { Security } from '@okta/okta-react';
 import { OktaAuth } from '@okta/okta-auth-js';
+import { toRelativeUrl } from '@okta/okta-auth-js';
 import { auth } from '../../server/firebase/firebase';
 
 const AuthContext = createContext();
@@ -12,7 +13,7 @@ const oktaAuth = new OktaAuth({
   redirectUri: `${window.location.origin}/login/callback`,
 });
 
-const restoreOriginalUri = async (oktaAuth, originalUri) => {
+const restoreOriginalUri = async (_oktaAuth, originalUri) => {
   history.replace(toRelativeUrl(originalUri || '/', window.location.origin));
 };
 
