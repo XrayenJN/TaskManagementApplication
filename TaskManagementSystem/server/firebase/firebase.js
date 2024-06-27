@@ -6,7 +6,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } f
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCKv_xoVeTNAQOIgJAL0RSA8aob0d3J5A8",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "task-management-system-cs-01.firebaseapp.com",
   projectId: "task-management-system-cs-01",
   storageBucket: "task-management-system-cs-01.appspot.com",
@@ -16,6 +16,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+console.log(import.meta.env.VITE_FIREBASE_API_KEY)
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
