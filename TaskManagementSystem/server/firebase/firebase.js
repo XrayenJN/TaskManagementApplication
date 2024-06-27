@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -48,4 +48,18 @@ export const googleSignIn = async () => {
         console.log(errorMessage);
       });
     ;
+}
+
+export const customSignIn = async (token) => {
+    await signInWithCustomToken(auth, token)
+    .then((result) => {
+        const user = result.user;
+        console.log(result);
+        console.log(user);
+    }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        console.log(errorCode, errorMessage);
+    })
 }

@@ -1,8 +1,9 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Security } from '@okta/okta-react';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { toRelativeUrl } from '@okta/okta-auth-js';
-import { auth } from '../../server/firebase/firebase';
+import { auth, customSignIn } from '../../server/firebase/firebase';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -27,6 +28,18 @@ const AuthProvider = ({children}) => {
       if (tokens.accessToken){
         const user = await oktaAuth.getUser();
         setUser(user);
+
+        //connect with back-end with axios
+        axios.post("http://localhost:8888/api/auth/okta", { token: tokens.accessToken })
+        .then(response => {
+          const firebaseToken = response.data.firebaseToken;
+          // console.log(firebaseToken)
+          return customSignIn(firebaseToken);
+        })
+        .then(userCredential => {
+          console.log('User signed in:', userCredential);
+        })
+        .catch(err => console.log('Error signing in:', err));
       }
     };
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
