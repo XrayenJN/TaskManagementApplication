@@ -1,30 +1,25 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, withRouter, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Route, withRouter, useHistory, Switch } from 'react-router-dom';
 import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
 import { LoginCallback, Security, SecureRoute } from '@okta/okta-react';
 import Home from './Home';
+import Login from './Login';
 import Profile from './Profile';
-
-const oktaAuth = new OktaAuth({
-  // Required config
-  clientId: `${import.meta.env.VITE_OKTA_CLIENT_ID}`,
-  issuer: `https://${import.meta.env.VITE_OKTA_DOMAIN}/oauth2/default`,
-  redirectUri: `${window.location.origin}/login/callback`,
-});
+import PrivateRoute from './PrivateRoute';
+import { AuthProvider } from './AuthContext';
 
 function App() {
-  const history = useHistory();
-
-  const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-    history.replace(toRelativeUrl(originalUri || '/', window.location.origin));
-  }
-
   return (
-    <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
-      <Route path="/" exact={true} component={Home}/>
-      <Route path="/login/callback" component={LoginCallback}/>
-      <Route path="/profile" component={Profile}/>
-    </Security>
+    <Router>
+      <Switch>
+        <Route path="/general" exact={true} component={Home}/>
+        <AuthProvider>
+          <Route path="/" exact={true} component={Login}/>
+          <Route path="/login/callback" component={LoginCallback}/>
+          <Route path="/profile" component={Profile}/>
+        </AuthProvider>
+      </Switch>
+    </Router>
   );
 }
 

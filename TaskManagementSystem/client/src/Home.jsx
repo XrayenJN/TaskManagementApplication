@@ -3,49 +3,14 @@ import { useOktaAuth, withOktaAuth } from '@okta/okta-react';
 import { useHistory } from 'react-router-dom'
 import './App.css';
 import reactLogo from './assets/react.svg'
-import { getAuth, signInWithCustomToken } from 'firebase/auth';
+import { auth, googleSignIn } from '../../server/firebase/firebase';
 
 export default function Home(){
-  const { authState, oktaAuth } = useOktaAuth();
   const history = useHistory();
 
-  const login = async () => {
-    await oktaAuth.signInWithRedirect();
-
+  const goToLogin = () => {
+    history.replace('/');
   }
-
-  const logout = async () => {
-    await oktaAuth.signOut();
-  }
-
-  const goToProfile = () => {
-    history.push('/profile');
-  }
-
-  let body = null;
-    if (authState?.isAuthenticated) {
-      body = (
-        <div className="Buttons">
-          <button onClick={goToProfile}>Profile</button>
-          <button onClick={logout}>Logout</button>
-          {/* Replace me with your root component. */}
-        </div>
-      );
-    } else {
-      body = (
-        <div className="Buttons">
-          <button onClick={login}>Login</button>
-        </div>
-      );
-    }
-
-  useEffect(() => {
-    if (authState?.isAuthenticated){
-        const oktaToken = oktaAuth.getUser().then((info) => {
-          console.log(info);
-        })
-    }
-  })
 
   return (
     <div className="App">
@@ -57,7 +22,8 @@ export default function Home(){
         <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
           Learn React
         </a>
-        {body}
+        <br></br>
+        <button onClick={goToLogin}>Login</button>
       </header>
     </div>
   );
