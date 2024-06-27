@@ -7,11 +7,11 @@ import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } f
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "task-management-system-cs-01.firebaseapp.com",
-  projectId: "task-management-system-cs-01",
-  storageBucket: "task-management-system-cs-01.appspot.com",
-  messagingSenderId: "438150743957",
-  appId: "1:438150743957:web:ded891ce2568435001989c"
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.PROJECT_ID,
+  storageBucket: import.meta.env.STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.MESSAGING_SENDER_ID,
+  appId: import.meta.env.APP_ID
 };
 
 // Initialize Firebase
