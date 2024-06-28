@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, withRouter, useHistory } from 'react-router-dom';
 import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
 import { LoginCallback, Security, SecureRoute } from '@okta/okta-react';
-import Home from './Home';
+import Login from './Login';
 import Profile from './Profile';
+import TitleBar from './components/TitleBar';
 
 const oktaAuth = new OktaAuth({
   // Required config
@@ -21,7 +22,8 @@ function App() {
 
   return (
     <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
-      <Route path="/" exact={true} component={Home}/>
+      <TitleBar toggleNavbar={() => {}} />
+      <Route path="/" exact={true} component={Login}/>
       <Route path="/login/callback" component={LoginCallback}/>
       <Route path="/profile" component={Profile}/>
     </Security>

@@ -2,7 +2,6 @@ import React, { Component, useEffect } from 'react';
 import { useOktaAuth, withOktaAuth } from '@okta/okta-react';
 import { useHistory } from 'react-router-dom'
 import './App.css';
-import reactLogo from './assets/react.svg'
 import { getAuth, signInWithCustomToken } from 'firebase/auth';
 
 export default function Home(){
@@ -34,7 +33,7 @@ export default function Home(){
     } else {
       body = (
         <div className="Buttons">
-          <button onClick={login}>Login</button>
+          <button onClick={login}>Login with Okta</button>
         </div>
       );
     }
@@ -50,13 +49,10 @@ export default function Home(){
   return (
     <div className="App">
       <header className="App-header">
-        <img src={reactLogo} className="App-logo" alt="logo"/>
-        <p>
-          Edit <code>src/Home.js</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
+        <p>Be more productive. Be more organised. Be more coordinated.</p>
+        <p>Start your project journey here.</p>
+        <hr></hr>
+        <br></br>
         {body}
       </header>
     </div>
