@@ -21,6 +21,10 @@ export default function Home(){
     history.push('/profile');
   }
 
+  const goToTestHome = () => {
+    history.push('./TestHome')
+  }
+
   let body = null;
     if (authState?.isAuthenticated) {
       body = (
@@ -34,6 +38,7 @@ export default function Home(){
       body = (
         <div className="Buttons">
           <button onClick={login}>Login with Okta</button>
+          <button onClick={goToTestHome}>Login with Test User</button>
         </div>
       );
     }
