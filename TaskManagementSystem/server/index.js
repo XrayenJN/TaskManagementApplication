@@ -57,9 +57,9 @@ app.post('/api/firebase/updateUser', async (req, res) => {
     const uid = req.body.uid;
     const additionalInformations = req.body.informations;
 
-    await updateFirebaseUser(uid, additionalInformations);
+    const result = await updateFirebaseUser(uid, additionalInformations);
 
-    res.json({ result: "successfull" })
+    res.json({ result: result })
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

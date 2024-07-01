@@ -6,7 +6,7 @@ import { AuthContext } from '../contexts/AuthContext';
 
 
 export default function Login(){
-  const { user, oktaAuth } = useContext(AuthContext);
+  const { user, oktaAuth, auth } = useContext(AuthContext);
   const history = useHistory();
 
   const loginWithOkta = async () => {
@@ -15,6 +15,7 @@ export default function Login(){
 
   const logout = async () => {
     await oktaAuth.signOut();
+    await auth.signOut();;
   }
 
   const goToProfile = () => {
