@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, withRouter, Switch } from 'react-router-dom';
 import { LoginCallback } from '@okta/okta-react';
-import Home from './Home';
-import Login from './Login';
-import Profile from './Profile';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
 import TitleBar from './components/TitleBar';
-import PrivateRoute from './PrivateRoute';
-import { AuthProvider } from './AuthContext';
+import PrivateRoute from './routes/PrivateRoute';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (

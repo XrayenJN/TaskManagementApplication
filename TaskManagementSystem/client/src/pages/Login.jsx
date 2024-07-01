@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom'
 import './App.css';
-import { googleSignIn } from '../../server/firebase/firebase';
-import { AuthContext } from './AuthContext';
+import { googleSignIn } from '../../../server/firebase/firebase';
+import { AuthContext } from '../contexts/AuthContext';
 
 
 export default function Login(){
