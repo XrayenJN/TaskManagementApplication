@@ -16,7 +16,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-console.log(import.meta.env.VITE_FIREBASE_API_KEY)
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
@@ -29,8 +28,6 @@ export const googleSignIn = async () => {
       // The signed-in user info.
       const user = result.user;
 
-      // console.log(user)
-      // console.log(token)
       if (window.opener) {
         window.opener.postMessage({ user: result.user }, "*");
         window.close();
@@ -43,9 +40,6 @@ export const googleSignIn = async () => {
       const email = error.customData.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
-      // console.log(errorCode);
-      // console.log(errorMessage);
     });
   ;
 }
@@ -54,11 +48,8 @@ export const customSignIn = async (token) => {
   await signInWithCustomToken(auth, token)
     .then((result) => {
       const user = result.user;
-      console.log(user);
     }).catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-
-      console.log(errorCode, errorMessage);
     })
 }

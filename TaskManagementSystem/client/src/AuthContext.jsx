@@ -60,19 +60,22 @@ const AuthProvider = ({children}) => {
                 console.log("Not updated");
               })
           }
+          setUser(user);
           console.log('User signed in:', userCredential);
         })
         .catch(err => console.log('Error signing in:', err));
       }
 
     };
+    checkOktaAuth();
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
       if (firebaseUser) setUser(firebaseUser);
     })
-
-    checkOktaAuth();
     return () => unsubscribe();
-  }, []);
+  })
 
   return (
     <AuthContext.Provider value={{ oktaAuth, user, auth }}>
