@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom'
-import './App.css';
+import '../assets/styles/App.css';
 import { googleSignIn } from '../../../server/firebase/firebase';
 import { AuthContext } from '../contexts/AuthContext';
 

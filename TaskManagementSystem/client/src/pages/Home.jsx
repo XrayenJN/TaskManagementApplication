@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom'
-import './App.css';
-import reactLogo from './assets/react.svg'
+import '../assets/styles/App.css';
+import reactLogo from '../assets/react.svg'
 
 export default function Home(){
   const history = useHistory();

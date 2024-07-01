@@ -16,8 +16,6 @@ const Profile = () => {
   };
 
   let body = null;
-  
-
   if (!user) {
     body = (
       <div>
