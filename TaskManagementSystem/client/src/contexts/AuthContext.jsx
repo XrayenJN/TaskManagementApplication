@@ -27,6 +27,7 @@ const AuthProvider = ({children}) => {
       const tokens = await oktaAuth.tokenManager.getTokens();
       if (tokens.accessToken){
         const user = await oktaAuth.getUser();
+        setUser(user);
 
         //connect with back-end with axios
         axios.post("http://localhost:8888/api/auth/okta", { token: tokens.accessToken })
@@ -54,7 +55,6 @@ const AuthProvider = ({children}) => {
               { uid: uid, informations: userIdentification})
               .then(response => {
                 console.log("Succefully update the user account");
-                setUser(user);
               })
               .catch(err => {
                 console.log("Not updated");
