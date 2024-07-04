@@ -1,32 +1,26 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, withRouter, useHistory } from 'react-router-dom';
-import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
-import { LoginCallback, Security, SecureRoute } from '@okta/okta-react';
-import Login from './Login';
-import Profile from './Profile';
+import { BrowserRouter as Router, Route, withRouter, Switch } from 'react-router-dom';
+import { LoginCallback } from '@okta/okta-react';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
 import TitleBar from './components/TitleBar';
-
-const oktaAuth = new OktaAuth({
-  // Required config
-  clientId: `${import.meta.env.VITE_OKTA_CLIENT_ID}`,
-  issuer: `https://${import.meta.env.VITE_OKTA_DOMAIN}/oauth2/default`,
-  redirectUri: `${window.location.origin}/login/callback`,
-});
+import PrivateRoute from './routes/PrivateRoute';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
-  const history = useHistory();
-
-  const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-    history.replace(toRelativeUrl(originalUri || '/', window.location.origin));
-  }
-
   return (
-    <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
+    <Router>
       <TitleBar toggleNavbar={() => {}} />
-      <Route path="/" exact={true} component={Login}/>
-      <Route path="/login/callback" component={LoginCallback}/>
-      <Route path="/profile" component={Profile}/>
-    </Security>
+      <Switch>
+        <Route path="/general" component={Home}/>
+        <AuthProvider>
+          <Route path="/" exact={true} component={Login}/>
+          <Route path="/login/callback" component={LoginCallback}/>
+          <PrivateRoute path="/profile" component={Profile}/>
+        </AuthProvider>
+      </Switch>
+    </Router>
   );
 }
 
