@@ -103,14 +103,10 @@ button:focus-visible {
   border: none;
 }
 
-.react-slideshow-container .nav:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+.react-slideshow-container .default-nav:last-of-type {
+  margin-left: -50px;
 }
 
-.react-slideshow-container .nav.prev {
-  left: -50px;
-}
-
-.react-slideshow-container .nav.next {
-  right: -50px;
+.react-slideshow-container .default-nav:first-of-type {
+  margin-left: 10px;
 }
