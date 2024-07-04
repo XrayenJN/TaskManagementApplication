@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom'
 import '../assets/styles/App.css';
 import { googleSignIn } from '../../../server/firebase/firebase';
 import { AuthContext } from '../contexts/AuthContext';
+import Slideshow from '../components/Slideshow';
 
 
 export default function Login(){
@@ -22,10 +23,6 @@ export default function Login(){
     history.push('/profile');
   }
 
-  const goToInformation = () => {
-    history.replace('/general');
-  }
-
   const goToTestHome = () => {
     history.push('./TestHome')
   }
@@ -42,7 +39,6 @@ export default function Login(){
   } else {
     body = (
       <div className="Buttons">
-        <button onClick={goToInformation}>Information about this Website</button>
         <button onClick={loginWithOkta}>Login With Okta</button>
         <button onClick={googleSignIn}>Login With Google</button>
         <button onClick={goToTestHome}>Login with Test User</button>
@@ -53,6 +49,7 @@ export default function Login(){
   return (
     <div className="App">
       <header className="App-header">
+        <Slideshow />
         <p>Be more productive. Be more organised. Be more coordinated.</p>
         <p>Start your project journey here.</p>
         <hr></hr>
