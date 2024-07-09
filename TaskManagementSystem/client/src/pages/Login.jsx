@@ -27,10 +27,15 @@ export default function Login(){
     history.push('./TestHome')
   }
 
+  const goToProjectList = () => {
+    history.push('/projects');
+  }
+
   let body = null;
   if (user) {
     body = (
       <div className="Buttons">
+        <button onClick={goToProjectList}>Project List</button>
         <button onClick={goToProfile}>Profile</button>
         <button onClick={logout}>Logout</button>
         {/* Replace me with your root component. */}
