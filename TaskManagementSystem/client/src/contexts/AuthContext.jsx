@@ -27,6 +27,8 @@ const AuthProvider = ({children}) => {
       const tokens = await oktaAuth.tokenManager.getTokens();
       if (tokens.accessToken){
         const user = await oktaAuth.getUser();
+        user.uid = user.sub;
+        console.log(user);
         setUser(user);
 
         //connect with back-end with axios
