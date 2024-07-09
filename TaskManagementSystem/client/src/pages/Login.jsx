@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom'
 import '../assets/styles/App.css';
-import { googleSignIn } from '../../../server/firebase/firebase';
+import { googleSignIn } from '../firebase/firebase';
 import { AuthContext } from '../contexts/AuthContext';
 import Slideshow from '../components/Slideshow';
 
