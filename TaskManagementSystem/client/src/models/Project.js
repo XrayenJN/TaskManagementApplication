@@ -2,6 +2,8 @@ export class Project {
     constructor(name, description, startDate, endDate){
         this.name = name;
         this.description = description;
+
+        // yyyy-mm-dd
         this.startDate = startDate;
         this.endDate = endDate;
     }
