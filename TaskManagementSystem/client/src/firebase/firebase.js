@@ -104,14 +104,10 @@ const updateUserProject = async(uid, projectRef) => {
  * Get all the project ids that the authenticated user has
  */
 export const getUserProjectIds = async(uid) => {
-  console.log(uid);
   const ref = doc(db, "users", uid).withConverter(userConverter);
   const snap = await getDoc(ref);
 
-  console.log(snap);
-
   if (snap.exists()){
-    console.log(snap.data());
     return snap.data().projects;
   } else {
     console.log("The document doesn't exist!");
@@ -143,7 +139,6 @@ export const getProjects = async(userProjectIds) => {
   const querySnapshot = await getDocs(q);
   const projectList = []
   querySnapshot.forEach((doc) => {
-    console.log(doc.id, " => ", doc.data());
     projectList.push(doc.data());
   })
   return projectList
