@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import { Security } from '@okta/okta-react';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { toRelativeUrl } from '@okta/okta-auth-js';
-import { auth, customSignIn} from '../../../server/firebase/firebase';
+import { auth, customSignIn } from '../firebase/firebase';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -27,6 +27,7 @@ const AuthProvider = ({children}) => {
       const tokens = await oktaAuth.tokenManager.getTokens();
       if (tokens.accessToken){
         const user = await oktaAuth.getUser();
+        user.uid = user.sub;
         setUser(user);
 
         //connect with back-end with axios

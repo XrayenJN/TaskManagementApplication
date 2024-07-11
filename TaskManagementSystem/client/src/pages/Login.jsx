@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom'
 import '../assets/styles/App.css';
-import { googleSignIn } from '../../../server/firebase/firebase';
+import { googleSignIn } from '../firebase/firebase';
 import { AuthContext } from '../contexts/AuthContext';
 import Slideshow from '../components/Slideshow';
 
@@ -27,10 +27,15 @@ export default function Login(){
     history.push('./TestHome')
   }
 
+  const goToProjectList = () => {
+    history.push('/projects');
+  }
+
   let body = null;
   if (user) {
     body = (
       <div className="Buttons">
+        <button onClick={goToProjectList}>Project List</button>
         <button onClick={goToProfile}>Profile</button>
         <button onClick={logout}>Logout</button>
         {/* Replace me with your root component. */}

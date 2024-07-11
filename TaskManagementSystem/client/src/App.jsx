@@ -4,6 +4,8 @@ import { LoginCallback } from '@okta/okta-react';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
+import ProjectList from './pages/ProjectList';
+import NewProjectForm from './pages/NewProjectForm';
 import TitleBar from './components/TitleBar';
 import PrivateRoute from './routes/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
@@ -18,6 +20,8 @@ function App() {
           <Route path="/" exact={true} component={Login}/>
           <Route path="/login/callback" component={LoginCallback}/>
           <PrivateRoute path="/profile" component={Profile}/>
+          <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
+          <PrivateRoute path="/projects" component={ProjectList} />
         </AuthProvider>
       </Switch>
     </Router>
