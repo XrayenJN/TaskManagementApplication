@@ -91,12 +91,12 @@ const createUserDocument = async(uid, user) => {
 /**
  * Update the current user authenticated project list
  * @param {*} uid uid of the signed in user
- * @param {*} projectId the new project id that the user belongs to
+ * @param {*} projectRef the new project reference that the user belongs to
  */
-const updateUserProject = async(uid, projectId) => {
+const updateUserProject = async(uid, projectRef) => {
   const ref = doc(db, "users", uid);
   await updateDoc(ref, {
-    projects: arrayUnion(projectId)
+    projects: arrayUnion(projectRef)
   });
 }
 
@@ -127,7 +127,7 @@ export const createNewProjectDocument = async(project) => {
   // auto-generate the random id 
   const ref = doc(collection(db, "projects")).withConverter(projectConverter);
   await setDoc(ref, project);
-  await updateUserProject(auth.currentUser.uid, ref.id);
+  await updateUserProject(auth.currentUser.uid, ref);
 }
 
 /**
@@ -135,7 +135,7 @@ export const createNewProjectDocument = async(project) => {
  * @param {*} userProjectIds list of project that the user owns
  */
 export const getProjects = async(userProjectIds) => {
-  if (userProjectIds.length === 0) return [];
+  if (userProjectIds.length == 0) return [];
 
   const ref = collection(db, "projects");
   const q = query(ref, where(documentId(), "in", userProjectIds));
