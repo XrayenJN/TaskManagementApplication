@@ -21,6 +21,9 @@ const ProjectList = () => {
   }, []);
 
   if (loading) {
+    /**
+     * @todo Ethan said: the return statement is too long and needs to be cleaned up
+     */
     return <div>Loading...</div>;
   }
   return (
