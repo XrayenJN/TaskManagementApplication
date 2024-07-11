@@ -3,8 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { createNewProjectDocument } from '../firebase/firebase';
 
 const NewProjectForm = () => {
-  const [name, setName] = useState('Test');
-  const [description, setDescription] = useState('This is a test project');
+  /**
+   * @todo : make sure that the name, description, start date and end date is filled
+   * @todo : make sure the start date is before the end date or vice versa
+   * @todo : maybe there will be an option to have a placeholder
+   */
+  const [name, setName] = useState('New Project');
+  const [description, setDescription] = useState('No Description Given');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const history = useHistory();
@@ -12,6 +17,10 @@ const NewProjectForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newProject = { name, description, startDate, endDate };
+
+    /**
+     * @todo : Ethan said that "this return needs to be cleaned up its way too long"
+     */
     await createNewProjectDocument(newProject);
     history.replace('/projects');
   };
