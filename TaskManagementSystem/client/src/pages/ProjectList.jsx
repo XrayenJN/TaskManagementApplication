@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
-import { checkUsersExists, getProjects, getUserProjectIds, updateProjectContributors } from '../firebase/firebase';
+import { checkUsersExists, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../firebase/firebase';
 import { AuthContext } from '../contexts/AuthContext';
 
 const ProjectList = () => {
@@ -33,9 +33,8 @@ const ProjectList = () => {
 
   const handleEmailSubmit = async () => {
     alert(`Email submitted: ${email}`);
-    console.log(userId);
-    console.log(projectId);
-    await updateProjectContributors(projectId, userId)
+    await updateProjectContributors(projectId, userId);
+    await updateUserProject(userId, projectId);
     setEmail('');
     setShowEmailPopup(false);
   };

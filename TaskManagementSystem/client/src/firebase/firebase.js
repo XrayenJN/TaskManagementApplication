@@ -93,7 +93,7 @@ const createUserDocument = async(uid, user) => {
  * @param {*} uid uid of the signed in user
  * @param {*} pid the id of the project
  */
-const updateUserProject = async(uid, pid) => {
+export const updateUserProject = async(uid, pid) => {
   const ref = doc(db, "users", uid);
   const projectRef = doc(db, "projects", pid);
   await updateDoc(ref, {
