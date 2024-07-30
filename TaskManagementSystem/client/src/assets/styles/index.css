@@ -108,3 +108,52 @@ button:focus-visible {
 .react-slideshow-container .default-nav:first-of-type {
   margin-left: 10px;
 }
+
+input{
+  border:none;
+  background-color: #1BA098;
+  color: black;
+  outline:none;
+  display:inline-block;
+  height:34px;
+  vertical-align:middle;
+  position:relative;
+  bottom:14px;
+  right:9px;
+  border-radius:22px;
+  width:220px;
+  box-sizing:border-box;
+  padding:0 18px; 
+}
+
+textarea{
+  border:none;
+  outline:none;
+  background-color: #1BA098;
+  display:inline-block;
+  height:150px;
+  vertical-align:middle;
+  position:relative;
+  bottom:14px;
+  right:9px;
+  border-radius:22px;
+  width:360px;
+  box-sizing:border-box;
+  padding:0 18px; 
+}
+
+input::placeholder{
+  color: white;
+}
+
+textarea::placeholder{
+  padding-top: 3%;
+  color: white;
+}
+textarea:invalid {
+  padding: 2%;
+}
+
+textarea:valid {
+  padding: 2%;
+}
