@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
-import { checkUsersExists, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../firebase/firebase';
+import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../firebase/firebase';
 import { AuthContext } from '../contexts/AuthContext';
 
 const ProjectList = () => {
@@ -13,10 +13,14 @@ const ProjectList = () => {
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
-  const names = ['Alice', 'Bob', 'Charlie', 'David'];
+  const [contributors, setContributors] = useState([]);
 
-  const togglePopup = () => {
+  const togglePopup = async (projectId) => {
     setShowPopup(!showPopup);
+    // console.log(projectId);
+    const theContributors = await getContributors(projectId);
+    console.log(theContributors);
+    setContributors(theContributors);
   };
 
   const toggleEmailPopup = (projectId) => {
@@ -90,13 +94,13 @@ const ProjectList = () => {
           <li key={project.id}>
             <h2>{project.name}</h2>
             <p>{project.description}</p>
-            <button onClick={togglePopup}>Show Names</button>
+            <button onClick={() => togglePopup(project.id)}>Show Names</button>
               {showPopup && (
                 <div className="popup">
                   <div className="popup-content">
                     <h2>Names List</h2>
                     <ul>
-                      {names.map((name, index) => (
+                      {contributors.map((name, index) => (
                         <li key={index}>{name}</li>
                       ))}
                     </ul>

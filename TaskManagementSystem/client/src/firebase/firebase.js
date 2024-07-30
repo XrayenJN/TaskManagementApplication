@@ -179,6 +179,22 @@ export const getProjects = async(userProjectIds) => {
   return projectList
 }
 
-export const getContributors = async(userProjectIds) => {
+export const getContributors = async(projectId) => {
+  console.log(projectId);
+  const ref = doc(db, "projects", projectId);
+  const snapshot = await getDoc(ref);
 
+  if (snapshot.exists()) {
+    const contributors = []
+    const c = snapshot.data().contributors;
+    await Promise.all(c.map(async (userRef) => {
+      const userSnap = await getDoc(userRef)
+      const userData = userSnap.data();
+      contributors.push(userData.name);
+    }));
+    return contributors;
+  } else {
+    console.log("No such document!");
+    return [];
+  }
 }
