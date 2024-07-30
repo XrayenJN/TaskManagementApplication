@@ -7,6 +7,12 @@ const ProjectList = () => {
   const { user } = useContext(AuthContext);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+  const names = ['Alice', 'Bob', 'Charlie', 'David'];
+
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
+  };
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -15,7 +21,6 @@ const ProjectList = () => {
       setProjects(projects);
       setLoading(false);
     };
-
 
     fetchProjects();
   }, []);
@@ -42,6 +47,20 @@ const ProjectList = () => {
           <li key={project.id}>
             <h2>{project.name}</h2>
             <p>{project.description}</p>
+            <button onClick={togglePopup}>Show Names</button>
+              {showPopup && (
+                <div className="popup">
+                  <div className="popup-content">
+                    <h2>Names List</h2>
+                    <ul>
+                      {names.map((name, index) => (
+                        <li key={index}>{name}</li>
+                      ))}
+                    </ul>
+                    <button onClick={togglePopup}>Close</button>
+                  </div>
+                </div>
+              )}
           </li>
         ))}
       </ul>

@@ -123,7 +123,20 @@ export const createNewProjectDocument = async(project) => {
   // auto-generate the random id 
   const ref = doc(collection(db, "projects")).withConverter(projectConverter);
   await setDoc(ref, project);
+
+  // Update the project that the user has
   await updateUserProject(auth.currentUser.uid, ref);
+
+  // Update the contributor of the project
+  await updateProjectContributors(ref, auth.currentUser.uid)
+}
+
+export const updateProjectContributors = async(projectRef, uid) => {
+  // const pRef = doc(db, "projects", pid);
+  const uRef = doc(db, "users", uid);
+  await updateDoc(projectRef, {
+    contributors: arrayUnion(uRef)
+  })
 }
 
 /**
@@ -142,4 +155,8 @@ export const getProjects = async(userProjectIds) => {
     projectList.push(doc.data());
   })
   return projectList
+}
+
+export const getContributors = async(userProjectIds) => {
+
 }

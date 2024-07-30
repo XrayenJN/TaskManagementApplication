@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { createNewProjectDocument } from '../firebase/firebase';
+import { Project } from '../models/Project';
 
 const NewProjectForm = () => {
   /**
@@ -16,7 +17,7 @@ const NewProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newProject = { name, description, startDate, endDate };
+    const newProject = new Project( name, description, startDate, endDate, [] );
 
     /**
      * @todo : Ethan said that "this return needs to be cleaned up its way too long"
