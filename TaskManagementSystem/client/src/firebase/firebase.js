@@ -115,6 +115,8 @@ export const getUserProjectIds = async(uid) => {
   }
 }
 
+
+
 /**
  * creating the new project in the firestore
  * @param {*} project project object containing project values
@@ -144,6 +146,20 @@ export const updateProjectContributors = async(pid, uid) => {
   })
 }
 
+export const checkUsersExists = async(userEmail) => {
+  const ref = collection(db, "users");
+  const q = query(ref, where("email", "==", userEmail))
+
+  const querySnapshot = await getDocs(q);
+  const user = []
+  querySnapshot.forEach((doc) => {
+    user.push({found: true, userId: doc.id})
+  })
+  console.log(user);
+  return user;
+}
+
+
 /**
  * Get the project based on the project ID that the authenticated user has
  * @param {*} userProjectIds list of project that the user owns
@@ -157,10 +173,8 @@ export const getProjects = async(userProjectIds) => {
   const querySnapshot = await getDocs(q);
   const projectList = []
   querySnapshot.forEach((doc) => {
-    projectList.add
     projectList.push({id:doc.id, ...doc.data()});
   })
-  console.log(projectList);
   return projectList
 }
 
