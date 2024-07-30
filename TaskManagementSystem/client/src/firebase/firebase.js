@@ -128,13 +128,18 @@ export const createNewProjectDocument = async(project) => {
   await updateUserProject(auth.currentUser.uid, ref);
 
   // Update the contributor of the project
-  await updateProjectContributors(ref, auth.currentUser.uid)
+  await updateProjectContributors(ref.id, auth.currentUser.uid)
 }
 
-export const updateProjectContributors = async(projectRef, uid) => {
-  // const pRef = doc(db, "projects", pid);
+/**
+ * update the project contributors
+ * @param {*} pid project id
+ * @param {*} uid user id
+ */
+export const updateProjectContributors = async(pid, uid) => {
+  const pRef = doc(db, "projects", pid);
   const uRef = doc(db, "users", uid);
-  await updateDoc(projectRef, {
+  await updateDoc(pRef, {
     contributors: arrayUnion(uRef)
   })
 }
@@ -152,8 +157,10 @@ export const getProjects = async(userProjectIds) => {
   const querySnapshot = await getDocs(q);
   const projectList = []
   querySnapshot.forEach((doc) => {
-    projectList.push(doc.data());
+    projectList.add
+    projectList.push({id:doc.id, ...doc.data()});
   })
+  console.log(projectList);
   return projectList
 }
 
