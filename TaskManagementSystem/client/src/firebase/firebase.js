@@ -91,10 +91,11 @@ const createUserDocument = async(uid, user) => {
 /**
  * Update the current user authenticated project list
  * @param {*} uid uid of the signed in user
- * @param {*} projectRef the new project reference that the user belongs to
+ * @param {*} pid the id of the project
  */
-const updateUserProject = async(uid, projectRef) => {
+const updateUserProject = async(uid, pid) => {
   const ref = doc(db, "users", uid);
+  const projectRef = doc(db, "projects", pid);
   await updateDoc(ref, {
     projects: arrayUnion(projectRef)
   });
@@ -127,7 +128,7 @@ export const createNewProjectDocument = async(project) => {
   await setDoc(ref, project);
 
   // Update the project that the user has
-  await updateUserProject(auth.currentUser.uid, ref);
+  await updateUserProject(auth.currentUser.uid, ref.id);
 
   // Update the contributor of the project
   await updateProjectContributors(ref.id, auth.currentUser.uid)
