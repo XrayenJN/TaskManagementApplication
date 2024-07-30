@@ -12,16 +12,18 @@ const ProjectList = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
+  const [projectId, setProjectId] = useState('');
   const names = ['Alice', 'Bob', 'Charlie', 'David'];
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
 
-  const toggleEmailPopup = () => {
+  const toggleEmailPopup = (projectId) => {
     setShowEmailPopup(!showEmailPopup);
     setIsEmailValid(false);
     setEmail('');
+    setProjectId(projectId);
   };
 
   const handleEmailChange = (e) => {
@@ -29,9 +31,10 @@ const ProjectList = () => {
     setIsEmailValid(false);
   };
 
-  const handleEmailSubmit = async (projectId) => {
+  const handleEmailSubmit = async () => {
     alert(`Email submitted: ${email}`);
     console.log(userId);
+    console.log(projectId);
     await updateProjectContributors(projectId, userId)
     setEmail('');
     setShowEmailPopup(false);
@@ -103,7 +106,7 @@ const ProjectList = () => {
                 </div>
               )}
 
-            <button onClick={toggleEmailPopup}>Enter Email</button>
+            <button onClick={() => toggleEmailPopup(project.id)}>Enter Email</button>
               {showEmailPopup && (
                 <div className="popup">
                   <div className="popup-content">
@@ -116,7 +119,7 @@ const ProjectList = () => {
                     />
                     <div>
                       <button onClick={handleEmailCheck}>Check</button>
-                      {isEmailValid && <button onClick={() => handleEmailSubmit(project.id)}>Submit</button>}
+                      {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
                     </div>
                     <button onClick={toggleEmailPopup}>Close</button>
                   </div>
