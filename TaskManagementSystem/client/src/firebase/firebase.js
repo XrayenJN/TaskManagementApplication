@@ -91,10 +91,11 @@ const createUserDocument = async(uid, user) => {
 /**
  * Update the current user authenticated project list
  * @param {*} uid uid of the signed in user
- * @param {*} projectRef the new project reference that the user belongs to
+ * @param {*} pid the id of the project
  */
-const updateUserProject = async(uid, projectRef) => {
+export const updateUserProject = async(uid, pid) => {
   const ref = doc(db, "users", uid);
+  const projectRef = doc(db, "projects", pid);
   await updateDoc(ref, {
     projects: arrayUnion(projectRef)
   });
@@ -115,6 +116,8 @@ export const getUserProjectIds = async(uid) => {
   }
 }
 
+
+
 /**
  * creating the new project in the firestore
  * @param {*} project project object containing project values
@@ -123,8 +126,40 @@ export const createNewProjectDocument = async(project) => {
   // auto-generate the random id 
   const ref = doc(collection(db, "projects")).withConverter(projectConverter);
   await setDoc(ref, project);
-  await updateUserProject(auth.currentUser.uid, ref);
+
+  // Update the project that the user has
+  await updateUserProject(auth.currentUser.uid, ref.id);
+
+  // Update the contributor of the project
+  await updateProjectContributors(ref.id, auth.currentUser.uid)
 }
+
+/**
+ * update the project contributors
+ * @param {*} pid project id
+ * @param {*} uid user id
+ */
+export const updateProjectContributors = async(pid, uid) => {
+  const pRef = doc(db, "projects", pid);
+  const uRef = doc(db, "users", uid);
+  await updateDoc(pRef, {
+    contributors: arrayUnion(uRef)
+  })
+}
+
+export const checkUsersExists = async(userEmail) => {
+  const ref = collection(db, "users");
+  const q = query(ref, where("email", "==", userEmail))
+
+  const querySnapshot = await getDocs(q);
+  const user = []
+  querySnapshot.forEach((doc) => {
+    user.push({found: true, userId: doc.id})
+  })
+  console.log(user);
+  return user;
+}
+
 
 /**
  * Get the project based on the project ID that the authenticated user has
@@ -139,7 +174,27 @@ export const getProjects = async(userProjectIds) => {
   const querySnapshot = await getDocs(q);
   const projectList = []
   querySnapshot.forEach((doc) => {
-    projectList.push(doc.data());
+    projectList.push({id:doc.id, ...doc.data()});
   })
   return projectList
+}
+
+export const getContributors = async(projectId) => {
+  console.log(projectId);
+  const ref = doc(db, "projects", projectId);
+  const snapshot = await getDoc(ref);
+
+  if (snapshot.exists()) {
+    const contributors = []
+    const c = snapshot.data().contributors;
+    await Promise.all(c.map(async (userRef) => {
+      const userSnap = await getDoc(userRef)
+      const userData = userSnap.data();
+      contributors.push(userData.name);
+    }));
+    return contributors;
+  } else {
+    console.log("No such document!");
+    return [];
+  }
 }
