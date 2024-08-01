@@ -113,7 +113,10 @@ const ProjectList = () => {
     const fetchProjects = async () => {
       const userProjectIds = await getUserProjectIds(user.uid);
       const projects = await getProjects(userProjectIds);
-      setProjects(projects);
+      
+      // Funtions that used to sort project list
+      const projectsSortedByEndDate = projects.sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
+      setProjects(projectsSortedByEndDate);
       setLoading(false);
     };
 
