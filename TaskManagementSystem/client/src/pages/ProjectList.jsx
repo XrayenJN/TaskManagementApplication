@@ -126,6 +126,10 @@ const ProjectList = () => {
      */
     return <div>Loading...</div>;
   }
+
+  /*
+  Todo make this smaller with the use of a sorting fuction and changing the background colour to use a ternary statement
+  */
   return (
     <div style={{ padding: '20px', backgroundColor: '#F4F1E7', height: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -146,7 +150,7 @@ const ProjectList = () => {
                   {showInvitationEmailButton(project)}
                 </div>
                 <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
-                  {project.endDate}
+                  End date: {project.endDate}
                 </div>
               </div>
             </div>
@@ -164,7 +168,7 @@ const ProjectList = () => {
                   {showInvitationEmailButton(project)}
                 </div>
                 <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
-                  {project.endDate}
+                  End date: {project.endDate}
                 </div>
               </div>
             </div>
