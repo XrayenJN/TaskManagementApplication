@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../firebase/firebase';
 import { AuthContext } from '../contexts/AuthContext';
+import { isExpired } from '../utils/dateHandler';
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
@@ -55,6 +56,53 @@ const ProjectList = () => {
     }
   };
 
+  const showContributorsButton = (project) => {
+    return (
+      <div>
+        <button onClick={() => togglePopup(project.id)}>Show Names</button>
+        {showPopup && (
+          <div className="popup">
+            <div className="popup-content">
+              <h2>Names List</h2>
+              <ul>
+                {contributors.map((name, index) => (
+                  <li key={index}>{name}</li>
+                ))}
+              </ul>
+              <button onClick={() => togglePopup(null)}>Close</button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const showInvitationEmailButton = (project) => {
+    return (
+      <div>
+        <button onClick={() => toggleEmailPopup(project.id)}>Enter Email</button>
+          {showEmailPopup && (
+            <div className="popup">
+              <div className="popup-content">
+                <h2>Enter Email</h2>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="Enter your email"
+                />
+                <div>
+                  <button onClick={handleEmailCheck}>Check</button>
+                  {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
+                </div>
+                <button onClick={toggleEmailPopup}>Close</button>
+              </div>
+            </div>
+          )}
+      </div>
+    );
+  };
+
   // use this to update the userId
   // idk why, without this, the hook doesn't work for the setUserId...
   useEffect(() => {
@@ -79,60 +127,52 @@ const ProjectList = () => {
     return <div>Loading...</div>;
   }
   return (
-    <div>
-      <h1>Projects</h1>
-      <div className="Buttons">
-        <Link to="/new-project-form">
-          <button>+ Project</button>
-        </Link>
-        <Link to="/">
-          <button>Home</button>
+    <div style={{ padding: '20px', backgroundColor: '#F4F1E7', height: '100%' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1>Projects</h1>
+        <Link to="/new-project-form" style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+          Add Project
         </Link>
       </div>
-      <ul>
-        {projects.map(project => (
-          <li key={project.id}>
-            <h2>{project.name}</h2>
-            <p>{project.description}</p>
-            <button onClick={() => togglePopup(project.id)}>Show Names</button>
-              {showPopup && (
-                <div className="popup">
-                  <div className="popup-content">
-                    <h2>Names List</h2>
-                    <ul>
-                      {contributors.map((name, index) => (
-                        <li key={index}>{name}</li>
-                      ))}
-                    </ul>
-                    <button onClick={togglePopup}>Close</button>
-                  </div>
+      <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
+      {projects.map(project => {
+        if (!isExpired(project.endDate)) return (
+          // <Link to="/project" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div style={{ backgroundColor: '#1BA098', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>{project.name}: {project.description} </p>
+                  {showContributorsButton(project)}
+                  {showInvitationEmailButton(project)}
                 </div>
-              )}
-
-            <button onClick={() => toggleEmailPopup(project.id)}>Enter Email</button>
-              {showEmailPopup && (
-                <div className="popup">
-                  <div className="popup-content">
-                    <h2>Enter Email</h2>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={handleEmailChange}
-                      placeholder="Enter your email"
-                    />
-                    <div>
-                      <button onClick={handleEmailCheck}>Check</button>
-                      {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
-                    </div>
-                    <button onClick={toggleEmailPopup}>Close</button>
-                  </div>
+                <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
+                  {project.endDate}
                 </div>
-              )}
-          </li>
-        ))}
-      </ul>
+              </div>
+            </div>
+          // </Link>
+        )
+      })}
+      {projects.map(project => {
+        if (isExpired(project.endDate)) return (
+          // <Link to="/project" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div style={{ backgroundColor: '#BD7676', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>{project.name}: {project.description} </p>
+                  {showContributorsButton(project)}
+                  {showInvitationEmailButton(project)}
+                </div>
+                <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
+                  {project.endDate}
+                </div>
+              </div>
+            </div>
+          // </Link>
+        )
+      })}
     </div>
   );
-};
+}
 
 export default ProjectList;

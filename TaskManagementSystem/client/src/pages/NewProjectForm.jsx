@@ -31,24 +31,23 @@ const NewProjectForm = () => {
       <h1>Create New Project</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Project Name:</label>
+          <h2>Project Name</h2>
           <input
             type="text"
-            value={name}
+            placeholder='Project name'
             onChange={(e) => setName(e.target.value)}
             required
-          />
+          />  
         </div>
-        <div>
-          <label>Description:</label>
+        <div style={{paddingTop:'10px'}}>
           <textarea
-            value={description}
+            placeholder='Description'
             onChange={(e) => setDescription(e.target.value)}
             required
           />
         </div>
         <div>
-          <label>Start Date:</label>
+          <h2>Start Date:</h2>
           <input
             type="date"
             value={startDate}
@@ -57,7 +56,7 @@ const NewProjectForm = () => {
           />
         </div>
         <div>
-          <label>End Date:</label>
+          <h2>End Date:</h2>
           <input
             type="date"
             value={endDate}
