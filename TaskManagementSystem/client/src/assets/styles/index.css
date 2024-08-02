@@ -112,7 +112,7 @@ button:focus-visible {
 input{
   border:none;
   background-color: #1BA098;
-  color: black;
+  color: white;
   outline:none;
   display:inline-block;
   height:34px;
