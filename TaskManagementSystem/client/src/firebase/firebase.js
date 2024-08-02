@@ -116,8 +116,6 @@ export const getUserProjectIds = async(uid) => {
   }
 }
 
-
-
 /**
  * creating the new project in the firestore
  * @param {*} project project object containing project values
@@ -159,7 +157,6 @@ export const checkUsersExists = async(userEmail) => {
   console.log(user);
   return user;
 }
-
 
 /**
  * Get the project based on the project ID that the authenticated user has
