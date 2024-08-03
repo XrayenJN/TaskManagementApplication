@@ -177,7 +177,6 @@ export const getProjects = async(userProjectIds) => {
 }
 
 export const getContributors = async(projectId) => {
-  console.log(projectId);
   const ref = doc(db, "projects", projectId);
   const snapshot = await getDoc(ref);
 
@@ -191,7 +190,7 @@ export const getContributors = async(projectId) => {
     }));
     return contributors;
   } else {
-    console.log("No such document!");
+    // console.log("No such document!");
     return [];
   }
 }
