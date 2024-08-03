@@ -53,10 +53,3 @@ export const customSignIn = async (token) => {
       const errorMessage = error.message;
     })
 }
-
-export const project = async (taskDetails) => {
-   {
-    const  taskDetails.time
-}
-
-}
