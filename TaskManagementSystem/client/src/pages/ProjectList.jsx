@@ -18,9 +18,7 @@ const ProjectList = () => {
 
   const togglePopup = async (projectId) => {
     setShowPopup(!showPopup);
-    // console.log(projectId);
     const theContributors = await getContributors(projectId);
-    console.log(theContributors);
     setContributors(theContributors);
   };
 
@@ -106,7 +104,6 @@ const ProjectList = () => {
   // use this to update the userId
   // idk why, without this, the hook doesn't work for the setUserId...
   useEffect(() => {
-    // console.log('Will Updated userId:', userId);
   }, [userId]);
 
   useEffect(() => {
@@ -144,7 +141,6 @@ const ProjectList = () => {
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
       {projects.map(project => {
         if (!isExpired(project.endDate)) return (
-          // <Link to="/project" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ backgroundColor: '#1BA098', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
@@ -157,12 +153,10 @@ const ProjectList = () => {
                 </div>
               </div>
             </div>
-          // </Link>
         )
       })}
       {projects.map(project => {
         if (isExpired(project.endDate)) return (
-          // <Link to="/project" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ backgroundColor: '#BD7676', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
@@ -175,7 +169,6 @@ const ProjectList = () => {
                 </div>
               </div>
             </div>
-          // </Link>
         )
       })}
     </div>

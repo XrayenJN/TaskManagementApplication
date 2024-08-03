@@ -111,7 +111,6 @@ export const getUserProjectIds = async(uid) => {
   if (snap.exists()){
     return snap.data().projects;
   } else {
-    console.log("The document doesn't exist!");
     return null;
   }
 }
@@ -154,7 +153,6 @@ export const checkUsersExists = async(userEmail) => {
   querySnapshot.forEach((doc) => {
     user.push({found: true, userId: doc.id})
   })
-  console.log(user);
   return user;
 }
 
@@ -190,7 +188,6 @@ export const getContributors = async(projectId) => {
     }));
     return contributors;
   } else {
-    // console.log("No such document!");
     return [];
   }
 }
