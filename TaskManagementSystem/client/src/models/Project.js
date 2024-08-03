@@ -2,13 +2,11 @@ export class Project {
     constructor(name, description, startDate, endDate, contributors){
         this.name = name;
         this.description = description;
+        this.contributors = contributors;
 
         // yyyy-mm-dd
         this.startDate = startDate;
         this.endDate = endDate;
-
-        //contributors
-        this.contributors = contributors;
     }
 }
 

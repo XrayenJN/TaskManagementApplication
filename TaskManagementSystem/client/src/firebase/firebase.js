@@ -50,6 +50,7 @@ export const googleSignIn = async () => {
       // const email = error.customData.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
+      console.log(errorCode, errorMessage, credential)
     });
 
   const user = new User(userResult.displayName, userResult.email, []);
@@ -65,6 +66,7 @@ export const customSignIn = async (token) => {
     }).catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
+      console.log(errorCode, errorMessage)
     });
 
   const user = new User(userResult.displayName, userResult.email, []);
@@ -139,6 +141,7 @@ export const createNewProjectDocument = async(project) => {
 export const updateProjectContributors = async(pid, uid) => {
   const pRef = doc(db, "projects", pid);
   const uRef = doc(db, "users", uid);
+
   await updateDoc(pRef, {
     contributors: arrayUnion(uRef)
   })
@@ -150,8 +153,9 @@ export const checkUsersExists = async(userEmail) => {
 
   const querySnapshot = await getDocs(q);
   const user = []
+
   querySnapshot.forEach((doc) => {
-    user.push({found: true, userId: doc.id})
+    user.push({userId: doc.id})
   })
   return user;
 }
@@ -168,6 +172,7 @@ export const getProjects = async(userProjectIds) => {
 
   const querySnapshot = await getDocs(q);
   const projectList = []
+
   querySnapshot.forEach((doc) => {
     projectList.push({id:doc.id, ...doc.data()});
   })
@@ -187,7 +192,6 @@ export const getContributors = async(projectId) => {
       contributors.push(userData.name);
     }));
     return contributors;
-  } else {
-    return [];
-  }
+  } 
+  else { return []; }
 }
