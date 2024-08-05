@@ -179,6 +179,11 @@ export const getProjects = async(userProjectIds) => {
   return projectList
 }
 
+/**
+ * Get all the contributors of a particular project
+ * @param {*} projectId is the project id
+ * @returns list of contributors
+ */
 export const getContributors = async(projectId) => {
   const ref = doc(db, "projects", projectId);
   const snapshot = await getDoc(ref);
