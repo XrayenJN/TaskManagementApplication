@@ -9,6 +9,7 @@ import NewProjectForm from './pages/NewProjectForm';
 import TitleBar from './components/TitleBar';
 import PrivateRoute from './routes/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
+import ListView from './pages/ListView';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <PrivateRoute path="/profile" component={Profile}/>
           <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
           <PrivateRoute path="/projects" component={ProjectList} />
+          <PrivateRoute path="/project/:projectId" component={ListView} />
         </AuthProvider>
       </Switch>
     </Router>
