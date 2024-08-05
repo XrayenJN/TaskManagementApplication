@@ -17,7 +17,6 @@ const ProjectList = () => {
 
   const fetchContributors = async (projectId) => {
     const theContributors = await getContributors(projectId);
-    //setContributors(prevState => ({...prevState, [projectId]: theContributors}));
     setContributors(theContributors);
   };
 
@@ -135,8 +134,9 @@ const ProjectList = () => {
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' , fontSize: '18px' }}>
-                    End date: {project.endDate}
+                  <div style={{ color: 'black', fontSize: '18px' }}>
+                    <div><b>Start date:</b> {project.startDate}</div>
+                    <div><b>End date:</b> {project.endDate}</div>
                   </div>
                   <div style={{margin: '15px 0', textAlign: 'right'}}>
                     <Link to="/edit-project" style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', border: 'none', cursor: 'pointer' }}>
@@ -160,8 +160,9 @@ const ProjectList = () => {
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' , fontSize: '18px' }}>
-                    End date: {project.endDate}
+                  <div style={{ color: 'black', fontSize: '18px' }}>
+                    <div><b>Start date:</b> {project.startDate}</div>
+                    <div><b>End date:</b> {project.endDate}</div>
                   </div>
                   <div style={{margin: '15px 0', textAlign: 'right'}}>
                     <Link to="/edit-project" style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', border: 'none', cursor: 'pointer' }}>
