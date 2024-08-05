@@ -144,11 +144,11 @@ const ProjectList = () => {
             <div style={{ backgroundColor: '#1BA098', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>{project.name}: {project.description} </p>
+                  <p style={{ margin: 0, fontWeight: 'bold', color: 'black' , fontSize: '24px' }}>{project.name}</p>
                   {showContributorsButton(project)}
                   {showInvitationEmailButton(project)}
                 </div>
-                <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
+                <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' , fontSize: '18px' }}>
                   End date: {project.endDate}
                 </div>
               </div>
