@@ -10,21 +10,19 @@ const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
-  const [showEmailPopup, setShowEmailPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [contributors, setContributors] = useState([]);
 
-  const togglePopup = async (projectId) => {
-    setShowPopup(!showPopup);
+  const fetchContributors = async (projectId) => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
   };
 
-  const toggleEmailPopup = (projectId) => {
-    setShowEmailPopup(!showEmailPopup);
+  const togglePopup = (projectId) => {
+    setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
     setProjectId(projectId);
@@ -40,7 +38,7 @@ const ProjectList = () => {
     await updateProjectContributors(projectId, userId);
     await updateUserProject(userId, projectId);
     setEmail('');
-    setShowEmailPopup(false);
+    setShowPopup(false);
   };
 
   const handleEmailCheck = async () => {
@@ -55,49 +53,26 @@ const ProjectList = () => {
     }
   };
 
-  const showContributorsButton = (project) => {
+  const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={() => togglePopup(project.id)}>Show Names</button>
+        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
         {showPopup && (
           <div className="popup">
-            <div className="popup-content">
-              <h2>Names List</h2>
-              <ul>
-                {contributors.map((name, index) => (
-                  <li key={index}>{name}</li>
-                ))}
-              </ul>
-              <button onClick={() => togglePopup(null)}>Close</button>
+            <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
+              <h2>Edit Project Details</h2>
+              <input
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+                placeholder="Enter contributor email"
+              />
+              <button onClick={handleEmailCheck}>Check</button>
+              {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
+              <div><button onClick={togglePopup}>Close</button></div>
             </div>
           </div>
         )}
-      </div>
-    );
-  };
-
-  const showInvitationEmailButton = (project) => {
-    return (
-      <div>
-        <button onClick={() => toggleEmailPopup(project.id)}>Enter Email</button>
-          {showEmailPopup && (
-            <div className="popup">
-              <div className="popup-content">
-                <h2>Enter Email</h2>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  placeholder="Enter your email"
-                />
-                <div>
-                  <button onClick={handleEmailCheck}>Check</button>
-                  {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
-                </div>
-                <button onClick={toggleEmailPopup}>Close</button>
-              </div>
-            </div>
-          )}
       </div>
     );
   };
@@ -118,6 +93,12 @@ const ProjectList = () => {
     fetchProjects();
   }, []);
 
+  useEffect(() => {
+    projects.forEach(project => {
+      fetchContributors(project.id);
+    });
+  }, [projects]);
+
   if (loading) {
     /**
      * @todo Ethan said: the return statement is too long and needs to be cleaned up
@@ -126,7 +107,7 @@ const ProjectList = () => {
   }
 
   /*
-  Todo make this smaller with the use of a sorting fuction and changing the background colour to use a ternary statement
+  Todo make this smaller with the use of a sorting function
   */
   return (
     <div style={{ padding: '20px', backgroundColor: '#F4F1E7', height: '100%' }}>
@@ -138,35 +119,29 @@ const ProjectList = () => {
       </div>
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
       {projects.map(project => {
-        if (!isExpired(project.endDate)) return (
-            <div style={{ backgroundColor: '#1BA098', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>{project.name}: {project.description} </p>
-                  {showContributorsButton(project)}
-                  {showInvitationEmailButton(project)}
+        const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
+
+        return (
+          <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
+                <div style={{ textAlign: 'left', color: 'black' }}>
+                  <div>{project.description}</div>
+                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors.join(', ')}</i> </div>
                 </div>
-                <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
-                  End date: {project.endDate}
+              </div>
+              <div>
+                <div style={{ color: 'black', fontSize: '18px' }}>
+                  <div><b>Start date:</b> {project.startDate}</div>
+                  <div><b>End date:</b> {project.endDate}</div>
+                </div>
+                <div style={{ margin: '15px 0', textAlign: 'right' }}>
+                  {showEditProjectButton(project)}
                 </div>
               </div>
             </div>
-        )
-      })}
-      {projects.map(project => {
-        if (isExpired(project.endDate)) return (
-            <div style={{ backgroundColor: '#BD7676', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>{project.name}: {project.description} </p>
-                  {showContributorsButton(project)}
-                  {showInvitationEmailButton(project)}
-                </div>
-                <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
-                  End date: {project.endDate}
-                </div>
-              </div>
-            </div>
+          </div>
         )
       })}
     </div>
