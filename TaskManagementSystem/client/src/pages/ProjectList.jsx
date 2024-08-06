@@ -57,25 +57,25 @@ const ProjectList = () => {
     return (
       <div>
         <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
-          {showPopup && (
-            <div className="popup">
-              <div className="popup-content" style={{backgroundColor: '#DEB992'}}>
-                <h2>Edit Project Details</h2>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  placeholder="Enter contributor email"
-                />
-                  <button onClick={handleEmailCheck}>Check</button>
-                  {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
-                <div><button onClick={togglePopup}>Close</button></div>
-              </div>
+        {showPopup && (
+          <div className="popup">
+            <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
+              <h2>Edit Project Details</h2>
+              <input
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+                placeholder="Enter contributor email"
+              />
+              <button onClick={handleEmailCheck}>Check</button>
+              {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
+              <div><button onClick={togglePopup}>Close</button></div>
             </div>
-          )}
+          </div>
+        )}
       </div>
     );
-  };  
+  };
 
   // use this to update the userId
   // idk why, without this, the hook doesn't work for the setUserId...
@@ -94,10 +94,10 @@ const ProjectList = () => {
   }, []);
 
   useEffect(() => {
-      projects.forEach(project => {
-          fetchContributors(project.id);
-      });
-    }, [projects]);
+    projects.forEach(project => {
+      fetchContributors(project.id);
+    });
+  }, [projects]);
 
   if (loading) {
     /**
@@ -125,10 +125,10 @@ const ProjectList = () => {
           <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black' , fontSize: '24px' }}>{project.name}</p>
-                <div style={{textAlign: 'left', color: 'black'}}>
+                <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
+                <div style={{ textAlign: 'left', color: 'black' }}>
                   <div>{project.description}</div>
-                  <div style={{margin: '10px 0'}}>Contributors: <i>{contributors.join(', ')}</i> </div>
+                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors.join(', ')}</i> </div>
                 </div>
               </div>
               <div>
@@ -136,7 +136,7 @@ const ProjectList = () => {
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
                 </div>
-                <div style={{margin: '15px 0', textAlign: 'right'}}>
+                <div style={{ margin: '15px 0', textAlign: 'right' }}>
                   {showEditProjectButton(project)}
                 </div>
               </div>
