@@ -8,7 +8,7 @@ const ProjectList = () => {
   const { user } = useContext(AuthContext);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showEmailPopup, setShowEmailPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
@@ -20,8 +20,8 @@ const ProjectList = () => {
     setContributors(theContributors);
   };
 
-  const toggleEmailPopup = (projectId) => {
-    setShowEmailPopup(!showEmailPopup);
+  const togglePopup = (projectId) => {
+    setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
     setProjectId(projectId);
@@ -37,7 +37,7 @@ const ProjectList = () => {
     await updateProjectContributors(projectId, userId);
     await updateUserProject(userId, projectId);
     setEmail('');
-    setShowEmailPopup(false);
+    setShowPopup(false);
   };
 
   const handleEmailCheck = async () => {
@@ -52,14 +52,14 @@ const ProjectList = () => {
     }
   };
 
-  const showInvitationEmailButton = (project) => {
+  const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={() => toggleEmailPopup(project.id)}>Enter Email</button>
-          {showEmailPopup && (
+        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', border: 'none', cursor: 'pointer' }}>Edit Project Details</button>
+          {showPopup && (
             <div className="popup">
               <div className="popup-content">
-                <h2>Enter Email</h2>
+                <h2>Enter Project Details</h2>
                 <input
                   type="email"
                   value={email}
@@ -70,7 +70,7 @@ const ProjectList = () => {
                   <button onClick={handleEmailCheck}>Check</button>
                   {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
                 </div>
-                <button onClick={toggleEmailPopup}>Close</button>
+                <button onClick={togglePopup}>Close</button>
               </div>
             </div>
           )}
@@ -141,9 +141,7 @@ const ProjectList = () => {
                   <div><b>End date:</b> {project.endDate}</div>
                 </div>
                 <div style={{margin: '15px 0', textAlign: 'right'}}>
-                  <Link to="/edit-project" style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', border: 'none', cursor: 'pointer' }}>
-                    Edit Project Details
-                  </Link>
+                  {showEditProjectButton(project)}
                 </div>
               </div>
             </div>
