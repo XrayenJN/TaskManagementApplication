@@ -111,7 +111,7 @@ const ProjectList = () => {
   }
 
   /*
-  Todo make this smaller with the use of a sorting fuction and changing the background colour to use a ternary statement
+  Todo make this smaller with the use of a sorting function
   */
   return (
     <div style={{ padding: '20px', backgroundColor: '#F4F1E7', height: '100%' }}>
@@ -123,55 +123,31 @@ const ProjectList = () => {
       </div>
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
       {projects.map(project => {
-        if (!isExpired(project.endDate)) return (
-            <div style={{ backgroundColor: '#1BA098', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black' , fontSize: '24px' }}>{project.name}</p>
-                  <div style={{textAlign: 'left', color: 'black'}}>
-                    <div>{project.description}</div>
-                    <div style={{margin: '10px 0'}}>Contributors: <i>{contributors.join(', ')}</i> </div>
-                  </div>
+        const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
+
+        return (
+          <div style={{ backgroundColor, color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black' , fontSize: '24px' }}>{project.name}</p>
+                <div style={{textAlign: 'left', color: 'black'}}>
+                  <div>{project.description}</div>
+                  <div style={{margin: '10px 0'}}>Contributors: <i>{contributors.join(', ')}</i> </div>
                 </div>
-                <div>
-                  <div style={{ color: 'black', fontSize: '18px' }}>
-                    <div><b>Start date:</b> {project.startDate}</div>
-                    <div><b>End date:</b> {project.endDate}</div>
-                  </div>
-                  <div style={{margin: '15px 0', textAlign: 'right'}}>
-                    <Link to="/edit-project" style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', border: 'none', cursor: 'pointer' }}>
-                      Edit Project Details
-                    </Link>
-                  </div>
+              </div>
+              <div>
+                <div style={{ color: 'black', fontSize: '18px' }}>
+                  <div><b>Start date:</b> {project.startDate}</div>
+                  <div><b>End date:</b> {project.endDate}</div>
+                </div>
+                <div style={{margin: '15px 0', textAlign: 'right'}}>
+                  <Link to="/edit-project" style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', border: 'none', cursor: 'pointer' }}>
+                    Edit Project Details
+                  </Link>
                 </div>
               </div>
             </div>
-        )
-      })}
-      {projects.map(project => {
-        if (isExpired(project.endDate)) return (
-            <div style={{ backgroundColor: '#BD7676', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black' , fontSize: '24px' }}>{project.name}</p>
-                  <div style={{textAlign: 'left', color: 'black'}}>
-                    <div>{project.description}</div>
-                    <div style={{margin: '10px 0'}}>Contributors: <i>{contributors.join(', ')}</i> </div>
-                  </div>
-                </div>
-                <div>
-                  <div style={{ color: 'black', fontSize: '18px' }}>
-                    <div><b>Start date:</b> {project.startDate}</div>
-                    <div><b>End date:</b> {project.endDate}</div>
-                  </div>
-                  <div style={{margin: '15px 0', textAlign: 'right'}}>
-                    <Link to="/edit-project" style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', border: 'none', cursor: 'pointer' }}>
-                      Edit Project Details
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
+          </div>
         )
       })}
     </div>
