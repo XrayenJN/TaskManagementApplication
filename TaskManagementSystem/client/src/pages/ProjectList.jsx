@@ -56,22 +56,20 @@ const ProjectList = () => {
   const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', border: 'none', cursor: 'pointer' }}>Edit Project Details</button>
+        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
           {showPopup && (
             <div className="popup">
-              <div className="popup-content">
-                <h2>Enter Project Details</h2>
+              <div className="popup-content" style={{backgroundColor: '#DEB992'}}>
+                <h2>Edit Project Details</h2>
                 <input
                   type="email"
                   value={email}
                   onChange={handleEmailChange}
-                  placeholder="Enter your email"
+                  placeholder="Enter contributor email"
                 />
-                <div>
                   <button onClick={handleEmailCheck}>Check</button>
                   {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
-                </div>
-                <button onClick={togglePopup}>Close</button>
+                <div><button onClick={togglePopup}>Close</button></div>
               </div>
             </div>
           )}
@@ -124,7 +122,7 @@ const ProjectList = () => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
 
         return (
-          <div style={{ backgroundColor, color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+          <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black' , fontSize: '24px' }}>{project.name}</p>
