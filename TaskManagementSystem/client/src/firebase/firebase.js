@@ -194,9 +194,10 @@ export const getContributors = async(projectId) => {
     await Promise.all(c.map(async (userRef) => {
       const userSnap = await getDoc(userRef)
       const userData = userSnap.data();
-      contributors.push(userData.name);
+      contributors.push(userData);
     }));
     return contributors;
   } 
   else { return []; }
 }
+

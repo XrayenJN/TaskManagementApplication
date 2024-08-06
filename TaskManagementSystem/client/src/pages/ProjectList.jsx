@@ -63,8 +63,8 @@ const ProjectList = () => {
             <div className="popup-content">
               <h2>Names List</h2>
               <ul>
-                {contributors.map((name, index) => (
-                  <li key={index}>{name}</li>
+                {contributors.map((details, index) => (
+                  <li key={index}>{details.name}</li>
                 ))}
               </ul>
               <button onClick={() => togglePopup(null)}>Close</button>
@@ -142,36 +142,37 @@ const ProjectList = () => {
       {projects.map(project => {
         if (!isExpired(project.endDate)) return (
             <div style={{ backgroundColor: '#1BA098', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
-              <Link to={`/project/${project.id}`}>
+              
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>{project.name}: {project.description} </p>
                     {showContributorsButton(project)}
                     {showInvitationEmailButton(project)}
                   </div>
-                  <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
-                    End date: {project.endDate}
-                  </div>
+                  <Link to={`/project/${project.id}`}>
+                    <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
+                      End date: {project.endDate}
+                    </div>
+                  </Link>
                 </div>
-              </Link>
             </div>
         )
       })}
       {projects.map(project => {
         if (isExpired(project.endDate)) return (
             <div style={{ backgroundColor: '#BD7676', color: 'white', padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
-              <Link to={`/project/${project.id}`}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <p style={{ margin: 0, fontWeight: 'bold', color: 'black' }}>{project.name}: {project.description} </p>
                     {showContributorsButton(project)}
                     {showInvitationEmailButton(project)}
                   </div>
-                  <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
-                    End date: {project.endDate}
-                  </div>
+                  <Link to={`/project/${project.id}`}>
+                    <div style={{ fontWeight: 'bold', color: 'black', display: 'flex', alignItems: 'center' }}>
+                      End date: {project.endDate}
+                    </div>
+                  </Link>
                 </div>
-              </Link>
             </div>
         )
       })}
