@@ -1,0 +1,1 @@
+//Bad practice to create this file before we need it btw but im doing it anyway to give us a structure

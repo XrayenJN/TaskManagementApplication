@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom'
-import '../assets/styles/App.css';
-import { googleSignIn } from '../firebase/firebase';
-import { AuthContext } from '../contexts/AuthContext';
-import Slideshow from '../components/Slideshow';
+import { useHistory } from 'react-router-dom';
+import '../../assets/styles/App.css';
+import Slideshow from '../../components/Slideshow';
+import { AuthContext } from '../../contexts/AuthContext';
+import { googleSignIn } from '../../firebase/firebase';
 
 
 export default function Login(){
