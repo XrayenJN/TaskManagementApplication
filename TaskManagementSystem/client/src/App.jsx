@@ -10,6 +10,7 @@ import TitleBar from './components/TitleBar';
 import PrivateRoute from './routes/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import ListView from './pages/ListView';
+import NewProjectTaskForm from './pages/NewProjectTaskForm';
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
           <PrivateRoute path="/profile" component={Profile}/>
           <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
           <PrivateRoute path="/projects" component={ProjectList} />
-          <PrivateRoute path="/project/:projectId" component={ListView} />
+          <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
+          <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
         </AuthProvider>
       </Switch>
     </Router>
