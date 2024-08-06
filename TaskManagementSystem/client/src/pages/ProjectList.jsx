@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
-import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../firebase/firebase';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../firebase/firebase';
 import { isExpired } from '../utils/dateHandler';
-import { projectListSortedByEndDate, projectListSortedByStartDate, projectListSortedByName } from '../utils/listSorting';
+import { projectListSortedByEndDate } from '../utils/listSorting';
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
@@ -111,11 +111,7 @@ const ProjectList = () => {
     const fetchProjects = async () => {
       const userProjectIds = await getUserProjectIds(user.uid);
       const projects = await getProjects(userProjectIds);
-      
-      // Funtions that used to sort project list can be invoked from listSorting.jsx
-      // Example useage: sortedByEndDate = sortedByEndDate(projects); 
-      // The following statement replaced by setProjects(sortedByEndDate)
-      setProjects(projects);
+      setProjects(projectListSortedByEndDate(projects).reverse());
       setLoading(false);
     };
 
