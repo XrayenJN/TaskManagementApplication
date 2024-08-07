@@ -61,15 +61,107 @@ const ProjectList = () => {
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
               <h2>Edit Project Details</h2>
-              <input
-                type="email"
-                value={email}
-                onChange={handleEmailChange}
-                placeholder="Enter contributor email"
-              />
-              <button onClick={handleEmailCheck}>Check</button>
-              {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
-              <div><button onClick={togglePopup}>Close</button></div>
+              <hr></hr>
+              
+              <div>
+                <table style={{ margin: 'auto' }}>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div>
+                          <h3><u>Project Name</u></h3>
+                          <input
+                            type="text"
+                            value={email}
+                            onChange={handleEmailChange}
+                            placeholder={project.name}
+                          />
+                        </div>
+
+                        <div>
+                          <h3><u>Project Description</u></h3>
+                          <textarea
+                            type="text"
+                            value={email}
+                            onChange={handleEmailChange}
+                            placeholder={project.description}
+                          />
+                        </div>
+
+                        <div>
+                          <table style={{ margin: 'auto' }}>
+                            <thead>
+                              <tr>
+                                <th><h3><u>Start Date</u></h3></th>
+                                <th><h3><u>End Date</u></h3></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <input
+                                    type="date"
+                                    value={project.startDate}
+                                    onChange={(e) => handleStartDateChange(e, project.id)}
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    type="date"
+                                    value={project.endDate}
+                                    onChange={(e) => handleEndDateChange(e, project.id)}
+                                  />
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <h3><u>Contributors</u></h3>
+                          <table style={{ margin: 'auto' }}>
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Remove</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {contributors.map((contributor, index) => (
+                                <tr key={index}>
+                                  <td>{contributor}</td>
+                                  <td>
+                                    <button style={{ backgroundColor: '#BD7676', padding: '4px'}}>x</button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        
+                        <div>
+                          <h4>Add Contributors</h4>
+                        </div>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={handleEmailChange}
+                          placeholder="Enter contributor email"
+                        />
+                        <button onClick={handleEmailCheck}>Check</button>
+                        {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <hr></hr>
+              <div>
+                <button>Save</button>
+                <button onClick={togglePopup}>Close</button>
+              </div>
             </div>
           </div>
         )}
