@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
-import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../firebase/firebase';
-import { isExpired } from '../utils/dateHandler';
-import { projectListSortedByEndDate } from '../utils/projectSorting';
+import { AuthContext } from '../../contexts/AuthContext';
+import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
+import { isExpired } from '../../utils/dateHandler';
+import { projectListSortedByEndDate } from '../../utils/projectSorting';
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
