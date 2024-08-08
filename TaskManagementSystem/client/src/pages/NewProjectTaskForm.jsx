@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { createNewProjectDocument, getContributors } from '../firebase/firebase';
+import { createNewProjectTaskDocument, getContributors } from '../firebase/firebase';
 import { ProjectTask } from '../models/ProjectTask';
 
 const NewProjectTaskForm = () => {
@@ -32,11 +32,7 @@ const NewProjectTaskForm = () => {
     e.preventDefault();
     const newProjectTask = new ProjectTask( name, description, startDate, endDate, comments, links, isMilestone, status, owners );
 
-    /**
-     * @todo : Ethan said that "this return needs to be cleaned up its way too long"
-     */
-    console.log(newProjectTask);
-    // await createNewProjectDocument(newProjectTask);
+    await createNewProjectTaskDocument(newProjectTask, projectId);
     history.replace('/projects');
   };
 
@@ -49,7 +45,7 @@ const NewProjectTaskForm = () => {
           <h2>Project Task Name</h2>
           <input
             type="text"
-            placeholder='Project name'
+            placeholder='Project Task name'
             onChange={(e) => setName(e.target.value)}
             required
           />  
@@ -90,8 +86,9 @@ const NewProjectTaskForm = () => {
             required
           >
             <option value="">Select Status</option>
-            <option value="Ongoing">Ongoing</option>
             <option value="Backlog">Backlog</option>
+            <option value="Ready">Ready</option>
+            <option value="InProgress">InProgress</option>
             <option value="Completed">Completed</option>
           </select>
         </div>
@@ -101,9 +98,9 @@ const NewProjectTaskForm = () => {
             required
           >
             <option value="">Select Owner</option>
-            {contributors.map((owner, index) => (
-              <option key={index} value={owner}>
-                {owner}
+            {contributors.map((contributor, index) => (
+              <option key={index} value={contributor.email}>
+                {contributor.name}
               </option>
             ))}
           </select>

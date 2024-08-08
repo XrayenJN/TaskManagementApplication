@@ -2,16 +2,19 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
+import { getTaskDocuments } from '../firebase/firebase';
 
 const ListView = () => {
   const { user } = useContext(AuthContext);
   const { projectId } = useParams();
+  const [projectTasks, setProjectTasks] = useState([]);
 
-  const items = [
-    { id: 1, name: 'Apple', price: 1.5 },
-    { id: 2, name: 'Banana', price: 1.0 },
-    { id: 3, name: 'Cherry', price: 2.0 },
-  ];
+  const fetchTasks = async () => {
+    const tasks = await getTaskDocuments(projectId);
+    setProjectTasks(tasks);
+  }
+
+  fetchTasks();
 
   return (
     <div>
@@ -23,9 +26,9 @@ const ListView = () => {
           </Link>
         </div>
         <ul>
-          {items.map(item => (
-          <li key={item.id}>
-            {item.name} - ${item.price.toFixed(2)}
+          {projectTasks.map(task => (
+          <li key={task.id}>
+            Name: {task.name} - Desc:{task.description}
           </li>
           ))}
         </ul>

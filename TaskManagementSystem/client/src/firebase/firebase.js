@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } from "firebase/auth";
 import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId } from "firebase/firestore";
 import { User, userConverter } from "../models/User";
-import { projectConverter } from "../models/Project";
+import { projectTaskConverter } from "../models/ProjectTask";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -201,3 +201,50 @@ export const getContributors = async(projectId) => {
   else { return []; }
 }
 
+export const createNewProjectTaskDocument = async(projectTask, projectId) => {
+  const ref = doc(collection(db, "projectTasks")).withConverter(projectTaskConverter);
+  await setDoc(ref, projectTask);
+
+  // find the user, so inside the ProjectTask, it will have the owners as a reference, instead of the email
+  const userCollectionRef = collection(db, "users");
+  const q = query(userCollectionRef, where("email", "==", projectTask.owners))
+
+  // get the user uid for the ref
+  const userUids = []
+  const userQuerySnapshot = await getDocs(q);
+  userQuerySnapshot.forEach((doc) => {
+    userUids.push(doc.id)
+  })
+
+  // get the user reference
+  const userRef = doc(db, "users", userUids[0])
+
+  // Update the owner of the projectTask so that it would link to the particular user
+  await updateDoc(ref, {
+    owners: [userRef]
+  })
+
+  // update the project data to link to the task that the project has
+  const pRef = doc(db, "projects", projectId);
+  await updateDoc(pRef, {
+    tasks: arrayUnion(ref)
+  })
+}
+
+export const getTaskDocuments = async(projectId) => {
+  const ref = doc(db, "projects", projectId);
+
+  const snapshot = await getDoc(ref);
+  if (snapshot.exists()) {
+    const tasks = []
+    const c = snapshot.data().tasks;
+    await Promise.all(c.map(async (taskRef) => {
+      const taskSnap = await getDoc(taskRef)
+      const taskData = taskSnap.data();
+      console.log(taskData)
+      tasks.push(taskData);
+    }));
+    return tasks;
+  } 
+  return []; 
+}
