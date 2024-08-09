@@ -16,10 +16,6 @@ const ProjectList = () => {
   const [projectId, setProjectId] = useState('');
   const [contributors, setContributors] = useState([]);
 
-  const fetchContributors = async (projectId) => {
-    const theContributors = await getContributors(projectId);
-    setContributors(theContributors);
-  };
 
   const togglePopup = (projectId) => {
     setShowPopup(!showPopup);
@@ -86,18 +82,21 @@ const ProjectList = () => {
     const fetchProjects = async () => {
       const userProjectIds = await getUserProjectIds(user.uid);
       const projects = await getProjects(userProjectIds);
-      setProjects(projectListSortedByEndDate(projects).reverse());
-      setLoading(false);
-    };
 
+      const listOfContributors = [];
+      // Get the project list id's and get the project's list of contributors and add them to a new list
+      const getAllContributors = Promise.all(projects.map(async p => await getContributors(p.id))).then(contributors => {
+       contributors.forEach((projectContributor) => 
+        {
+          listOfContributors.push(projectContributor)
+          setLoading(false)
+        })});
+      setContributors(listOfContributors)
+      setProjects(projectListSortedByEndDate(projects).reverse());
+    }
     fetchProjects();
   }, []);
 
-  useEffect(() => {
-    projects.forEach(project => {
-      fetchContributors(project.id);
-    });
-  }, [projects]);
 
   if (loading) {
     /**
@@ -118,7 +117,7 @@ const ProjectList = () => {
         </Link>
       </div>
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
-      {projects.map(project => {
+      {projects.map((project, index) => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
 
         return (
@@ -128,7 +127,7 @@ const ProjectList = () => {
                 <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
                 <div style={{ textAlign: 'left', color: 'black' }}>
                   <div>{project.description}</div>
-                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors.join(', ')}</i> </div>
+                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors[index].join(', ')}</i> </div>
                 </div>
               </div>
               <div>
