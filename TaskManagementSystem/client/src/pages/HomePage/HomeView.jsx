@@ -19,8 +19,6 @@ const ProjectList = () => {
   const fetchContributors = async (projectId) => {
     const theContributors = await getContributors(projectId);
     setContributors(value => ({...value, [projectId]:theContributors}));
-    console.log(theContributors)
-    console.log(contributors)
   };
 
   const togglePopup = (projectId) => {
