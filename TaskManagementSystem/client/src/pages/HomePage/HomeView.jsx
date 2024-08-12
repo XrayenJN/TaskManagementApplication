@@ -137,6 +137,7 @@ const ProjectList = () => {
                 </div>
               </div>
               <div>
+                <Link to={`/project/${project.id}`}>
                 <div style={{ color: 'black', fontSize: '18px' }}>
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
@@ -144,6 +145,7 @@ const ProjectList = () => {
                 <div style={{ margin: '15px 0', textAlign: 'right' }}>
                   {showEditProjectButton(project)}
                 </div>
+                </Link>
               </div>
             </div>
           </div>
