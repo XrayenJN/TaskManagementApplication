@@ -4,6 +4,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } f
 import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId } from "firebase/firestore";
 import { User, userConverter } from "../models/User";
 import { projectTaskConverter } from "../models/ProjectTask";
+import { projectConverter } from "../models/Project";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -241,7 +242,6 @@ export const getTaskDocuments = async(projectId) => {
     await Promise.all(c.map(async (taskRef) => {
       const taskSnap = await getDoc(taskRef)
       const taskData = taskSnap.data();
-      console.log(taskData)
       tasks.push(taskData);
     }));
     return tasks;
