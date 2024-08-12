@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { createNewProjectDocument } from '../firebase/firebase';
-import { Project } from '../models/Project';
+import { createNewProjectDocument } from '../../firebase/firebase';
+import { Project } from '../../models/Project';
 
 const NewProjectForm = () => {
   /**
