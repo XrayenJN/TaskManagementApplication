@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
+import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { projectListSortedByEndDate } from '../../utils/projectSorting';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -15,7 +15,7 @@ const ProjectList = () => {
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
-  const [contributors, setContributors] = useState({}); 
+  const [contributors, setContributors] = useState({});
   const [editedProject, setEditedProject] = useState({
     name: '',
     description: '',
@@ -24,11 +24,11 @@ const ProjectList = () => {
   });
 
   const fetchContributors = async (projectId) => {
-  const theContributors = await getContributors(projectId).then(setLoading(false));
-    setContributors(value => ({...value, [projectId]:theContributors})); 
+    const theContributors = await getContributors(projectId).then(setLoading(false));
+    setContributors(value => ({...value, [projectId]:theContributors}));
   };
 
-  const togglePopup = (project) => {
+  const togglePopup = (projectId) => {
     setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
@@ -54,7 +54,7 @@ const ProjectList = () => {
         project.id === projectId ? { ...project, ...editedProject } : project
       )
     );
-    setShowPopup(false);  
+    setShowPopup(false);
   };
 
   const handleEmailChange = (e) => {
@@ -80,7 +80,7 @@ const ProjectList = () => {
   const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={() => togglePopup(project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
+        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
         {showPopup && (
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
@@ -96,9 +96,9 @@ const ProjectList = () => {
                           <h3><u>Project Name</u></h3>
                           <input
                             type="text"
-                            name="name"
-                            value={editedProject.name}
-                            onChange={handleInputChange}
+                            value={email}
+                            onChange={handleEmailChange}
+                            placeholder={project.name}
                           />
                         </div>
 
@@ -125,17 +125,15 @@ const ProjectList = () => {
                                 <td>
                                   <input
                                     type="date"
-                                    name="startDate"
-                                    value={editedProject.startDate}
-                                    onChange={handleInputChange}
+                                    value={project.startDate}
+                                    onChange={(e) => handleStartDateChange(e, project.id)}
                                   />
                                 </td>
                                 <td>
                                   <input
                                     type="date"
-                                    name="endDate"
-                                    value={editedProject.endDate}
-                                    onChange={handleInputChange}
+                                    value={project.endDate}
+                                    onChange={(e) => handleEndDateChange(e, project.id)}
                                   />
                                 </td>
                               </tr>
@@ -184,8 +182,8 @@ const ProjectList = () => {
 
               <hr></hr>
               <div>
-                <button onClick={handleSave}>Save</button>
-                <button onClick={() => setShowPopup(false)}>Close</button>
+                <button>Save</button>
+                <button onClick={togglePopup}>Close</button>
               </div>
             </div>
           </div>
@@ -235,6 +233,13 @@ const ProjectList = () => {
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
       {projects.map(project => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
+        try{
+          console.log(contributors[project.id]?.map((users) => {
+          return users.name
+        }))}
+        catch(e){
+          console.log(e)
+        }
         return (
           <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -244,7 +249,7 @@ const ProjectList = () => {
                   <div>{project.description}</div>
                   <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors[project.id]?.map((users) => {
           return users.name
-        }).join(", ")} </i> </div>
+        }).join(", ")}</i> </div>
                 </div>
               </div>
               <div>
