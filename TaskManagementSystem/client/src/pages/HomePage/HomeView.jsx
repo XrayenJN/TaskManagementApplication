@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
+import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { projectListSortedByEndDate } from '../../utils/projectSorting';
+import { doc, updateDoc } from 'firebase/firestore'; // not sure if this is duplicated
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
@@ -15,17 +16,45 @@ const ProjectList = () => {
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [contributors, setContributors] = useState([]);
+  const [editedProject, setEditedProject] = useState({
+    name: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+  });
 
   const fetchContributors = async (projectId) => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
   };
 
-  const togglePopup = (projectId) => {
+  const togglePopup = (project) => {
     setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
-    setProjectId(projectId);
+    setProjectId(project.id);
+    setEditedProject({
+      name: project.name,
+      description: project.description,
+      startDate: project.startDate,
+      endDate: project.endDate,
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedProject({ ...editedProject, [name]: value });
+  };
+
+  const handleSave = async () => {
+    const projectRef = doc(db, 'projects', projectId);
+    try {
+      await updateDoc(projectRef, editedProject);
+      setShowPopup(false);
+      // Optionally update local state or trigger a re-fetch of projects
+    } catch (error) {
+      console.error('Error updating document: ', error);
+    }
   };
 
   const handleEmailChange = (e) => {
@@ -56,7 +85,7 @@ const ProjectList = () => {
   const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
+        <button onClick={() => togglePopup(project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
         {showPopup && (
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
@@ -72,19 +101,18 @@ const ProjectList = () => {
                           <h3><u>Project Name</u></h3>
                           <input
                             type="text"
-                            value={email}
-                            onChange={handleEmailChange}
-                            placeholder={project.name}
+                            name="name"
+                            value={editedProject.name}
+                            onChange={handleInputChange}
                           />
                         </div>
 
                         <div>
                           <h3><u>Project Description</u></h3>
                           <textarea
-                            type="text"
-                            value={email}
-                            onChange={handleEmailChange}
-                            placeholder={project.description}
+                            name="description"
+                            value={editedProject.description}
+                            onChange={handleInputChange}
                           />
                         </div>
 
@@ -101,15 +129,17 @@ const ProjectList = () => {
                                 <td>
                                   <input
                                     type="date"
-                                    value={project.startDate}
-                                    onChange={(e) => handleStartDateChange(e, project.id)}
+                                    name="startDate"
+                                    value={editedProject.startDate}
+                                    onChange={handleInputChange}
                                   />
                                 </td>
                                 <td>
                                   <input
                                     type="date"
-                                    value={project.endDate}
-                                    onChange={(e) => handleEndDateChange(e, project.id)}
+                                    name="endDate"
+                                    value={editedProject.endDate}
+                                    onChange={handleInputChange}
                                   />
                                 </td>
                               </tr>
@@ -159,8 +189,8 @@ const ProjectList = () => {
 
               <hr></hr>
               <div>
-                <button>Save</button>
-                <button onClick={togglePopup}>Close</button>
+                <button onClick={handleSave}>Save</button>
+                <button onClick={() => setShowPopup(false)}>Close</button>
               </div>
             </div>
           </div>
