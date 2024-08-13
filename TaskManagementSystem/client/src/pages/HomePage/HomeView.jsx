@@ -62,25 +62,20 @@ const ProjectList = () => {
     setIsEmailValid(false);
   };
 
-  const handleEmailSubmit = async () => {
-    alert(`Email submitted: ${email}`);
-    await updateProjectContributors(projectId, userId);
-    await updateUserProject(userId, projectId);
-    setEmail('');
-    setShowPopup(false);
-  };
-
-  const handleEmailCheck = async () => {
+  const handleAddContributor = async () => {
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
     if (result.length > 0) {
       setUserId(result[0].userId);
       setIsEmailValid(true);
+      await updateProjectContributors(projectId, userId);
+      await updateUserProject(userId, projectId);
+      setEmail('');
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
     }
-  };
+  }
 
   const showEditProjectButton = (project) => {
     return (
@@ -180,8 +175,7 @@ const ProjectList = () => {
                           onChange={handleEmailChange}
                           placeholder="Enter contributor email"
                         />
-                        <button onClick={handleEmailCheck}>Check</button>
-                        {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
+                        <button onClick={handleAddContributor}>Add</button>
                       </td>
                     </tr>
                   </tbody>
