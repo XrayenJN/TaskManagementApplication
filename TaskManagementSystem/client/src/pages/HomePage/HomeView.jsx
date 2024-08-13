@@ -48,13 +48,13 @@ const ProjectList = () => {
 
   const handleSave = async () => {
     const projectRef = doc(db, 'projects', projectId);
-    try {
-      await updateDoc(projectRef, editedProject);
-      setShowPopup(false);
-      // Optionally update local state or trigger a re-fetch of projects
-    } catch (error) {
-      console.error('Error updating document: ', error);
-    }
+    await updateDoc(projectRef, editedProject);
+    setProjects((prevProjects) =>
+      prevProjects.map((project) =>
+        project.id === projectId ? { ...project, ...editedProject } : project
+      )
+    );
+    setShowPopup(false);
   };
 
   const handleEmailChange = (e) => {
