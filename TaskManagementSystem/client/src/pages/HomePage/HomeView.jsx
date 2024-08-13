@@ -4,7 +4,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { projectListSortedByEndDate } from '../../utils/projectSorting';
-import { doc, updateDoc } from 'firebase/firestore'; // not sure if this is duplicated
+import { doc, updateDoc } from 'firebase/firestore';
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
@@ -111,6 +111,7 @@ const ProjectList = () => {
                           <h3><u>Project Description</u></h3>
                           <textarea
                             name="description"
+                            style={{ color: 'black'}}
                             value={editedProject.description}
                             onChange={handleInputChange}
                           />
