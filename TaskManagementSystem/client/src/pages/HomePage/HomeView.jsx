@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
+import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { projectListSortedByEndDate } from '../../utils/projectSorting';
+import { doc, updateDoc } from 'firebase/firestore'; // not sure if this is duplicated
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
@@ -15,17 +16,46 @@ const ProjectList = () => {
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [contributors, setContributors] = useState({});
+  const [editedProject, setEditedProject] = useState({
+    name: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+  });
 
   const fetchContributors = async (projectId) => {
-    const theContributors = await getContributors(projectId);
+    const theContributors = await getContributors(projectId).then(setLoading(false));
     setContributors(value => ({...value, [projectId]:theContributors}));
   };
 
-  const togglePopup = (projectId) => {
+  const togglePopup = (project) => {
     setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
-    setProjectId(projectId);
+    setProjectId(project.id);
+    setEditedProject({
+      name: project.name,
+      description: project.description,
+      startDate: project.startDate,
+      endDate: project.endDate,
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedProject({ ...editedProject, [name]: value });
+  };
+
+  const handleSave = async () => {
+    const projectRef = doc(db, 'projects', projectId);
+    try {
+      await updateDoc(projectRef, editedProject);
+      setShowPopup(false);
+      // Optionally update local state or trigger a re-fetch of projects
+    } catch (error) {
+      console.error('Error updating document: ', error);
+    }
+   
   };
 
   const handleEmailChange = (e) => {
@@ -33,30 +63,25 @@ const ProjectList = () => {
     setIsEmailValid(false);
   };
 
-  const handleEmailSubmit = async () => {
-    alert(`Email submitted: ${email}`);
-    await updateProjectContributors(projectId, userId);
-    await updateUserProject(userId, projectId);
-    setEmail('');
-    setShowPopup(false);
-  };
-
-  const handleEmailCheck = async () => {
+  const handleAddContributor = async () => {
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
     if (result.length > 0) {
       setUserId(result[0].userId);
       setIsEmailValid(true);
+      await updateProjectContributors(projectId, userId);
+      await updateUserProject(userId, projectId);
+      setEmail('');
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
     }
-  };
+  }
 
   const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
+        <button onClick={() => togglePopup(project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
         {showPopup && (
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
@@ -72,19 +97,18 @@ const ProjectList = () => {
                           <h3><u>Project Name</u></h3>
                           <input
                             type="text"
-                            value={email}
-                            onChange={handleEmailChange}
-                            placeholder={project.name}
+                            name="name"
+                            value={editedProject.name}
+                            onChange={handleInputChange}
                           />
                         </div>
 
                         <div>
                           <h3><u>Project Description</u></h3>
                           <textarea
-                            type="text"
-                            value={email}
-                            onChange={handleEmailChange}
-                            placeholder={project.description}
+                            name="description"
+                            value={editedProject.description}
+                            onChange={handleInputChange}
                           />
                         </div>
 
@@ -101,15 +125,17 @@ const ProjectList = () => {
                                 <td>
                                   <input
                                     type="date"
-                                    value={project.startDate}
-                                    onChange={(e) => handleStartDateChange(e, project.id)}
+                                    name="startDate"
+                                    value={editedProject.startDate}
+                                    onChange={handleInputChange}
                                   />
                                 </td>
                                 <td>
                                   <input
                                     type="date"
-                                    value={project.endDate}
-                                    onChange={(e) => handleEndDateChange(e, project.id)}
+                                    name="endDate"
+                                    value={editedProject.endDate}
+                                    onChange={handleInputChange}
                                   />
                                 </td>
                               </tr>
@@ -149,8 +175,7 @@ const ProjectList = () => {
                           onChange={handleEmailChange}
                           placeholder="Enter contributor email"
                         />
-                        <button onClick={handleEmailCheck}>Check</button>
-                        {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
+                        <button onClick={handleAddContributor}>Add</button>
                       </td>
                     </tr>
                   </tbody>
@@ -159,8 +184,8 @@ const ProjectList = () => {
 
               <hr></hr>
               <div>
-                <button>Save</button>
-                <button onClick={togglePopup}>Close</button>
+                <button onClick={handleSave}>Save</button>
+                <button onClick={() => setShowPopup(false)}>Close</button>
               </div>
             </div>
           </div>
@@ -178,8 +203,7 @@ const ProjectList = () => {
     const fetchProjects = async () => {
       const userProjectIds = await getUserProjectIds(user.uid);
       const projects = await getProjects(userProjectIds);
-      setProjects(projectListSortedByEndDate(projects).reverse());
-      setLoading(false);
+      setProjects(projectListSortedByEndDate(projects).reverse())
     };
 
     fetchProjects();
@@ -188,14 +212,13 @@ const ProjectList = () => {
   useEffect(() => {
     projects.forEach(project => {
       fetchContributors(project.id);
-    });
-  }, [projects]);
+    })}, [projects]);
 
   if (loading) {
     /**
      * @todo Ethan said: the return statement is too long and needs to be cleaned up
      */
-    return <div>Loading...</div>;
+    return <div><h1>Loading...</h1></div>;
   }
 
   /*
@@ -212,10 +235,13 @@ const ProjectList = () => {
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
       {projects.map(project => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
-        const contributorsOfProject = Object.keys(contributors).length > 0 
-          ? contributors[project.id].map((value) => value.name)
-          : []
-
+        try{
+          console.log(contributors[project.id]?.map((users) => {
+          return users.name
+        }))}
+        catch(e){
+          console.log(e)
+        }
         return (
           <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -223,7 +249,9 @@ const ProjectList = () => {
                 <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
                 <div style={{ textAlign: 'left', color: 'black' }}>
                   <div>{project.description}</div>
-                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i> </div>
+                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors[project.id]?.map((users) => {
+          return users.name
+        }).join(", ")}</i> </div>
                 </div>
               </div>
               <div>
