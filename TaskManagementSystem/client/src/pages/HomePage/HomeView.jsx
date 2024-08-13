@@ -4,7 +4,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { projectListSortedByEndDate } from '../../utils/projectSorting';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore'; // not sure if this is duplicated
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
@@ -15,7 +15,7 @@ const ProjectList = () => {
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
-  const [contributors, setContributors] = useState({});
+  const [contributors, setContributors] = useState({}); 
   const [editedProject, setEditedProject] = useState({
     name: '',
     description: '',
@@ -24,8 +24,8 @@ const ProjectList = () => {
   });
 
   const fetchContributors = async (projectId) => {
-    const theContributors = await getContributors(projectId).then(setLoading(false));
-    setContributors(value => ({...value, [projectId]:theContributors}));
+  const theContributors = await getContributors(projectId).then(setLoading(false));
+    setContributors(value => ({...value, [projectId]:theContributors})); 
   };
 
   const togglePopup = (project) => {
@@ -54,7 +54,7 @@ const ProjectList = () => {
         project.id === projectId ? { ...project, ...editedProject } : project
       )
     );
-    setShowPopup(false);
+    setShowPopup(false);  
   };
 
   const handleEmailChange = (e) => {
@@ -235,13 +235,6 @@ const ProjectList = () => {
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
       {projects.map(project => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
-        try{
-          console.log(contributors[project.id]?.map((users) => {
-          return users.name
-        }))}
-        catch(e){
-          console.log(e)
-        }
         return (
           <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -251,7 +244,7 @@ const ProjectList = () => {
                   <div>{project.description}</div>
                   <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors[project.id]?.map((users) => {
           return users.name
-        }).join(", ")}</i> </div>
+        }).join(", ")} </i> </div>
                 </div>
               </div>
               <div>
