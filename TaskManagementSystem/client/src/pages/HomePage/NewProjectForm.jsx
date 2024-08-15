@@ -4,11 +4,6 @@ import { createNewProjectDocument } from '../../firebase/firebase';
 import { Project } from '../../models/Project';
 
 const NewProjectForm = () => {
-  /**
-   * @todo : make sure that the name, description, start date and end date is filled
-   * @todo : make sure the start date is before the end date or vice versa
-   * @todo : maybe there will be an option to have a placeholder
-   */
   const [name, setName] = useState('New Project');
   const [description, setDescription] = useState('No Description Given');
   const [startDate, setStartDate] = useState(new Date());

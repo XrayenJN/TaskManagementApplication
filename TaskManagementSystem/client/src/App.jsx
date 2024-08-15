@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { Route, BrowserRouter as Router, Switch, withRouter } from 'react-router-dom';
 import TitleBar from './components/TitleBar';
 import { AuthProvider } from './contexts/AuthContext';
+import ListView from './pages/ListView';
+import NewProjectTaskForm from './pages/NewProjectTaskForm';
 import NewProjectForm from './pages/HomePage/NewProjectForm';
 import ProjectList from './pages/HomePage/HomeView';
 import Login from './pages/Login/Login';
@@ -20,6 +22,8 @@ function App() {
           <PrivateRoute path="/profile" component={Profile}/>
           <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
           <PrivateRoute path="/projects" component={ProjectList} />
+          <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
+          <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
         </AuthProvider>
       </Switch>
     </Router>

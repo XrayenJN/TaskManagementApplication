@@ -14,11 +14,11 @@ const ProjectList = () => {
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
-  const [contributors, setContributors] = useState([]);
+  const [contributors, setContributors] = useState({});
 
   const fetchContributors = async (projectId) => {
     const theContributors = await getContributors(projectId);
-    setContributors(theContributors);
+    setContributors(value => ({...value, [projectId]:theContributors}));
   };
 
   const togglePopup = (projectId) => {
@@ -120,6 +120,9 @@ const ProjectList = () => {
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
       {projects.map(project => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
+        const contributorsOfProject = Object.keys(contributors).length > 0 
+          ? contributors[project.id].map((value) => value.name)
+          : []
 
         return (
           <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
@@ -128,10 +131,11 @@ const ProjectList = () => {
                 <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
                 <div style={{ textAlign: 'left', color: 'black' }}>
                   <div>{project.description}</div>
-                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors.join(', ')}</i> </div>
+                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i> </div>
                 </div>
               </div>
               <div>
+                <Link to={`/project/${project.id}`}>
                 <div style={{ color: 'black', fontSize: '18px' }}>
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
@@ -139,6 +143,7 @@ const ProjectList = () => {
                 <div style={{ margin: '15px 0', textAlign: 'right' }}>
                   {showEditProjectButton(project)}
                 </div>
+                </Link>
               </div>
             </div>
           </div>
