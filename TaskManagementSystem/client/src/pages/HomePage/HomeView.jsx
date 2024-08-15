@@ -123,8 +123,6 @@ const ProjectList = () => {
         const contributorsOfProject = Object.keys(contributors).length > 0 
           ? contributors[project.id].map((value) => value.name)
           : []
-        // const test = contributors[projectId].map((value) => value.name)
-        // console.log(test)
 
         return (
           <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
