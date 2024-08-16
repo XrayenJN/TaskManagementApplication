@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
+import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { projectListSortedByEndDate } from '../../utils/projectSorting';
+import { doc, updateDoc } from 'firebase/firestore';
 import { doc, updateDoc } from 'firebase/firestore';
 
 const ProjectList = () => {
@@ -28,10 +29,33 @@ const ProjectList = () => {
     setContributors(value => ({...value, [projectId]:theContributors}));
   };
 
-  const togglePopup = (projectId) => {
+  const togglePopup = (project) => {
     setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
+    setProjectId(project.id);
+    setEditedProject({
+      name: project.name,
+      description: project.description,
+      startDate: project.startDate,
+      endDate: project.endDate,
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedProject({ ...editedProject, [name]: value });
+  };
+
+  const handleSave = async () => {
+    const projectRef = doc(db, 'projects', projectId);
+    await updateDoc(projectRef, editedProject);
+    setProjects((prevProjects) =>
+      prevProjects.map((project) =>
+        project.id === projectId ? { ...project, ...editedProject } : project
+      )
+    );
+    setShowPopup(false);
     setProjectId(project.id);
     setEditedProject({
       name: project.name,
@@ -63,6 +87,7 @@ const ProjectList = () => {
   };
 
   const handleAddContributor = async () => {
+  const handleAddContributor = async () => {
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
     if (result.length > 0) {
@@ -71,16 +96,20 @@ const ProjectList = () => {
       await updateProjectContributors(projectId, userId);
       await updateUserProject(userId, projectId);
       setEmail('');
+      await updateProjectContributors(projectId, userId);
+      await updateUserProject(userId, projectId);
+      setEmail('');
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
     }
   }
+  }
 
   const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
+        <button onClick={() => togglePopup(project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
         {showPopup && (
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
