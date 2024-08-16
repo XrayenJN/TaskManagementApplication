@@ -5,7 +5,7 @@ import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, 
 import { isExpired } from '../../utils/dateHandler';
 import { projectListSortedByEndDate } from '../../utils/projectSorting';
 import { doc, updateDoc } from 'firebase/firestore';
-import { doc, updateDoc } from 'firebase/firestore';
+
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
@@ -65,28 +65,15 @@ const ProjectList = () => {
     });
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedProject({ ...editedProject, [name]: value });
-  };
 
-  const handleSave = async () => {
-    const projectRef = doc(db, 'projects', projectId);
-    await updateDoc(projectRef, editedProject);
-    setProjects((prevProjects) =>
-      prevProjects.map((project) =>
-        project.id === projectId ? { ...project, ...editedProject } : project
-      )
-    );
-    setShowPopup(false);
-  };
+
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setIsEmailValid(false);
   };
 
-  const handleAddContributor = async () => {
+ 
   const handleAddContributor = async () => {
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
@@ -96,15 +83,12 @@ const ProjectList = () => {
       await updateProjectContributors(projectId, userId);
       await updateUserProject(userId, projectId);
       setEmail('');
-      await updateProjectContributors(projectId, userId);
-      await updateUserProject(userId, projectId);
-      setEmail('');
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
     }
   }
-  }
+  
 
   const showEditProjectButton = (project) => {
     return (
@@ -114,8 +98,8 @@ const ProjectList = () => {
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
               <h2>Edit Project Details</h2>
-              <hr></hr>
-              
+              <hr/>
+              {console.log(project.Id, project.name)}
               <div>
                 <table style={{ margin: 'auto' }}>
                   <tbody>
@@ -181,7 +165,9 @@ const ProjectList = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {contributors.map((contributor, index) => (
+                              {contributors[project.id]?.map((users) => {
+          return users.name
+        }).map((contributor, index) => (
                                 <tr key={index}>
                                   <td>{contributor}</td>
                                   <td>
@@ -282,7 +268,6 @@ const ProjectList = () => {
                 </div>
               </div>
               <div>
-                <Link to={`/project/${project.id}`}>
                 <div style={{ color: 'black', fontSize: '18px' }}>
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
@@ -290,7 +275,6 @@ const ProjectList = () => {
                 <div style={{ margin: '15px 0', textAlign: 'right' }}>
                   {showEditProjectButton(project)}
                 </div>
-                </Link>
               </div>
             </div>
           </div>
