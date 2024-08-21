@@ -65,9 +65,6 @@ const ProjectList = () => {
     });
   };
 
-
-
-
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setIsEmailValid(false);
@@ -99,7 +96,6 @@ const ProjectList = () => {
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
               <h2>Edit Project Details</h2>
               <hr/>
-              {console.log(project.Id, project.name)}
               <div>
                 <table style={{ margin: 'auto' }}>
                   <tbody>
@@ -111,7 +107,7 @@ const ProjectList = () => {
                             type="text"
                             value={email}
                             onChange={handleEmailChange}
-                            placeholder={project.name}
+                            placeholder={editedProject.name}
                           />
                         </div>
 
@@ -138,15 +134,15 @@ const ProjectList = () => {
                                 <td>
                                   <input
                                     type="date"
-                                    value={project.startDate}
-                                    onChange={(e) => handleStartDateChange(e, project.id)}
+                                    value={editedProject.startDate}
+                                    onChange={(e) => handleStartDateChange(e, editedProject.id)}
                                   />
                                 </td>
                                 <td>
                                   <input
                                     type="date"
-                                    value={project.endDate}
-                                    onChange={(e) => handleEndDateChange(e, project.id)}
+                                    value={editedProject.endDate}
+                                    onChange={(e) => handleEndDateChange(e, editedProject.id)}
                                   />
                                 </td>
                               </tr>
@@ -165,9 +161,9 @@ const ProjectList = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {contributors[project.id]?.map((users) => {
-          return users.name
-        }).map((contributor, index) => (
+                              {contributors[project.id].map((users) => {
+                                return users.name
+                              }).map((contributor, index) => (
                                 <tr key={index}>
                                   <td>{contributor}</td>
                                   <td>
