@@ -15,7 +15,7 @@ const ProjectList = () => {
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
-  const [contributors, setContributors] = useState([]);
+  const [contributors, setContributors] = useState({});
   const [editedProject, setEditedProject] = useState({
     name: '',
     description: '',
@@ -25,7 +25,7 @@ const ProjectList = () => {
 
   const fetchContributors = async (projectId) => {
     const theContributors = await getContributors(projectId);
-    setContributors(theContributors);
+    setContributors(value => ({...value, [projectId]:theContributors}));
   };
 
   const togglePopup = (project) => {
@@ -39,6 +39,7 @@ const ProjectList = () => {
       startDate: project.startDate,
       endDate: project.endDate,
     });
+    fetchContributors(project.id)
   };
 
   const handleInputChange = (e) => {
@@ -78,6 +79,9 @@ const ProjectList = () => {
   }
 
   const showEditProjectButton = (project) => {
+    console.log(contributors)
+    console.log(project.id, contributors[project.id])
+
     return (
       <div>
         <button onClick={() => togglePopup(project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
@@ -154,9 +158,9 @@ const ProjectList = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {contributors.map((contributor, index) => (
+                              {contributors[project.id]?.map((contributor, index) => (
                                 <tr key={index}>
-                                  <td>{contributor}</td>
+                                  <td>{contributor.name}</td>
                                   <td>
                                     <button style={{ backgroundColor: '#BD7676', padding: '4px'}}>x</button>
                                   </td>
@@ -237,6 +241,9 @@ const ProjectList = () => {
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
       {projects.map(project => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
+        const contributorsOfProject = Object.keys(contributors).length > 0 
+          ? contributors[project.id].map((value) => value.name)
+          : []
 
         return (
           <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
@@ -245,13 +252,15 @@ const ProjectList = () => {
                 <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
                 <div style={{ textAlign: 'left', color: 'black' }}>
                   <div>{project.description}</div>
-                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributors.join(', ')}</i> </div>
+                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i> </div>
                 </div>
               </div>
               <div>
                 <div style={{ color: 'black', fontSize: '18px' }}>
+                <Link to={`/project/${project.id}`}>
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
+                </Link>
                 </div>
                 <div style={{ margin: '15px 0', textAlign: 'right' }}>
                   {showEditProjectButton(project)}
