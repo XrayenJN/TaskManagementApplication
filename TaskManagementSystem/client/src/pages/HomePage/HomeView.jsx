@@ -79,9 +79,6 @@ const ProjectList = () => {
   }
 
   const showEditProjectButton = (project) => {
-    console.log(contributors)
-    console.log(project.id, contributors[project.id])
-
     return (
       <div>
         <button onClick={() => togglePopup(project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
@@ -89,7 +86,7 @@ const ProjectList = () => {
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
               <h2>Edit Project Details</h2>
-              <hr></hr>
+              <hr />
               
               <div>
                 <table style={{ margin: 'auto' }}>
@@ -186,7 +183,7 @@ const ProjectList = () => {
                 </table>
               </div>
 
-              <hr></hr>
+              <hr />
               <div>
                 <button onClick={handleSave}>Save</button>
                 <button onClick={() => setShowPopup(false)}>Close</button>
