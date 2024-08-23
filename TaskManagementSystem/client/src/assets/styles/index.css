@@ -111,8 +111,8 @@ button:focus-visible {
 
 input{
   border:none;
-  background-color: #1BA098;
-  color: white;
+  background-color: white;
+  color: black;
   outline:none;
   display:inline-block;
   height:34px;
@@ -129,7 +129,8 @@ input{
 textarea{
   border:none;
   outline:none;
-  background-color: #1BA098;
+  background-color: white;
+  color: black;
   display:inline-block;
   height:150px;
   vertical-align:middle;
@@ -143,12 +144,12 @@ textarea{
 }
 
 input::placeholder{
-  color: white;
+  color: black;
 }
 
 textarea::placeholder{
   padding-top: 3%;
-  color: white;
+  color: black;
 }
 textarea:invalid {
   padding: 2%;

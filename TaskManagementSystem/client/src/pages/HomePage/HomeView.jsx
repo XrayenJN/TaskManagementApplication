@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
+import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { projectListSortedByEndDate } from '../../utils/projectSorting';
+import { doc, updateDoc } from 'firebase/firestore';
 
 const ProjectList = () => {
   const { user } = useContext(AuthContext);
@@ -15,17 +16,46 @@ const ProjectList = () => {
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [contributors, setContributors] = useState({});
+  const [editedProject, setEditedProject] = useState({
+    name: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+  });
 
   const fetchContributors = async (projectId) => {
     const theContributors = await getContributors(projectId);
     setContributors(value => ({...value, [projectId]:theContributors}));
   };
 
-  const togglePopup = (projectId) => {
+  const togglePopup = (project) => {
     setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
-    setProjectId(projectId);
+    setProjectId(project.id);
+    setEditedProject({
+      name: project.name,
+      description: project.description,
+      startDate: project.startDate,
+      endDate: project.endDate,
+    });
+    fetchContributors(project.id)
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedProject({ ...editedProject, [name]: value });
+  };
+
+  const handleSave = async () => {
+    const projectRef = doc(db, 'projects', projectId);
+    await updateDoc(projectRef, editedProject);
+    setProjects((prevProjects) =>
+      prevProjects.map((project) =>
+        project.id === projectId ? { ...project, ...editedProject } : project
+      )
+    );
+    setShowPopup(false);
   };
 
   const handleEmailChange = (e) => {
@@ -33,43 +63,131 @@ const ProjectList = () => {
     setIsEmailValid(false);
   };
 
-  const handleEmailSubmit = async () => {
-    alert(`Email submitted: ${email}`);
-    await updateProjectContributors(projectId, userId);
-    await updateUserProject(userId, projectId);
-    setEmail('');
-    setShowPopup(false);
-  };
-
-  const handleEmailCheck = async () => {
+  const handleAddContributor = async () => {
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
     if (result.length > 0) {
       setUserId(result[0].userId);
       setIsEmailValid(true);
+      await updateProjectContributors(projectId, userId);
+      await updateUserProject(userId, projectId);
+      setEmail('');
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
     }
-  };
+  }
 
   const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={() => togglePopup(project.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
+        <button onClick={() => togglePopup(project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
         {showPopup && (
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
               <h2>Edit Project Details</h2>
-              <input
-                type="email"
-                value={email}
-                onChange={handleEmailChange}
-                placeholder="Enter contributor email"
-              />
-              <button onClick={handleEmailCheck}>Check</button>
-              {isEmailValid && <button onClick={handleEmailSubmit}>Submit</button>}
-              <div><button onClick={togglePopup}>Close</button></div>
+              <hr />
+              
+              <div>
+                <table style={{ margin: 'auto' }}>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div>
+                          <h3><u>Project Name</u></h3>
+                          <input
+                            type="text"
+                            name="name"
+                            value={editedProject.name}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+
+                        <div>
+                          <h3><u>Project Description</u></h3>
+                          <textarea
+                            name="description"
+                            style={{ color: 'black'}}
+                            value={editedProject.description}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+
+                        <div>
+                          <table style={{ margin: 'auto' }}>
+                            <thead>
+                              <tr>
+                                <th><h3><u>Start Date</u></h3></th>
+                                <th><h3><u>End Date</u></h3></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <input
+                                    type="date"
+                                    name="startDate"
+                                    value={editedProject.startDate}
+                                    onChange={handleInputChange}
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    type="date"
+                                    name="endDate"
+                                    value={editedProject.endDate}
+                                    onChange={handleInputChange}
+                                  />
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <h3><u>Contributors</u></h3>
+                          <table style={{ margin: 'auto' }}>
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Remove</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {contributors[project.id]?.map((contributor, index) => (
+                                <tr key={index}>
+                                  <td>{contributor.name}</td>
+                                  <td>
+                                    <button style={{ backgroundColor: '#BD7676', padding: '4px'}}>x</button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        
+                        <div>
+                          <h4>Add Contributors</h4>
+                        </div>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={handleEmailChange}
+                          placeholder="Enter contributor email"
+                        />
+                        <button onClick={handleAddContributor}>Add</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <hr />
+              <div>
+                <button onClick={handleSave}>Save</button>
+                <button onClick={() => setShowPopup(false)}>Close</button>
+              </div>
             </div>
           </div>
         )}
@@ -135,15 +253,15 @@ const ProjectList = () => {
                 </div>
               </div>
               <div>
-                <Link to={`/project/${project.id}`}>
                 <div style={{ color: 'black', fontSize: '18px' }}>
+                <Link to={`/project/${project.id}`}>
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
+                </Link>
                 </div>
                 <div style={{ margin: '15px 0', textAlign: 'right' }}>
                   {showEditProjectButton(project)}
                 </div>
-                </Link>
               </div>
             </div>
           </div>
