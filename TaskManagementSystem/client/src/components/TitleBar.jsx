@@ -22,8 +22,9 @@ const TitleBar = ({ toggleNavbar }) => {
   };
 
   return (
-    <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '10px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 1 }}>
-      <h1 style={{ margin: 0, textAlign: 'center', flex: 1 }}>Task Management System</h1>
+    <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 1 }}>
+      <div style={{ flex: 1 }}></div>
+      <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>Task Management System</h1>
       {user && (
         <div 
           style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}
@@ -39,7 +40,7 @@ const TitleBar = ({ toggleNavbar }) => {
           {isDropdownOpen && (
             <div style={{
               position: 'absolute',
-              top: '53px',
+              top: '50px',
               right: '10px',
               backgroundColor: '#051622',
               borderRadius: '5px',
