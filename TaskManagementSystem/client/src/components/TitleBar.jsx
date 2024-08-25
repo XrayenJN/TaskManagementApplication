@@ -61,7 +61,7 @@ const TitleBar = ({ toggleNavbar }) => {
                 </li>
                 <hr></hr>
                 <li
-                  style={{ padding: '5px 10px', cursor: 'pointer' }}
+                  style={{ padding: '0px 10px', cursor: 'pointer' }}
                   onClick={handleLogout}
                 >
                   Log Out
