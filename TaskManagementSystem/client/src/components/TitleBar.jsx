@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 const TitleBar = ({ toggleNavbar }) => {
-  const { user } = useContext(AuthContext);
+  const { user, oktaAuth, auth } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleDropdownToggle = () => {
@@ -13,6 +14,11 @@ const TitleBar = ({ toggleNavbar }) => {
 
   const handleMouseLeave = () => {
     setIsDropdownOpen(false);
+  };
+
+  const handleLogout = async() => {
+    await oktaAuth.signOut();
+    await auth.signOut();;
   };
 
   return (
@@ -43,14 +49,22 @@ const TitleBar = ({ toggleNavbar }) => {
             }}>
               <ul style={{
                 listStyle: 'none',
-                margin: 0,
                 padding: '20px',
                 color: '#fff',
               }}>
-                <li style={{ padding: '5px 10px', cursor: 'pointer' }}>Profile</li>
-                <li style={{ padding: '5px 10px', cursor: 'pointer' }}>Settings</li>
+                <li style={{ padding: '5px 10px' }}>
+                  <Link to="/profile" style={{ color: '#fff', textDecoration: 'none' }}>Profile</Link>
+                </li>
+                <li style={{ padding: '5px 10px' }}>
+                  <Link to="/settings" style={{ color: '#fff', textDecoration: 'none' }}>Settings</Link>
+                </li>
                 <hr></hr>
-                <li style={{ padding: '5px 10px', cursor: 'pointer' }}>Log Out</li>
+                <li
+                  style={{ padding: '5px 10px', cursor: 'pointer' }}
+                  onClick={handleLogout}
+                >
+                  Log Out
+                </li>
               </ul>
             </div>
           )}
