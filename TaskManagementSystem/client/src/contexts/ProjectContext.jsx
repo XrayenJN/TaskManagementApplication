@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { getProjects, getUserProjectIds } from "../firebase/firebase";
+import { getProjects, getUserProjectIds, getContributors } from "../firebase/firebase";
 import { AuthContext } from './AuthContext';
 
 const ProjectContext = createContext();
@@ -7,7 +7,8 @@ const ProjectContext = createContext();
 const ProjectProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [projects, setProjects] = useState({});
-  const [tasks, setTasks] = useState({});
+  const [chosenProjectId, setChosenProjectId] = useState({});
+  const [contributors, setContributors] = useState({});
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -21,9 +22,18 @@ const ProjectProvider = ({ children }) => {
     fetchProjects();
   }, [user])
 
+  useEffect(() => {
+    const fetchContributors = async (projectId) => {
+      const theContributors = await getContributors(projectId);
+      setContributors(value => ({...value, [projectId]:theContributors}));
+    };
+
+    Object.entries(projects).map(([id, _]) => fetchContributors(id))
+  }, [projects])
+
   if (!user) return null;
   return (
-    <ProjectContext.Provider value={{ projects, tasks, setProjects, setTasks }}>
+    <ProjectContext.Provider value={{ projects, chosenProjectId, contributors, setChosenProjectId }}>
       {children}
     </ProjectContext.Provider>
   )

@@ -7,9 +7,10 @@ import { ProjectContext } from '../../contexts/ProjectContext';
 import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';
 
 const ProjectList = () => {
-  const { projects } = useContext(ProjectContext);
+  const { projects, contributors2 } = useContext(ProjectContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
@@ -202,14 +203,15 @@ const ProjectList = () => {
     Object.entries(projects).map(([projectId, _]) => {
       fetchContributors(projectId)
     })
+    setLoading(false)
   }, [projects]);
 
-  // if (loading) {
-  //   /**
-  //    * @todo Ethan said: the return statement is too long and needs to be cleaned up
-  //    */
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    /**
+     * @todo Ethan said: the return statement is too long and needs to be cleaned up
+     */
+    return <div>Loading...</div>;
+  }
 
   /*
   Todo make this smaller with the use of a sorting function
@@ -227,7 +229,10 @@ const ProjectList = () => {
       .map(([id, project]) => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
         const contributorsOfProject = Object.keys(contributors).length > 0 
-          ? contributors[id].map((value) => value.name)
+          ? (contributors[id]
+              ? contributors[id].map((value) => value.name)
+              : []
+            )
           : []
 
         return (
