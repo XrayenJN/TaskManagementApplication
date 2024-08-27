@@ -7,14 +7,14 @@ import { ProjectContext } from '../../contexts/ProjectContext';
 import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';
 
 const ProjectList = () => {
-  const { projects, contributors2 } = useContext(ProjectContext);
+  const { projects, contributors } = useContext(ProjectContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
-  const [contributors, setContributors] = useState({});
+  // const [contributors, setContributors] = useState({});
   const [editedProject, setEditedProject] = useState({
     name: '',
     description: '',
