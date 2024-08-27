@@ -239,12 +239,14 @@ export const getTaskDocuments = async(projectId) => {
   if (snapshot.exists()) {
     const tasks = []
     const c = snapshot.data().tasks;
-    await Promise.all(c.map(async (taskRef) => {
-      const taskSnap = await getDoc(taskRef)
-      const taskData = taskSnap.data();
-      tasks.push(taskData);
-    }));
-    return tasks;
+    if (c) {
+      await Promise.all(c.map(async (taskRef) => {
+        const taskSnap = await getDoc(taskRef)
+        const taskData = taskSnap.data();
+        tasks.push({id:taskSnap.id, ...taskData});
+      }));
+      return tasks;
+    }
   } 
   return []; 
 }
