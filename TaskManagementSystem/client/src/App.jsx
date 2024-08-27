@@ -11,6 +11,7 @@ import Login from './pages/Login/Login';
 import Profile from './pages/Debugging/Profile';
 import PrivateRoute from './routes/PrivateRoute';
 import Settings from './pages/Settings';
+import { ProjectProvider } from './contexts/ProjectContext';
 
 function App() {
   return (
@@ -23,9 +24,11 @@ function App() {
           <PrivateRoute path="/profile" component={Profile}/>
           <Route path="/settings" component={Settings} />
           <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
-          <PrivateRoute path="/projects" component={ProjectList} />
-          <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
-          <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
+          <ProjectProvider>
+            <PrivateRoute path="/projects" component={ProjectList} />
+            <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
+            <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
+          </ProjectProvider>
         </AuthProvider>
       </Switch>
     </Router>
