@@ -7,7 +7,7 @@ const ProjectContext = createContext();
 const ProjectProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [projects, setProjects] = useState({});
-  const [chosenProjectId, setChosenProjectId] = useState({});
+  const [chosenProjectId, setChosenProjectId] = useState("");
   const [contributors, setContributors] = useState({});
 
   useEffect(() => {
