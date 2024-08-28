@@ -45,8 +45,8 @@ const Profile = () => {
             <p><strong>Email:</strong> {user.email}</p>
             <br></br>
             <p><strong>Account Provider:</strong> Google</p>
-            <p><strong>Account Created:</strong> {user.metadata.creationTime}</p>
-            <p><strong>Last Sign-In:</strong> {user.metadata.lastSignInTime}</p>
+            <p><strong>Account Created:</strong> {new Date(user.metadata.creationTime).toLocaleString()}</p>
+            <p><strong>Last Sign-In:</strong> {new Date(user.metadata.lastSignInTime).toLocaleString()}</p>
           </>
         )}
 
