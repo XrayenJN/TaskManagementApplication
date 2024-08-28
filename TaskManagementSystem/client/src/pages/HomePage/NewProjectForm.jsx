@@ -22,45 +22,51 @@ const NewProjectForm = () => {
   };
 
   return (
-    <div>
-      <h1>Create New Project</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <h2>Project Name</h2>
-          <input
-            type="text"
-            placeholder='Project name'
-            onChange={(e) => setName(e.target.value)}
-            required
-          />  
-        </div>
-        <div style={{paddingTop:'10px'}}>
-          <textarea
-            placeholder='Description'
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <h2>Start Date:</h2>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <h2>End Date:</h2>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Create Project</button>
-      </form>
+    <div style={{ backgroundColor: '#F4F1E7' }}>
+      <div style={{ backgroundColor: '#DEB992', width: '50%', margin: 'auto'}}>
+        <h1 style={{ marginTop: '100px' }}>Create New Project</h1>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <h2>Project Name</h2>
+            <input
+              type="text"
+              placeholder='Project name'
+              onChange={(e) => setName(e.target.value)}
+              
+              required
+            />  
+          </div>
+          <div style={{paddingTop:'10px'}}>
+            <textarea
+              placeholder='Description'
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <h2>Start Date:</h2>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <h2>End Date:</h2>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <button type="submit" style={{ backgroundColor: '#1BA098', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Create Project</button>
+          <button type="submit" style={{ backgroundColor: '#A5A58D', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Create Project</button>
+          </div>
+        </form>
+      </div> 
     </div>
   );
 };
