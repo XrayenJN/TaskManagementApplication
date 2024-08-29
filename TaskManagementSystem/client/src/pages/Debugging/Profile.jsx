@@ -43,7 +43,7 @@ const Profile = () => {
             />
             <p><strong>Name:</strong> {user.displayName}</p>
             <p><strong>Email:</strong> {user.email}</p>
-            <br></br>
+            <br/>
             <p><strong>Account Provider:</strong> Google</p>
             <p><strong>Account Created:</strong> {new Date(user.metadata.creationTime).toLocaleString()}</p>
             <p><strong>Last Sign-In:</strong> {new Date(user.metadata.lastSignInTime).toLocaleString()}</p>
@@ -64,7 +64,7 @@ const Profile = () => {
   return (
     <div>
       {body}
-      <br></br>
+      <br/>
       <button onClick={goBack}>Back</button>
       <button onClick={handleLogout}>Log Out</button>
     </div>
