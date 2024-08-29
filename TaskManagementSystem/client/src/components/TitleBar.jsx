@@ -35,7 +35,7 @@ const TitleBar = ({ toggleNavbar }) => {
             icon={faUser}
             style={{ fontSize: '30px', marginLeft: '10px' }}
           />
-          <span style={{ marginLeft: '10px' }}>{user.displayName}</span>
+          <span style={{ marginLeft: '10px' }}>{user.displayName || user.name}</span>
 
           {isDropdownOpen && (
             <div style={{
