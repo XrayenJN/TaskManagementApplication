@@ -1,1 +1,12 @@
-//Bad practice to create this file before we need it btw but im doing it anyway to give us a structure
+import React from 'react';
+
+const KanbanView = () => {
+  return (
+    <div style={{ padding: '20px' }}>
+      <h1>Kanban Board</h1>
+        <p>Coming soon...</p>
+    </div>
+  );
+};
+
+export default KanbanView;

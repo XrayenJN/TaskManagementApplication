@@ -4,6 +4,7 @@ import { Route, BrowserRouter as Router, Switch, withRouter } from 'react-router
 import TitleBar from './components/TitleBar';
 import { AuthProvider } from './contexts/AuthContext';
 import ListView from './pages/ListView';
+import KanbanView from './pages/HomePage/TaskViews/KanBanBoardView/KanBanBoard';
 import NewProjectTaskForm from './pages/NewProjectTaskForm';
 import NewProjectForm from './pages/HomePage/NewProjectForm';
 import ProjectList from './pages/HomePage/HomeView';
@@ -32,6 +33,7 @@ function App() {
               <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
             </TaskProvider>
           </ProjectProvider>
+          <Route path="/project/:projectId/kanban" component={KanbanView} />
         </AuthProvider>
       </Switch>
     </Router>
