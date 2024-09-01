@@ -1,10 +1,12 @@
 import React from 'react';
 
 const KanbanView = () => {
+  const currentDate = new Date();
+
   const tasks = {
     todo: [
       { name: 'Task 1', endDate: '2024-09-05', description: 'Description of Task 1' },
-      { name: 'Task 2', endDate: '2024-09-10', description: 'Description of Task 2' }
+      { name: 'Task 2', endDate: '2024-08-30', description: 'Description of Task 2' }
     ],
     inProgress: [
       { name: 'Task 3', endDate: '2024-09-12', description: 'Description of Task 3' }
@@ -15,20 +17,26 @@ const KanbanView = () => {
   };
 
   const renderTasks = (tasks) => {
-    return tasks.map((task, index) => (
-      <div className="task-box" key={index}>
-        <strong>{task.name}</strong>
-        <em>{task.endDate}</em>
-        <p>{task.description}</p>
-      </div>
-    ));
+    return tasks.map((task, index) => {
+      const taskEndDate = new Date(task.endDate);
+      const isPastDue = taskEndDate < currentDate;
+      const taskBoxClass = isPastDue ? 'task-box past-due' : 'task-box';
+
+      return (
+        <div className={taskBoxClass} key={index}>
+          <strong>{task.name}</strong>
+          <em>{task.endDate}</em>
+          <p>{task.description}</p>
+        </div>
+      );
+    });
   };
 
   return (
     <div className="kanban-view">
       <br/>
       <h1>Kanban View</h1>
-      <hr/>
+      <hr/><br/>
       <div className="kanban-columns">
         <div className="kanban-column">
           <h2>To Do</h2>
