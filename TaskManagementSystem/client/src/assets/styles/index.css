@@ -167,8 +167,34 @@ textarea:valid {
   box-sizing: border-box;
 }
 
+.kanban-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.kanban-button {
+  background-color: #DEB992;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #000;
+  font-size: 16px;
+}
+
+.kanban-button:hover {
+  background-color: #c7a47a;
+}
+
+.kanban-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
 .kanban-view h1 {
   margin: 0;
+  line-height: 1;
 }
 
 .kanban-view hr {
