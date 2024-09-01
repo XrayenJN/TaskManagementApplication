@@ -34,7 +34,14 @@ const KanbanView = () => {
 
   return (
     <div className="kanban-view">
+      <div className="kanban-header">
       <h1 style={{ textAlign: 'left', padding: '40px 0 0 0' }}>Kanban View</h1>
+        <div className="kanban-buttons">
+          <button className="kanban-button">Filter</button>
+          <button className="kanban-button">Sort by</button>
+          <button className="kanban-button">Add task</button>
+        </div>
+      </div>
       <hr/><br/>
       <div className="kanban-columns">
         <div className="kanban-column">
