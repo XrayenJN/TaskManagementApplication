@@ -25,7 +25,7 @@ const KanbanView = () => {
       return (
         <div className={taskBoxClass} key={index}>
           <strong>{task.name}</strong>
-          <em>{task.endDate}</em>
+          <em>Due date: {task.endDate}</em>
           <p>{task.description}</p>
         </div>
       );
@@ -34,8 +34,7 @@ const KanbanView = () => {
 
   return (
     <div className="kanban-view">
-      <br/>
-      <h1>Kanban View</h1>
+      <h1 style={{ textAlign: 'left', padding: '40px 0 0 0' }}>Kanban View</h1>
       <hr/><br/>
       <div className="kanban-columns">
         <div className="kanban-column">
