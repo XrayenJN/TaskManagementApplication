@@ -160,7 +160,11 @@ textarea:valid {
 }
 
 .kanban-view {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .kanban-view h1 {
@@ -176,21 +180,25 @@ textarea:valid {
 
 .kanban-columns {
   display: flex;
-  gap: 20px;
+  gap: 30px;
   justify-content: space-between;
   width: 100%;
+  flex-grow: 1;
 }
 
 .kanban-column {
   background-color: #DEB992;
   padding: 10px;
   flex: 1;
-  max-height: 400px;
   overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .kanban-column h2 {
   text-align: center;
+  margin: 0 0 10px 0;
 }
 
 .task-box {
