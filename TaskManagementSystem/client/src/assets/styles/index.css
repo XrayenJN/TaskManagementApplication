@@ -162,7 +162,7 @@ textarea:valid {
 .kanban-view {
   display: flex;
   flex-direction: column;
-  height: 90vh;
+  height: 93vh;
   padding: 20px;
   box-sizing: border-box;
 }
