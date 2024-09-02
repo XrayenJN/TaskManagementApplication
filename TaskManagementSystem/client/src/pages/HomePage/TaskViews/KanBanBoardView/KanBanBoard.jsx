@@ -4,6 +4,9 @@ const KanbanView = () => {
   const currentDate = new Date();
 
   const tasks = {
+    backlog: [
+      { name: 'Task 5', endDate: '2024-09-15', description: 'Description of Task 5' },
+    ],
     todo: [
       { name: 'Task 1', endDate: '2024-09-05', description: 'Description of Task 1' },
       { name: 'Task 2', endDate: '2024-08-30', description: 'Description of Task 2' }
@@ -44,6 +47,10 @@ const KanbanView = () => {
       </div>
       <hr/><br/>
       <div className="kanban-columns">
+        <div className="kanban-column">
+          <h2>Backlog</h2>
+          {renderTasks(tasks.backlog)}
+        </div>
         <div className="kanban-column">
           <h2>To Do</h2>
           {renderTasks(tasks.todo)}
