@@ -61,6 +61,10 @@ const KanbanView = () => {
     }
   ];
 
+  const handleTaskClick = (task) => {
+    console.log('Task clicked:', task);
+  };
+
   const renderTasks = (tasks) => {
     return tasks.map((task, index) => {
       const taskEndDate = new Date(task.endDate);
@@ -68,11 +72,15 @@ const KanbanView = () => {
       const taskBoxClass = isPastDue ? 'task-box past-due' : 'task-box';
 
       return (
-        <div className={taskBoxClass} key={index}>
+        <button
+          key={index}
+          className={taskBoxClass}
+          onClick={() => handleTaskClick(task)}
+        >
           <strong>{task.name}</strong>
           <em>Due date: {task.endDate}</em>
           <p>{task.description}</p>
-        </div>
+        </button>
       );
     });
   };
