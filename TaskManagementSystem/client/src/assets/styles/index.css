@@ -233,6 +233,8 @@ textarea:valid {
   margin-bottom: 10px;
   border-radius: 5px;
   text-align: left;
+  color: black;
+  display: block;
 }
 
 .task-box.past-due {
