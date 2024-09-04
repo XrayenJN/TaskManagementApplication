@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { createNewProjectDocument } from '../../firebase/firebase';
 import { Project } from '../../models/Project';
@@ -9,6 +9,18 @@ const NewProjectForm = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const history = useHistory();
+
+  useEffect(() => {
+    // Disable scrolling
+    document.body.style.overflow = 'hidden';
+    document.body.style.margin = '0'; // Remove any default margin
+
+    // Re-enable scrolling when the component is unmounted
+    return () => {
+      document.body.style.overflow = 'auto';
+      document.body.style.margin = ''; // Restore the margin
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,9 +33,13 @@ const NewProjectForm = () => {
     history.replace('/projects');
   };
 
+  const handleCancel = () => {
+    history.goBack();
+  } 
+
   return (
-    <div style={{ backgroundColor: '#F4F1E7' }}>
-      <div style={{ backgroundColor: '#DEB992', width: '50%', margin: 'auto'}}>
+    <div style={{ backgroundColor: '#F4F1E7', minHeight: '100vh', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0', padding: '0', overflowX: 'hidden'}}>
+      <div style={{ backgroundColor: '#DEB992', width: '50%', boxSizing: 'border-box'}}>
         <h1 style={{ marginTop: '100px' }}>Create New Project</h1>
         <form onSubmit={handleSubmit}>
           <div>
@@ -63,7 +79,7 @@ const NewProjectForm = () => {
           </div>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <button type="submit" style={{ backgroundColor: '#1BA098', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Create Project</button>
-          <button type="submit" style={{ backgroundColor: '#A5A58D', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Create Project</button>
+          <button type="button" onClick = {handleCancel} style={{ backgroundColor: '#A5A58D', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Cancel</button>
           </div>
         </form>
       </div> 
