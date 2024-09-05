@@ -1,32 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
-import { db, checkUsersExists, getContributors, getProjects, getUserProjectIds, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
+import { db, checkUsersExists, getContributors, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
-import { projectListSortedByEndDate } from '../../utils/projectSorting';
 import { doc, updateDoc } from 'firebase/firestore';
+import { ProjectContext } from '../../contexts/ProjectContext';
+import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';
 
 const ProjectList = () => {
-  const { user } = useContext(AuthContext);
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { projects, contributors, setChosenProjectId } = useContext(ProjectContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
-  const [contributors, setContributors] = useState({});
   const [editedProject, setEditedProject] = useState({
     name: '',
     description: '',
     startDate: '',
     endDate: '',
   });
-
-  const fetchContributors = async (projectId) => {
-    const theContributors = await getContributors(projectId);
-    setContributors(value => ({...value, [projectId]:theContributors}));
-  };
 
   const togglePopup = (project) => {
     setShowPopup(!showPopup);
@@ -200,29 +192,12 @@ const ProjectList = () => {
   useEffect(() => {
   }, [userId]);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const userProjectIds = await getUserProjectIds(user.uid);
-      const projects = await getProjects(userProjectIds);
-      setProjects(projectListSortedByEndDate(projects).reverse());
-      setLoading(false);
-    };
-
-    fetchProjects();
-  }, []);
-
-  useEffect(() => {
-    projects.forEach(project => {
-      fetchContributors(project.id);
-    });
-  }, [projects]);
-
-  if (loading) {
-    /**
-     * @todo Ethan said: the return statement is too long and needs to be cleaned up
-     */
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   /**
+  //    * @todo Ethan said: the return statement is too long and needs to be cleaned up
+  //    */
+  //   return <div>Loading...</div>;
+  // }
 
   /*
   Todo make this smaller with the use of a sorting function
@@ -236,10 +211,14 @@ const ProjectList = () => {
         </Link>
       </div>
       <hr style={{ margin: '20px 0', border: '1px solid #ccc' }} />
-      {projects.map(project => {
+      {Object.entries(reverseDictionary(projectListSortedByEndDate(projects)))
+      .map(([id, project]) => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
         const contributorsOfProject = Object.keys(contributors).length > 0 
-          ? contributors[project.id].map((value) => value.name)
+          ? (contributors[id]
+              ? contributors[id].map((value) => value.name)
+              : []
+            )
           : []
 
         return (
@@ -254,7 +233,7 @@ const ProjectList = () => {
               </div>
               <div>
                 <div style={{ color: 'black', fontSize: '18px' }}>
-                <Link to={`/project/${project.id}`}>
+                <Link to={`/project/${id}`} onClick={() => setChosenProjectId(id)}>
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
                 </Link>
