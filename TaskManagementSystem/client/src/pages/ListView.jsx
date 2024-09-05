@@ -1,21 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
-import { AuthContext } from '../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
-import { getTaskDocuments } from '../firebase/firebase';
 import { TaskContext } from '../contexts/TaskContext';
 
 const ListView = () => {
   const { projectId } = useParams();
   const { projectTasks } = useContext(TaskContext)
-  // const [projectTasks, setProjectTasks] = useState([]);
-
-  // const fetchTasks = async () => {
-  //   const tasks = await getTaskDocuments(projectId);
-  //   setProjectTasks(tasks);
-  // }
-
-  // fetchTasks();
 
   const tasksOutput = () => {
     if (projectTasks && projectTasks[projectId]) {

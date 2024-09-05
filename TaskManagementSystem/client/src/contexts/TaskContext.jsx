@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { getProjects, getUserProjectIds, getTaskDocuments } from "../firebase/firebase";
-import { AuthContext } from './AuthContext';
+import { getTaskDocuments } from "../firebase/firebase";
 import { ProjectContext } from './ProjectContext';
 
 const TaskContext = createContext();
