@@ -57,21 +57,18 @@ const NewProjectTaskForm = () => {
           <textarea
             placeholder='Description'
             onChange={(e) => setDescription(e.target.value)}
-            required
           />
         </div>
         <div style={{paddingTop:'10px'}}>
           <textarea
             placeholder='Comments'
             onChange={(e) => setComments(e.target.value)}
-            required
           />
         </div>
         <div style={{paddingTop:'10px'}}>
           <textarea
             placeholder='Links'
             onChange={(e) => setLinks(e.target.value)}
-            required
           />
         </div>
         <div style={{ paddingTop: '10px' }}>
@@ -114,7 +111,6 @@ const NewProjectTaskForm = () => {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            required
           />
         </div>
         <div>
@@ -123,7 +119,6 @@ const NewProjectTaskForm = () => {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            required
           />
         </div>
         <button type="submit">Create Project Task</button>
