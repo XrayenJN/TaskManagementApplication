@@ -7,25 +7,18 @@ import { ProjectContext } from '../../contexts/ProjectContext';
 import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';
 
 const ProjectList = () => {
-  const { projects, contributors } = useContext(ProjectContext);
+  const { projects, contributors, setChosenProjectId } = useContext(ProjectContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
-  // const [contributors, setContributors] = useState({});
   const [editedProject, setEditedProject] = useState({
     name: '',
     description: '',
     startDate: '',
     endDate: '',
   });
-
-  const fetchContributors = async (projectId) => {
-    const theContributors = await getContributors(projectId);
-    setContributors(value => ({...value, [projectId]:theContributors}));
-  };
 
   const togglePopup = (project) => {
     setShowPopup(!showPopup);
@@ -199,19 +192,12 @@ const ProjectList = () => {
   useEffect(() => {
   }, [userId]);
 
-  useEffect(() => {
-    Object.entries(projects).map(([projectId, _]) => {
-      fetchContributors(projectId)
-    })
-    setLoading(false)
-  }, [projects]);
-
-  if (loading) {
-    /**
-     * @todo Ethan said: the return statement is too long and needs to be cleaned up
-     */
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   /**
+  //    * @todo Ethan said: the return statement is too long and needs to be cleaned up
+  //    */
+  //   return <div>Loading...</div>;
+  // }
 
   /*
   Todo make this smaller with the use of a sorting function
@@ -247,7 +233,7 @@ const ProjectList = () => {
               </div>
               <div>
                 <div style={{ color: 'black', fontSize: '18px' }}>
-                <Link to={`/project/${project.id}`}>
+                <Link to={`/project/${id}`} onClick={() => setChosenProjectId(id)}>
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
                 </Link>

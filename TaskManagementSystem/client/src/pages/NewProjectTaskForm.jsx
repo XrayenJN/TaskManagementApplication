@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { createNewProjectTaskDocument, getContributors } from '../firebase/firebase';
 import { ProjectTask } from '../models/ProjectTask';
+import { TaskContext } from '../contexts/TaskContext';
 
 const NewProjectTaskForm = () => {
   /**
@@ -21,6 +22,7 @@ const NewProjectTaskForm = () => {
   const [contributors, setContributors] = useState([]);
   const history = useHistory();
   const { projectId } = useParams();
+  const { refreshTasks } = useContext(TaskContext);
 
   //Find all the contributors of the projects
   const retrieveContributors = async () => {
@@ -33,7 +35,8 @@ const NewProjectTaskForm = () => {
     const newProjectTask = new ProjectTask( name, description, startDate, endDate, comments, links, isMilestone, status, owners );
 
     await createNewProjectTaskDocument(newProjectTask, projectId);
-    history.replace('/projects');
+    refreshTasks();  // Call refreshTasks function
+    history.replace(`/project/${projectId}`);
   };
 
   retrieveContributors()
