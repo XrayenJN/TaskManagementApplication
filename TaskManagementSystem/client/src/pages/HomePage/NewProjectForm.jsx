@@ -14,6 +14,7 @@ const NewProjectForm = () => {
     // Disable scrolling
     document.body.style.overflow = 'hidden';
     document.body.style.margin = '0'; // Remove any default margin
+    document.body.style.backgroundColor = '#F4F1E7';
 
     // Re-enable scrolling when the component is unmounted
     return () => {
@@ -38,7 +39,7 @@ const NewProjectForm = () => {
   } 
 
   return (
-    <div style={{ backgroundColor: '#F4F1E7', minHeight: '100vh', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0', padding: '0', overflowX: 'hidden'}}>
+    <div style={{ minHeight: '100vh', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div style={{ backgroundColor: '#DEB992', width: '50%', boxSizing: 'border-box'}}>
         <h1 style={{ marginTop: '100px' }}>Create New Project</h1>
         <form onSubmit={handleSubmit}>
