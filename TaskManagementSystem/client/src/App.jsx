@@ -34,6 +34,7 @@ function App() {
             </TaskProvider>
           </ProjectProvider>
           <Route path="/project/:projectId/kanban" component={KanbanView} />
+          <Route path="/project/:projectId/kanban" component={KanbanView} />
         </AuthProvider>
       </Switch>
     </Router>
