@@ -1,13 +1,14 @@
 import { Scheduler } from "@bitnoi.se/react-scheduler";
-import dayjs, {isBefore, isAfter} from "dayjs";
-import isBetween from 'dayjs/plugin/isBetween' // ES 2015
+import dayjs from "dayjs";
+import isBetween from 'dayjs/plugin/isBetween'; // ES 2015
+import React, { useCallback, useState } from "react";
+import '../../../../assets/styles/App.css';
 
 dayjs.extend(isBetween);
-import React, {useState, useCallback} from "react";
 
 
 
-export default function GanttChart() {
+export default function GanttChartController() {
   const [filterButtonState, setFilterButtonState] = useState(0);
 
   const [range, setRange] = useState({
@@ -23,39 +24,48 @@ export default function GanttChart() {
   // Example can be also found on video https://youtu.be/9oy4rTVEfBQ?t=118&si=52BGKSIYz6bTZ7fx
   // and in the react-scheduler repo App.tsx file https://github.com/Bitnoise/react-scheduler/blob/master/src/App.tsx
   const filteredMockedSchedulerData = mockedSchedulerData.map((person) => ({
-        ...person,
-        data: person.data.filter(
-          (project) =>
-            // we use "dayjs" for date calculations, but feel free to use library of your choice
-            dayjs(project.startDate).isBetween(range.startDate, range.endDate) ||
-            dayjs(project.endDate).isBetween(range.startDate, range.endDate) ||
-            (dayjs(project.startDate).isBefore(range.startDate, "day") &&
-              dayjs(project.endDate).isAfter(range.endDate, "day"))
-        )
-      }))
+    ...person,
+    data: person.data.filter(
+      (project) =>
+        // we use "dayjs" for date calculations, but feel free to use library of your choice
+        dayjs(project.startDate).isBetween(range.startDate, range.endDate) ||
+        dayjs(project.endDate).isBetween(range.startDate, range.endDate) ||
+        (dayjs(project.startDate).isBefore(range.startDate, "day") &&
+          dayjs(project.endDate).isAfter(range.endDate, "day"))
+    )
+  }))
 
   return (
-    <section>
-      <Scheduler
-        data={filteredMockedSchedulerData}
-        isLoading={false}
-        onRangeChange={handleRangeChange}
-        onTileClick={(clickedResource) => console.log(clickedResource)}
-        onItemClick={(item) => console.log(item)}
-        onFilterData={() => {
-          // // Some filtering logic...
-          // setFilterButtonState(1);
-        }}
-        onClearFilterData={() => {
-          // // Some clearing filters logic...
-          // setFilterButtonState(0)
-        }}
-        config={{
-          zoom: 0,
-          filterButtonState,
-        }}
-      />
-    </section>
+    <div>
+      <h1>Gannt Chart</h1>
+
+      <hr />
+      <div class="gantt">
+
+        <Scheduler
+          data={filteredMockedSchedulerData}
+          isLoading={false}
+          onRangeChange={handleRangeChange}
+          onTileClick={(clickedResource) => console.log(clickedResource)}
+          onItemClick={(item) => console.log(item)}
+          onFilterData={() => {
+            // Some filtering logic...
+            // setFilterButtonState(1);
+          }}
+          onClearFilterData={() => {
+            // // Some clearing filters logic...
+            // setFilterButtonState(0)
+          }}
+          config={{
+            zoom: 0,
+            filterButtonState,
+            showThemeToggle: true,
+
+
+          }}
+        />
+      </div>
+    </div>
   );
 }
 
