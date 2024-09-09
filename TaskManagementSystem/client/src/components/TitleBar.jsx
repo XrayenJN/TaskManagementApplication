@@ -44,17 +44,17 @@ const TitleBar = () => {
           onMouseEnter={handleMouseEnterMenu}
           onMouseLeave={handleMouseLeaveMenu}
         >
-          <FontAwesomeIcon icon={faBars} style={{ fontSize: '24px' }} />
+          <FontAwesomeIcon icon={faBars} style={{ fontSize: '28px', padding: '0px 10px 0px' }} />
           {isMenuOpen && (
             <div 
               style={{
                 position: 'absolute',
                 top: '45px',
-                left: '0px',
+                left: '-5px',
                 width: '200px',
                 backgroundColor: '#051622',
                 color: 'white',
-                padding: '10px',
+                padding: '5px',
                 zIndex: 1000,
                 borderRadius: '5px',
                 boxShadow: '2px 0px 5px rgba(0,0,0,0.5)',
@@ -68,7 +68,9 @@ const TitleBar = () => {
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>Kanban View</li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>Calendar View</li>
                 <hr style={{ border: '1px solid #555' }} />
-                <li style={{ padding: '10px 0', cursor: 'pointer' }}>Exit to Projects</li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>
+                  <Link to="/projects" style={{ color: '#fff', textDecoration: 'none' }}>Exit to Projects</Link>
+                </li>
               </ul>
             </div>
           )}
