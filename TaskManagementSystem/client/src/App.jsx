@@ -18,7 +18,7 @@ import { TaskProvider } from './contexts/TaskContext';
 function App() {
   return (
     <Router>
-      <TitleBar toggleNavbar={() => {}} />
+      
       <Switch>
         <AuthProvider>
           <Route path="/" exact={true} component={Login}/>
@@ -29,6 +29,7 @@ function App() {
           <ProjectProvider>
             <PrivateRoute path="/projects" component={ProjectList} />
             <TaskProvider>
+              <TitleBar toggleNavbar={() => {}} />
               <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
               <Route path="/project/:projectId/kanban" component={KanbanView} />
               <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
