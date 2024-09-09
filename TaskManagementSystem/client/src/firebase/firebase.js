@@ -202,6 +202,20 @@ export const getContributors = async(projectId) => {
   else { return []; }
 }
 
+/**
+ * Get the user details based on the userRef
+ * @param {*} userRef is the user reference (we have that inside the Task.owners and Project.contributors)
+ * @returns user details otherwise it's null
+ */
+export const getUser = async(userRef) => {
+  const snapshot = await getDoc(userRef);
+
+  if (snapshot.exists()) {
+    return snapshot.data();
+  } 
+  return null
+}
+
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {
   const ref = doc(collection(db, "projectTasks")).withConverter(projectTaskConverter);
   await setDoc(ref, projectTask);
@@ -243,10 +257,42 @@ export const getTaskDocuments = async(projectId) => {
       await Promise.all(c.map(async (taskRef) => {
         const taskSnap = await getDoc(taskRef)
         const taskData = taskSnap.data();
+
+        // retrieve the owners details as well
+        const ownersDetails = []
+        taskData.owners.forEach(async ownerRef => {
+          const userDetails = await getUser(ownerRef)
+          if (userDetails) ownersDetails.push(userDetails)
+        })
+        taskData.owners = ownersDetails
         tasks.push({id:taskSnap.id, ...taskData});
       }));
       return tasks;
     }
   } 
   return []; 
+}
+
+export const updateTask = async(taskId, editedTask) => {
+  const taskRef = doc(db, "projectTasks", taskId);
+  await updateDoc(taskRef, editedTask);
+
+  // update the owner so that we will have the docRef, instead of email only
+  const userCollectionRef = collection(db, "users");
+  const q = query(userCollectionRef, where("email", "==", editedTask.owners))
+
+  // get the user uid for the ref
+  const userUids = []
+  const userQuerySnapshot = await getDocs(q);
+  userQuerySnapshot.forEach((doc) => {
+    userUids.push(doc.id)
+  })
+
+  // get the user reference
+  const userRef = doc(db, "users", userUids[0])
+
+  // Update the owner of the projectTask so that it would link to the particular user
+  await updateDoc(taskRef, {
+    owners: [userRef]
+  })
 }
