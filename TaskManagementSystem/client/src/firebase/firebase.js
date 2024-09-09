@@ -202,6 +202,20 @@ export const getContributors = async(projectId) => {
   else { return []; }
 }
 
+/**
+ * Get the user details based on the userRef
+ * @param {*} userRef is the user reference (we have that inside the Task.owners and Project.contributors)
+ * @returns user details otherwise it's null
+ */
+export const getUser = async(userRef) => {
+  const snapshot = await getDoc(userRef);
+
+  if (snapshot.exists()) {
+    return snapshot.data();
+  } 
+  return null
+}
+
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {
   const ref = doc(collection(db, "projectTasks")).withConverter(projectTaskConverter);
   await setDoc(ref, projectTask);
@@ -243,6 +257,14 @@ export const getTaskDocuments = async(projectId) => {
       await Promise.all(c.map(async (taskRef) => {
         const taskSnap = await getDoc(taskRef)
         const taskData = taskSnap.data();
+
+        // retrieve the owners details as well
+        const ownersDetails = []
+        taskData.owners.forEach(async ownerRef => {
+          const userDetails = await getUser(ownerRef)
+          if (userDetails) ownersDetails.push(userDetails)
+        })
+        taskData.owners = ownersDetails
         tasks.push({id:taskSnap.id, ...taskData});
       }));
       return tasks;
