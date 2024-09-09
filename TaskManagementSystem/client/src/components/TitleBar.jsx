@@ -1,12 +1,19 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { TaskContext } from '../contexts/TaskContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 
-const TitleBar = ({ toggleNavbar }) => {
+const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
+  const { projectId } = useParams();
+  const { projectTasks } = useContext(TaskContext);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const selectedProject = projectTasks != [];
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -21,8 +28,53 @@ const TitleBar = ({ toggleNavbar }) => {
     await auth.signOut();;
   };
 
+  const handleMouseEnterMenu = () => {
+    setIsMenuOpen(true);
+  };
+
+  const handleMouseLeaveMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 1 }}>
+      {selectedProject && (
+        <div 
+          style={{ marginRight: '20px', cursor: 'pointer' }} 
+          onMouseEnter={handleMouseEnterMenu}
+          onMouseLeave={handleMouseLeaveMenu}
+        >
+          <FontAwesomeIcon icon={faBars} style={{ fontSize: '24px' }} />
+          {isMenuOpen && (
+            <div 
+              style={{
+                position: 'absolute',
+                top: '45px',
+                left: '0px',
+                width: '200px',
+                backgroundColor: '#051622',
+                color: 'white',
+                padding: '10px',
+                zIndex: 1000,
+                borderRadius: '5px',
+                boxShadow: '2px 0px 5px rgba(0,0,0,0.5)',
+              }}
+              onMouseEnter={handleMouseEnterMenu}
+              onMouseLeave={handleMouseLeaveMenu}
+            >
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>Timeline View</li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>List View</li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>Kanban View</li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>Calendar View</li>
+                <hr style={{ border: '1px solid #555' }} />
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>Exit to Projects</li>
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
       <div style={{ flex: 1 }}></div>
       <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>Task Management System</h1>
       {user && (
