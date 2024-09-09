@@ -274,7 +274,6 @@ export const getTaskDocuments = async(projectId) => {
 }
 
 export const updateTask = async(taskId, editedTask) => {
-  console.log(taskId)
   const taskRef = doc(db, "projectTasks", taskId);
   await updateDoc(taskRef, editedTask);
 

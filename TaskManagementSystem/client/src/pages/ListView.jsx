@@ -44,7 +44,6 @@ const ListView = () => {
       status: task.status,
       owners: task.owners[0] ? task.owners[0].email : task.owners,
     });
-    console.log(task)
     setShowPopup(!showPopup);
   };
 
