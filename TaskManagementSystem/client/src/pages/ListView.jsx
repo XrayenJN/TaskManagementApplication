@@ -2,11 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 import { TaskContext } from '../contexts/TaskContext';
-import { getContributors } from '../firebase/firebase';
+import { getContributors, updateTask } from '../firebase/firebase';
 
 const ListView = () => {
   const { projectId } = useParams();
-  const { projectTasks } = useContext(TaskContext)
+  const { projectTasks, refreshTasks } = useContext(TaskContext)
+  const [chosenTaskId, setChosenTaskId] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [contributors, setContributors] = useState([]);
   const [editedTask, setEditedTask] = useState({
@@ -16,7 +17,7 @@ const ListView = () => {
     endDate: '',
     comments: '',
     links: '',
-    isMilestone: null,
+    isMilestone: false,
     status: null,
     owners: [],
   });
@@ -25,16 +26,13 @@ const ListView = () => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
   }  
-  // Assuming you have imported useEffect from React
-useEffect(() => {
-  console.log(editedTask.isMilestone); // This will log the updated value
-}, [editedTask]);
 
   useEffect(() => {
     retrieveContributors()
   }, [])
 
   const togglePopup = (task) => {
+    setChosenTaskId(task.id);
     setEditedTask({
       name: task.name,
       description: task.description,
@@ -44,7 +42,7 @@ useEffect(() => {
       links: task.links,
       isMilestone: task.isMilestone,
       status: task.status,
-      owners: task.owners,
+      owners: task.owners[0] ? task.owners[0].email : task.owners,
     });
     console.log(task)
     setShowPopup(!showPopup);
@@ -55,9 +53,9 @@ useEffect(() => {
     setEditedTask({ ...editedTask, [name]: type === "checkbox" ? checked : value });
   };
 
-  const handleSave = async (taskId) => {
-    const taskRef = doc(db, 'projectTasks', taskId);
-    await updateDoc(taskRef, editedTask);
+  const handleSave = async () => {
+    await updateTask(chosenTaskId, editedTask)
+    refreshTasks();
     setShowPopup(false);
   };
 
@@ -123,6 +121,7 @@ useEffect(() => {
                               <div>
                               <label>
                                 <input
+                                  name="isMilestone"
                                   type="checkbox"
                                   checked={editedTask.isMilestone}
                                   onChange={handleInputChange}
@@ -134,6 +133,7 @@ useEffect(() => {
                               <div>
                                 <h3><u>Task Status</u></h3>
                                 <select
+                                  name="status"
                                   value={editedTask.status}
                                   onChange={handleInputChange}
                                   required
@@ -147,7 +147,8 @@ useEffect(() => {
                               </div>
                               <div>
                                 <select
-                                  value={editedTask.owners[0]?.email}
+                                  name="owners"
+                                  value={editedTask.owners}
                                   onChange={handleInputChange}
                                   required
                                 >
@@ -197,7 +198,7 @@ useEffect(() => {
 
                     <hr />
                     <div>
-                      <button onClick={() => handleSave(task.id)}>Save</button>
+                      <button onClick={handleSave}>Save</button>
                       <button onClick={() => setShowPopup(false)}>Close</button>
                     </div>
                   </div>

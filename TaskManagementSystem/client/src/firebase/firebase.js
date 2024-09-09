@@ -272,3 +272,28 @@ export const getTaskDocuments = async(projectId) => {
   } 
   return []; 
 }
+
+export const updateTask = async(taskId, editedTask) => {
+  console.log(taskId)
+  const taskRef = doc(db, "projectTasks", taskId);
+  await updateDoc(taskRef, editedTask);
+
+  // update the owner so that we will have the docRef, instead of email only
+  const userCollectionRef = collection(db, "users");
+  const q = query(userCollectionRef, where("email", "==", editedTask.owners))
+
+  // get the user uid for the ref
+  const userUids = []
+  const userQuerySnapshot = await getDocs(q);
+  userQuerySnapshot.forEach((doc) => {
+    userUids.push(doc.id)
+  })
+
+  // get the user reference
+  const userRef = doc(db, "users", userUids[0])
+
+  // Update the owner of the projectTask so that it would link to the particular user
+  await updateDoc(taskRef, {
+    owners: [userRef]
+  })
+}
