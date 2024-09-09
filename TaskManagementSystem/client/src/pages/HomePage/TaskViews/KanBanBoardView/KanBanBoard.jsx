@@ -35,8 +35,8 @@ const KanbanView = () => {
 
   const groupedTasks = {
     Backlog: tasks.filter(task => task.status === "Backlog"),
-    ToDo: tasks.filter(task => task.status === "To Do"),
-    InProgress: tasks.filter(task => task.status === "In Progress"),
+    ToDo: tasks.filter(task => task.status === "Ready"),
+    InProgress: tasks.filter(task => task.status === "InProgress"),
     Done: tasks.filter(task => task.status === "Done")
   };
 
