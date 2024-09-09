@@ -16,7 +16,7 @@ const ListView = () => {
     endDate: '',
     comments: '',
     links: '',
-    isMilestone: false,
+    isMilestone: null,
     status: null,
     owners: [],
   });
@@ -25,14 +25,16 @@ const ListView = () => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
   }  
+  // Assuming you have imported useEffect from React
+useEffect(() => {
+  console.log(editedTask.isMilestone); // This will log the updated value
+}, [editedTask]);
 
   useEffect(() => {
     retrieveContributors()
   }, [])
 
   const togglePopup = (task) => {
-    console.log(task.owners[0].name)
-    setShowPopup(!showPopup);
     setEditedTask({
       name: task.name,
       description: task.description,
@@ -44,11 +46,13 @@ const ListView = () => {
       status: task.status,
       owners: task.owners,
     });
+    console.log(task)
+    setShowPopup(!showPopup);
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedTask({ ...editedTask, [name]: value });
+    const { type, name, checked, value } = e.target;
+    setEditedTask({ ...editedTask, [name]: type === "checkbox" ? checked : value });
   };
 
   const handleSave = async (taskId) => {
@@ -120,6 +124,7 @@ const ListView = () => {
                               <label>
                                 <input
                                   type="checkbox"
+                                  checked={editedTask.isMilestone}
                                   onChange={handleInputChange}
                                 />
                                   Milestone
