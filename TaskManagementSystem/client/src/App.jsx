@@ -30,11 +30,10 @@ function App() {
             <PrivateRoute path="/projects" component={ProjectList} />
             <TaskProvider>
               <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
+              <Route path="/project/:projectId/kanban" component={KanbanView} />
               <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
             </TaskProvider>
           </ProjectProvider>
-          <Route path="/project/:projectId/kanban" component={KanbanView} />
-          <Route path="/project/:projectId/kanban" component={KanbanView} />
         </AuthProvider>
       </Switch>
     </Router>

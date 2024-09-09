@@ -1,65 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useParams } from 'react-router-dom';
+import { TaskContext } from '../../../../contexts/TaskContext';
 
 const KanbanView = () => {
   const currentDate = new Date();
 
-  const tasks = [
-    {
-      name: "Task 1",
-      description: "By Jordan",
-      comments: "HEHEHEHA",
-      endDate: "2024-08-23",
-      isMilestone: true,
-      links: "PLS",
-      owners: [{ name: "Owner 1" }],
-      startDate: "2024-08-30",
-      status: "Backlog"
-    },
-    {
-      name: "Task 5",
-      description: "By Jordan again",
-      comments: "HEHEHEHA",
-      endDate: "2024-11-23",
-      isMilestone: true,
-      links: "PLS",
-      owners: [{ name: "Owner 1" }],
-      startDate: "2024-10-31",
-      status: "Backlog"
-    },
-    {
-      name: "Task 2",
-      description: "Hello, task description here, by John. It is a longer description, thanks.",
-      comments: "LOL",
-      endDate: "2024-09-10",
-      isMilestone: false,
-      links: "PLS",
-      owners: [{ name: "Owner 2" }],
-      startDate: "2024-08-15",
-      status: "To Do"
-    },
-    {
-      name: "Task 3",
-      description: "This is a description. Ring ring ring ring by Ethan",
-      comments: "Hmm",
-      endDate: "2024-09-08",
-      isMilestone: false,
-      links: "PLS",
-      owners: [{ name: "Owner 3" }],
-      startDate: "2024-08-18",
-      status: "In Progress"
-    },
-    {
-      name: "Task 4",
-      description: "Hello hello by Edward",
-      comments: "Hmm",
-      endDate: "2024-09-05",
-      isMilestone: false,
-      links: "PLS",
-      owners: [{ name: "Owner 4" }],
-      startDate: "2024-08-18",
-      status: "Done"
-    }
-  ];
+  const { projectId } = useParams();
+  const { projectTasks } = useContext(TaskContext);
+  const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
 
   const handleTaskClick = (task) => {
     console.log('Task clicked:', task);
