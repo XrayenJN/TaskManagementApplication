@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
@@ -62,13 +62,26 @@ const TitleBar = () => {
               onMouseEnter={handleMouseEnterMenu}
               onMouseLeave={handleMouseLeaveMenu}
             >
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                <li style={{ padding: '10px 0', cursor: 'pointer' }}>Timeline View</li>
-                <li style={{ padding: '10px 0', cursor: 'pointer' }}>List View</li>
-                <li style={{ padding: '10px 0', cursor: 'pointer' }}>Kanban View</li>
-                <li style={{ padding: '10px 0', cursor: 'pointer' }}>Calendar View</li>
-                <hr style={{ border: '1px solid #555' }} />
+              <ul style={{ listStyle: 'none', padding: '0px 30px', textAlign: 'left' }}>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
+                  <FontAwesomeIcon icon={faClock} style={{ marginRight: '10px' }} />
+                  Timeline View
+                </li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>
+                  <FontAwesomeIcon icon={faList} style={{ marginRight: '10px' }} />
+                  List View
+                </li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>
+                  <FontAwesomeIcon icon={faColumns} style={{ marginRight: '10px' }} />
+                  Kanban View
+                </li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>
+                  <FontAwesomeIcon icon={faCalendar} style={{ marginRight: '10px' }} />
+                  Calendar View
+                </li>
+                <hr/>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>
+                  <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '10px' }} />
                   <Link to="/projects" style={{ color: '#fff', textDecoration: 'none' }}>Exit to Projects</Link>
                 </li>
               </ul>
