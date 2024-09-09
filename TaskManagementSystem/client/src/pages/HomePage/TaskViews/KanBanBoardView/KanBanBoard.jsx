@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 
 const KanbanView = () => {
@@ -47,7 +47,9 @@ const KanbanView = () => {
         <div className="kanban-buttons">
           <button className="kanban-button">Filter</button>
           <button className="kanban-button">Sort by</button>
-          <button className="kanban-button">Add task</button>
+          <Link to={`/project/${projectId}/new-project-task-form`} className="kanban-button">
+            Add task
+          </Link>
         </div>
       </div>
       <hr/><br/>
