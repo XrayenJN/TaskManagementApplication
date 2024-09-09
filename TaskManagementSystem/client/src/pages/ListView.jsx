@@ -2,20 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 import { TaskContext } from '../contexts/TaskContext';
+import { getContributors } from '../firebase/firebase';
 
 const ListView = () => {
   const { projectId } = useParams();
   const { projectTasks } = useContext(TaskContext)
   const [showPopup, setShowPopup] = useState(false);
-  const [name, setName] = useState('New Project Task');
-  const [description, setDescription] = useState('No Description Given');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [comments, setComments] = useState("Additional information / comments");
-  const [links, setLinks] = useState("Links provided here");
-  const [isMilestone, setMilestone] = useState(false);
-  const [status, setStatus] = useState(null);
-  const [owners, setOwners] = useState([]);
   const [contributors, setContributors] = useState([]);
   const [editedTask, setEditedTask] = useState({
     name: '',
@@ -29,7 +21,17 @@ const ListView = () => {
     owners: [],
   });
 
+  const retrieveContributors = async () => {
+    const theContributors = await getContributors(projectId);
+    setContributors(theContributors);
+  }  
+
+  useEffect(() => {
+    retrieveContributors()
+  }, [])
+
   const togglePopup = (task) => {
+    console.log(task.owners[0].name)
     setShowPopup(!showPopup);
     setEditedTask({
       name: task.name,
@@ -44,6 +46,17 @@ const ListView = () => {
     });
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedTask({ ...editedTask, [name]: value });
+  };
+
+  const handleSave = async (taskId) => {
+    const taskRef = doc(db, 'projectTasks', taskId);
+    await updateDoc(taskRef, editedTask);
+    setShowPopup(false);
+  };
+
   const tasksOutput = () => {
     if (projectTasks && projectTasks[projectId]) {
       return (
@@ -55,7 +68,7 @@ const ListView = () => {
               {showPopup && (
                 <div className="popup">
                   <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
-                    <h2>Edit Project Details</h2>
+                    <h2>Edit Task Details</h2>
                     <hr />
 
                     <div>
@@ -64,7 +77,7 @@ const ListView = () => {
                           <tr>
                             <td>
                               <div>
-                                <h3><u>Project Name</u></h3>
+                                <h3><u>Task Name</u></h3>
                                 <input
                                   type="text"
                                   name="name"
@@ -74,7 +87,7 @@ const ListView = () => {
                               </div>
 
                               <div>
-                                <h3><u>Project Description</u></h3>
+                                <h3><u>Task Description</u></h3>
                                 <textarea
                                   name="description"
                                   style={{ color: 'black' }}
@@ -83,6 +96,64 @@ const ListView = () => {
                                 />
                               </div>
 
+                              <div>
+                                <h3><u>Task Comments</u></h3>
+                                <textarea
+                                  type="text"
+                                  name="comments"
+                                  value={editedTask.comments}
+                                  onChange={handleInputChange}
+                                />
+                              </div>
+                            </td>
+                            <td>
+                              <div>
+                                <h3><u>Task Links</u></h3>
+                                <textarea
+                                  name="links"
+                                  style={{ color: 'black' }}
+                                  value={editedTask.links}
+                                  onChange={handleInputChange}
+                                />
+                              </div>
+                              <div>
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  onChange={handleInputChange}
+                                />
+                                  Milestone
+                                </label>
+                              </div>
+
+                              <div>
+                                <h3><u>Task Status</u></h3>
+                                <select
+                                  value={editedTask.status}
+                                  onChange={handleInputChange}
+                                  required
+                                >
+                                  <option value="">Select Status</option>
+                                  <option value="Backlog">Backlog</option>
+                                  <option value="Ready">Ready</option>
+                                  <option value="InProgress">InProgress</option>
+                                  <option value="Completed">Completed</option>
+                                </select>
+                              </div>
+                              <div>
+                                <select
+                                  value={editedTask.owners[0]?.email}
+                                  onChange={handleInputChange}
+                                  required
+                                >
+                                  <option value="">Select Owner</option>
+                                  {contributors.map((contributor, index) => (
+                                    <option key={index} value={contributor.email}>
+                                      {contributor.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
                               <div>
                                 <table style={{ margin: 'auto' }}>
                                   <thead>
@@ -114,40 +185,6 @@ const ListView = () => {
                                 </table>
                               </div>
                             </td>
-                            <td>
-                              <div>
-                                <h3><u>Contributors</u></h3>
-                                <table style={{ margin: 'auto' }}>
-                                  <thead>
-                                    <tr>
-                                      <th>Name</th>
-                                      <th>Remove</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {contributors[project.id]?.map((contributor, index) => (
-                                      <tr key={index}>
-                                        <td>{contributor.name}</td>
-                                        <td>
-                                          <button style={{ backgroundColor: '#BD7676', padding: '4px' }}>x</button>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-
-                              <div>
-                                <h4>Add Contributors</h4>
-                              </div>
-                              <input
-                                type="email"
-                                value={email}
-                                onChange={handleEmailChange}
-                                placeholder="Enter contributor email"
-                              />
-                              <button onClick={handleAddContributor}>Add</button>
-                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -155,7 +192,7 @@ const ListView = () => {
 
                     <hr />
                     <div>
-                      <button onClick={handleSave}>Save</button>
+                      <button onClick={() => handleSave(task.id)}>Save</button>
                       <button onClick={() => setShowPopup(false)}>Close</button>
                     </div>
                   </div>
