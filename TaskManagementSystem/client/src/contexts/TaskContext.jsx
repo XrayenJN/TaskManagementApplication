@@ -8,6 +8,7 @@ const TaskProvider = ({ children }) => {
   const { projects } = useContext(ProjectContext);
   const [projectTasks, setProjectTasks] = useState({});
   const [refreshTrigger, setRefreshTrigger] = useState(false);
+  const [inViewPage, setInViewPage] = useState(false);
 
   // Fetch tasks for all projects
   const fetchTasks = async (projectId) => {
@@ -48,7 +49,7 @@ const TaskProvider = ({ children }) => {
   };
 
   return (
-    <TaskContext.Provider value={{ projectTasks, refreshTasks }}>
+    <TaskContext.Provider value={{ projectTasks, refreshTasks, inViewPage, setInViewPage }}>
       {children}
     </TaskContext.Provider>
   );
