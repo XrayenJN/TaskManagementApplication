@@ -7,8 +7,7 @@ import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft } f
 
 const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
-  const { projectId } = useParams();
-  const { projectTasks } = useContext(TaskContext);
+  const { projectTasks, inViewPage, setInViewPage } = useContext(TaskContext);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,7 +37,7 @@ const TitleBar = () => {
 
   return (
     <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 1 }}>
-      {selectedProject && (
+      {inViewPage && (
         <div 
           style={{ marginRight: '20px', cursor: 'pointer' }} 
           onMouseEnter={handleMouseEnterMenu}
@@ -82,7 +81,10 @@ const TitleBar = () => {
                 <hr/>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '10px' }} />
-                  <Link to="/projects" style={{ color: '#fff', textDecoration: 'none' }}>Exit to Projects</Link>
+                  <Link to="/projects" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => {
+                    console.log(inViewPage)
+                    setInViewPage(false)
+                  }}>Exit to Projects</Link>
                 </li>
               </ul>
             </div>
