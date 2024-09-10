@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,12 +7,10 @@ import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft } f
 
 const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
-  const { projectTasks, inViewPage, setInViewPage } = useContext(TaskContext);
+  const { inViewPage, setInViewPage } = useContext(TaskContext);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const selectedProject = projectTasks != [];
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
