@@ -22,6 +22,11 @@ const ListView = () => {
     owners: [],
   });
 
+  //https://stackoverflow.com/questions/1462719/javascript-change-the-function-of-the-browsers-back-button
+  window.addEventListener("popstate", () => {
+    setInViewPage(false)
+  })
+
   const retrieveContributors = async () => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
