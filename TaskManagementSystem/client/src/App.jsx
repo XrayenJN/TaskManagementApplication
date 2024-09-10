@@ -25,10 +25,13 @@ function App() {
           <Route path="/login/callback" component={LoginCallback}/>
           <PrivateRoute path="/profile" component={Profile}/>
           <Route path="/settings" component={Settings} />
-          <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
-          <PrivateRoute path="/projects" component={ProjectList} />
-          <PrivateRoute path="/project/:projectId" exact={true} component={GanttChart} />
-          <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
+          <ProjectProvider>
+            <PrivateRoute path="/projects" component={ProjectList} />
+            <TaskProvider>
+              <PrivateRoute path="/project/:projectId" exact={true} component={GanttChart} />
+              <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
+            </TaskProvider>
+          </ProjectProvider>
         </AuthProvider>
       </Switch>
     </Router>

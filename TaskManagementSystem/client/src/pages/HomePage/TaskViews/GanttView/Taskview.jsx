@@ -1,8 +1,13 @@
 import { Scheduler } from "@bitnoi.se/react-scheduler";
 import dayjs from "dayjs";
 import isBetween from 'dayjs/plugin/isBetween'; // ES 2015
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useContext } from "react";
 import '../../../../assets/styles/App.css';
+
+import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
+import { TaskContext } from '../../../../contexts/TaskContext';
+import { getContributors } from "../../../../firebase/firebase";
 
 dayjs.extend(isBetween);
 
@@ -10,7 +15,11 @@ dayjs.extend(isBetween);
 
 export default function GanttChartController() {
   const [filterButtonState, setFilterButtonState] = useState(0);
+  const { projectId } = useParams();
+  const { projectTasks } = useContext(TaskContext);
 
+  console.log(projectTasks, projectId)
+  console.log(getContributors(projectId))
   const [range, setRange] = useState({
     startDate: new Date(),
     endDate: new Date()
