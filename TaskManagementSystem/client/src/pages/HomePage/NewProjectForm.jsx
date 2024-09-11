@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { createNewProjectDocument } from '../../firebase/firebase';
+import { createNewProjectDocument, checkUsersExists } from '../../firebase/firebase';
 import { Project } from '../../models/Project';
+
 
 const NewProjectForm = () => {
   const [name, setName] = useState('New Project');
@@ -9,6 +10,10 @@ const NewProjectForm = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [contributors, setContributor] = useState([]);
+  const [userId, setUserId] = useState('');
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [email, setEmail] = useState('');
+
   const history = useHistory();
 
   useEffect(() => {
@@ -34,8 +39,28 @@ const NewProjectForm = () => {
     history.replace('/projects');
   };
 
-  const handleCancel = () => {
+  const handleCancelButton = () => {
     history.goBack();
+  }
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setIsEmailValid(false);
+  };
+
+  const handleAddContributor = async () => {
+    const result = await checkUsersExists(email);
+    // @todo: refactor it later, if we have time
+    if (result.length > 0) {
+      setUserId(result[0].userId);
+      setIsEmailValid(true);
+      await updateProjectContributors(projectId, userId);
+      await updateUserProject(userId, projectId);
+      setEmail('');
+    } else {
+      alert('Please enter a valid email.');
+      setIsEmailValid(false);
+    }
   }
 
   return (
@@ -84,14 +109,15 @@ const NewProjectForm = () => {
             <input
               type="text"
               placeholder='Email Address'
+              value={email}
               style={{ marginLeft: '10px', marginTop: '25px' }}
-              
+              onClick={handleEmailChange}
             />
-            <button type="button" style={{ backgroundColor: '#F4F1E7', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0'}}>Add Contributor</button>
+            <button type="button" onClick={handleAddContributor} style={{ backgroundColor: '#F4F1E7', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0'}}>Add Contributor</button>
           </div>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <button type="submit" style={{ backgroundColor: '#1BA098', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Create Project</button>
-          <button type="button" onClick = {handleCancel} style={{ backgroundColor: '#A5A58D', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Cancel</button>
+          <button type="button" onClick = {handleCancelButton} style={{ backgroundColor: '#A5A58D', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Cancel</button>
           </div>
         </form>
       </div> 
