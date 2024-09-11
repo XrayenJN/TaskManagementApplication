@@ -13,7 +13,7 @@ import PrivateRoute from './routes/PrivateRoute';
 import Settings from './pages/Settings';
 import { ProjectProvider } from './contexts/ProjectContext';
 import { TaskProvider } from './contexts/TaskContext';
-import GanttChart from './pages/HomePage/TaskViews/GanttView/Taskview';
+import GanttChart from './pages/HomePage/TaskViews/GanttView/TimelineView';
 
 function App() {
   return (

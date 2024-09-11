@@ -1,0 +1,43 @@
+
+export default function sortData(contributors, tasks) {
+  var taskData = {}
+  // For each user create a space for them
+  contributors.forEach((user) => {
+    taskData[user.name] = {
+       id: user.name,
+       label:{
+        title: user.name
+       },
+       data:[]
+     }});
+    
+  
+  // For each task allocate it to the user
+  tasks.forEach((task) => {
+    task.owners.forEach((owner) =>{
+      var formattedData = {
+        id: task.id,
+        startDate: new Date(task.startDate),
+        endDate: new Date(task.endDate),
+        title: task.name,
+        description: task.description
+      }
+      if (new Date() > new Date(task.endDate)){
+        if (task.status == "Done"){
+          formattedData.bgColor = 'rgb(27,160,152)'
+        }
+        else{
+          formattedData.bgColor = 'rgb(189,118,118)'
+        }
+      }
+      else{
+        formattedData.bgColor = 'rgb(165,165,141)'
+      }
+      taskData[owner.name].data.push(formattedData)
+      console.log(task.status)
+    })
+  })
+  
+  // Return the values
+  return Object.values(taskData)
+}
