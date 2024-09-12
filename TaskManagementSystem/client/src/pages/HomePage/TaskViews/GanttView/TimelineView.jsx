@@ -56,13 +56,13 @@ export default function GanttChart() {
 
   return (
     <div>
-      <div class="divForStuff*">
+      <div class="divForStuff*" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
       <h1 class="heading">Timeline View</h1>
-        <button class="linkbutton">
-          <Link to={`/project/${projectId}/new-project-task-form`} style={{ color: 'black' }}>
-            Add Project Task
-          </Link>
-        </button>
+      <button class="linkbutton">
+        <Link to={`/project/${projectId}/new-project-task-form`} style={{ color: 'black' }}>
+          Add Project Task
+        </Link>
+      </button>
       </div>
       <div>
         <hr />
