@@ -23,10 +23,6 @@ export default function Login(){
     history.push('/profile');
   }
 
-  const goToTestHome = () => {
-    history.push('./TestHome')
-  }
-
   const goToProjectList = () => {
     history.push('/projects');
   }
@@ -46,7 +42,6 @@ export default function Login(){
       <div className="Buttons">
         <button onClick={loginWithOkta}>Login With Okta</button>
         <button onClick={googleSignIn}>Login With Google</button>
-        <button onClick={goToTestHome}>Login with Test User</button>
       </div>
     );
   }
