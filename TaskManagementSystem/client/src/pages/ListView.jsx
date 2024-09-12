@@ -7,6 +7,7 @@ import { getContributors, updateTask } from '../firebase/firebase';
 const ListView = () => {
   const { projectId } = useParams();
   const { projectTasks, refreshTasks, setInViewPage } = useContext(TaskContext)
+  const { setChosenProjectId } = useContext(TaskContext);
   const [chosenTaskId, setChosenTaskId] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [contributors, setContributors] = useState([]);
@@ -33,8 +34,9 @@ const ListView = () => {
   }  
 
   useEffect(() => {
-    retrieveContributors()
-    setInViewPage(true)
+    retrieveContributors();
+    setInViewPage(true);
+    setChosenProjectId(projectId);
   }, [])
 
   const togglePopup = (task) => {

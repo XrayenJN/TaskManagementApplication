@@ -18,7 +18,6 @@ import { TaskProvider } from './contexts/TaskContext';
 function App() {
   return (
     <Router>
-      
       <Switch>
         <AuthProvider>
           <Route path="/" exact={true} component={Login}/>

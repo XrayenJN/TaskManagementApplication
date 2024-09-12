@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,6 +11,9 @@ const TitleBar = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { chosenProjectId } = useContext(TaskContext);
+  console.log(chosenProjectId)
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
