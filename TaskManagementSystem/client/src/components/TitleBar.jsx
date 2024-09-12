@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,7 +13,7 @@ const TitleBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { chosenProjectId } = useContext(TaskContext);
-  console.log(chosenProjectId)
+  const location = useLocation();
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -35,6 +35,8 @@ const TitleBar = () => {
   const handleMouseLeaveMenu = () => {
     setIsMenuOpen(false);
   };
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 1 }}>
@@ -65,19 +67,19 @@ const TitleBar = () => {
               <ul style={{ listStyle: 'none', padding: '0px 30px', textAlign: 'left' }}>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faClock} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}/timeline`} style={{ color: 'white' }}>Timeline View</Link>
+                  <Link to={`/project/${chosenProjectId}/timeline`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/timeline`) ? 'bold' : 'normal'  }}>Timeline View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faList} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}`} style={{ color: 'white' }}>List View</Link>
+                  <Link to={`/project/${chosenProjectId}`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}`) ? 'bold' : 'normal' }}>List View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faColumns} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}/kanban`} style={{ color: 'white' }}>Kanban View</Link>
+                  <Link to={`/project/${chosenProjectId}/kanban`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/kanban`) ? 'bold' : 'normal' }}>Kanban View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faCalendar} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}/calendar`} style={{ color: 'white' }}>Calendar View</Link>
+                  <Link to={`/project/${chosenProjectId}/calendar`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/calendar`) ? 'bold' : 'normal' }}>Calendar View</Link>
                 </li>
                 <hr/>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
