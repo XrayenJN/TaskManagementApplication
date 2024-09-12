@@ -2,7 +2,7 @@ import { Scheduler } from "@bitnoi.se/react-scheduler";
 import dayjs from "dayjs";
 import isBetween from 'dayjs/plugin/isBetween'; // ES 2015
 import React, { useCallback, useState, useContext, useEffect } from "react";
-import '../../../../assets/styles/App.css';
+import '../../../../assets/styles/TimelineView.css';
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
@@ -46,7 +46,7 @@ export default function GanttChart() {
     ...person,
     data: person.data.filter(
       (project) =>
-        // we use "dayjs" for date calculations, but feel free to use library of your choice
+        // date calculations
         dayjs(project.startDate).isBetween(range.startDate, range.endDate) ||
         dayjs(project.endDate).isBetween(range.startDate, range.endDate) ||
         (dayjs(project.startDate).isBefore(range.startDate, "day") &&
@@ -56,9 +56,9 @@ export default function GanttChart() {
 
   return (
     <div>
-      <div class="divForStuff*" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
+      <div class="divWrapper*" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
       <h1 class="heading">Timeline View</h1>
-      <button class="linkbutton">
+      <button class="linkButton">
         <Link to={`/project/${projectId}/new-project-task-form`} style={{ color: 'black' }}>
           Add Project Task
         </Link>
@@ -67,8 +67,7 @@ export default function GanttChart() {
       <div>
         <hr />
       </div>
-      <div class="gantt">
-
+      <div class="ganttWrapper">
         <Scheduler
           isFullscreen={false}
           isLoading={false}
