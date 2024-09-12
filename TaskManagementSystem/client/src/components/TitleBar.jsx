@@ -65,19 +65,19 @@ const TitleBar = () => {
               <ul style={{ listStyle: 'none', padding: '0px 30px', textAlign: 'left' }}>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faClock} style={{ marginRight: '10px' }} />
-                  Timeline View
+                  <Link to={`/project/${chosenProjectId}/timeline`} style={{ color: 'white' }}>Timeline View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faList} style={{ marginRight: '10px' }} />
-                  List View
+                  <Link to={`/project/${chosenProjectId}`} style={{ color: 'white' }}>List View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faColumns} style={{ marginRight: '10px' }} />
-                  Kanban View
+                  <Link to={`/project/${chosenProjectId}/kanban`} style={{ color: 'white' }}>Kanban View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faCalendar} style={{ marginRight: '10px' }} />
-                  Calendar View
+                  <Link to={`/project/${chosenProjectId}/calendar`} style={{ color: 'white' }}>Calendar View</Link>
                 </li>
                 <hr/>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
