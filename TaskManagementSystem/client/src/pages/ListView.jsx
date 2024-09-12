@@ -6,7 +6,8 @@ import { getContributors, updateTask } from '../firebase/firebase';
 
 const ListView = () => {
   const { projectId } = useParams();
-  const { projectTasks, refreshTasks } = useContext(TaskContext)
+  const { projectTasks, refreshTasks, setInViewPage } = useContext(TaskContext)
+  const { setChosenProjectId } = useContext(TaskContext);
   const [chosenTaskId, setChosenTaskId] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [contributors, setContributors] = useState([]);
@@ -22,13 +23,20 @@ const ListView = () => {
     owners: [],
   });
 
+  //https://stackoverflow.com/questions/1462719/javascript-change-the-function-of-the-browsers-back-button
+  window.addEventListener("popstate", () => {
+    setInViewPage(false)
+  })
+
   const retrieveContributors = async () => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
   }  
 
   useEffect(() => {
-    retrieveContributors()
+    retrieveContributors();
+    setInViewPage(true);
+    setChosenProjectId(projectId);
   }, [])
 
   const togglePopup = (task) => {
