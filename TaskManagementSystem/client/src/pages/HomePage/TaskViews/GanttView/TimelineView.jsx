@@ -15,7 +15,7 @@ export default function GanttChart() {
   const { projectId } = useParams();
   const { projectTasks } = useContext(TaskContext);
   const [contributors, setContributors] = useState([]);
-  var loadingStatus = true
+  var loadingStatus = true;
 
   // Get contributors for this project
   const retrieveContributors = async () => {
@@ -30,7 +30,7 @@ export default function GanttChart() {
   var finialisedData = []
   if (projectTasks && projectTasks[projectId]) {
     finialisedData = SortData(contributors, projectTasks[projectId])
-    isLoading = false
+    loadingStatus = false
   }
   const [range, setRange] = useState({
     startDate: new Date(),
@@ -71,7 +71,7 @@ export default function GanttChart() {
       </div>
       <div class="ganttWrapper">
         <Scheduler
-          isFullscreen={loadingStatus}
+          isFullscreen={false}
           isLoading={loadingStatus}
           data={data}
           onRangeChange={handleRangeChange}
