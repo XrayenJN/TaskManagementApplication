@@ -4,6 +4,7 @@ import { Route, BrowserRouter as Router, Switch, withRouter } from 'react-router
 import TitleBar from './components/TitleBar';
 import { AuthProvider } from './contexts/AuthContext';
 import ListView from './pages/ListView';
+import KanbanView from './pages/HomePage/TaskViews/KanBanBoardView/KanBanBoard';
 import NewProjectTaskForm from './pages/NewProjectTaskForm';
 import NewProjectForm from './pages/HomePage/NewProjectForm';
 import ProjectList from './pages/HomePage/HomeView';
@@ -18,7 +19,6 @@ import GanttChart from './pages/HomePage/TaskViews/GanttView/TimelineView';
 function App() {
   return (
     <Router>
-      <TitleBar toggleNavbar={() => {}} />
       <Switch>
         <AuthProvider>
           <Route path="/" exact={true} component={Login}/>
@@ -27,8 +27,11 @@ function App() {
           <Route path="/settings" component={Settings} />
           <ProjectProvider>
             <PrivateRoute path="/projects" component={ProjectList} />
-            <TaskProvider>
+            <TaskProvider>              
+              <TitleBar toggleNavbar={() => {}} />
               <PrivateRoute path="/project/:projectId" exact={true} component={GanttChart} />
+              <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
+              <Route path="/project/:projectId/kanban" component={KanbanView} />
               <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
             </TaskProvider>
           </ProjectProvider>
