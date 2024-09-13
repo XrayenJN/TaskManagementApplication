@@ -1,4 +1,3 @@
-
 export default function sortData(contributors, tasks) {
   var taskData = {}
   // For each user create a space for them
@@ -11,7 +10,6 @@ export default function sortData(contributors, tasks) {
        data:[]
      }});
     
-  
   // For each task allocate it to the user
   tasks.forEach((task) => {
     task.owners.forEach((owner) =>{

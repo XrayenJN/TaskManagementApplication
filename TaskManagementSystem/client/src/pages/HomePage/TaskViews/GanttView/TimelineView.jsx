@@ -1,9 +1,9 @@
 import { Scheduler } from "@bitnoi.se/react-scheduler";
 import dayjs from "dayjs";
-import isBetween from 'dayjs/plugin/isBetween'; // ES 2015
+import isBetween from 'dayjs/plugin/isBetween'; 
 import React, { useCallback, useState, useContext, useEffect } from "react";
 import '../../../../assets/styles/TimelineView.css';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import { getContributors } from "../../../../firebase/firebase";
