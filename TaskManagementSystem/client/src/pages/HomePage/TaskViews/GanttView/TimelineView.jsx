@@ -15,6 +15,7 @@ export default function GanttChart() {
   const { projectId } = useParams();
   const { projectTasks } = useContext(TaskContext);
   const [contributors, setContributors] = useState([]);
+  var loadingStatus = true
 
   // Get contributors for this project
   const retrieveContributors = async () => {
@@ -25,10 +26,11 @@ export default function GanttChart() {
     retrieveContributors()
   }, [])
 
-
+  // Once we have the data 
   var finialisedData = []
   if (projectTasks && projectTasks[projectId]) {
     finialisedData = sortData(contributors, projectTasks[projectId])
+    isLoading = false
   }
   const [range, setRange] = useState({
     startDate: new Date(),
@@ -39,7 +41,7 @@ export default function GanttChart() {
     setRange(range);
   }, []);
 
-  // Filtering events that are included in current date range
+  // Leaving this here if we need references to the library used.
   // Example can be also found on video https://youtu.be/9oy4rTVEfBQ?t=118&si=52BGKSIYz6bTZ7fx
   // and in the react-scheduler repo App.tsx file https://github.com/Bitnoise/react-scheduler/blob/master/src/App.tsx
   const data = finialisedData.map((person) => ({
@@ -69,8 +71,8 @@ export default function GanttChart() {
       </div>
       <div class="ganttWrapper">
         <Scheduler
-          isFullscreen={false}
-          isLoading={false}
+          isFullscreen={loadingStatus}
+          isLoading={loadingStatus}
           data={data}
           onRangeChange={handleRangeChange}
           config={{

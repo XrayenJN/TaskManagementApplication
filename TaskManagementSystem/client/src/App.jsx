@@ -27,9 +27,9 @@ function App() {
           <Route path="/settings" component={Settings} />
           <ProjectProvider>
             <PrivateRoute path="/projects" component={ProjectList} />
-            <TaskProvider>              
+            <TaskProvider>
               <TitleBar toggleNavbar={() => {}} />
-              <PrivateRoute path="/project/:projectId" exact={true} component={GanttChart} />
+              <PrivateRoute path="/project/:projectId/timeline" exact={true} component={GanttChart} />
               <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
               <Route path="/project/:projectId/kanban" component={KanbanView} />
               <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />

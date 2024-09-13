@@ -22,6 +22,7 @@ export default function sortData(contributors, tasks) {
         title: task.name,
         description: task.description
       }
+      // Add the background color
       if (new Date() > new Date(task.endDate)){
         if (task.status == "Done"){
           formattedData.bgColor = 'rgb(27,160,152)'
@@ -37,7 +38,6 @@ export default function sortData(contributors, tasks) {
       console.log(task.status)
     })
   })
-  
-  // Return the values
+  // Return the tasks
   return Object.values(taskData)
 }
