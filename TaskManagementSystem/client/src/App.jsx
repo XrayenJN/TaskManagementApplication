@@ -25,6 +25,7 @@ function App() {
           <Route path="/login/callback" component={LoginCallback}/>
           <PrivateRoute path="/profile" component={Profile}/>
           <Route path="/settings" component={Settings} />
+          <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
           <ProjectProvider>
             <PrivateRoute path="/projects" component={ProjectList} />
             <TaskProvider>
@@ -32,7 +33,6 @@ function App() {
               <PrivateRoute path="/project/:projectId/timeline" exact={true} component={GanttChart} />
               <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
               <Route path="/project/:projectId/kanban" component={KanbanView} />
-              <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
             </TaskProvider>
           </ProjectProvider>
         </AuthProvider>
