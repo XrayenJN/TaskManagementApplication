@@ -28,7 +28,7 @@ export default function GanttChart() {
 
   // Once we have the data 
   var finialisedData = []
-  if (projectTasks && projectTasks[projectId]) {
+  if (projectTasks && projectTasks[projectId] && contributors.length) {
     finialisedData = SortData(contributors, projectTasks[projectId])
     loadingStatus = false
   }

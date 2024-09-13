@@ -2,7 +2,6 @@
     display: flex;
     justify-content: space-between;
     align-Items: 'flex-end';
-
   }
   .linkButton {
     border-radius: 8px;
@@ -29,6 +28,7 @@
     position: relative;
     width: 95vw;
     height: 70vh;
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    z-index: -1;
   }
   
