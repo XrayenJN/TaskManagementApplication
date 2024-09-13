@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import { getContributors } from "../../../../firebase/firebase";
-import sortData from "./GanttChartAux";
+import SortData from "./GanttChartAux";
 
 dayjs.extend(isBetween);
 
@@ -29,7 +29,7 @@ export default function GanttChart() {
   // Once we have the data 
   var finialisedData = []
   if (projectTasks && projectTasks[projectId]) {
-    finialisedData = sortData(contributors, projectTasks[projectId])
+    finialisedData = SortData(contributors, projectTasks[projectId])
     isLoading = false
   }
   const [range, setRange] = useState({

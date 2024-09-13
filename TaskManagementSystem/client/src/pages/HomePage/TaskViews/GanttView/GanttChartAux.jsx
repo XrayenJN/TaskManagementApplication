@@ -1,4 +1,4 @@
-export default function sortData(contributors, tasks) {
+export default function SortData(contributors, tasks) {
   var taskData = {}
   // For each user create a space for them
   contributors.forEach((user) => {
@@ -33,7 +33,6 @@ export default function sortData(contributors, tasks) {
         formattedData.bgColor = 'rgb(165,165,141)'
       }
       taskData[owner.name].data.push(formattedData)
-      console.log(task.status)
     })
   })
   // Return the tasks
