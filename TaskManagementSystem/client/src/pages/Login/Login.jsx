@@ -4,7 +4,10 @@ import '../../assets/styles/App.css';
 import Slideshow from '../../components/Slideshow';
 import { AuthContext } from '../../contexts/AuthContext';
 import { googleSignIn } from '../../firebase/firebase';
+
 import landingSplashVideo from '../../assets/Task Management System - Landing Splash.mp4';
+import oktaLogo from '../../assets/images/okta-logo.png';
+import googleLogo from '../../assets/images/google-logo.png';
 
 
 export default function Login(){
@@ -38,8 +41,12 @@ export default function Login(){
         <hr></hr>
         <br></br>
         <div className="Buttons">
-          <button onClick={loginWithOkta}>Login With Okta</button>
-          <button onClick={googleSignIn}>Login With Google</button>
+          <button onClick={loginWithOkta}>Login with
+            <img src={oktaLogo} alt="Okta Login" style={{ height: '24px', padding: '0px 0px 0px 6px' }} />
+          </button>
+          <button onClick={googleSignIn}>Login with
+            <img src={googleLogo} alt="Google Login" style={{ height: '24px', padding: '0px 0px 0px 6px' }} />
+          </button>
         </div>
       </header>
     </div>
