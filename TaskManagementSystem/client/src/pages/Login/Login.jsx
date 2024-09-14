@@ -4,6 +4,7 @@ import '../../assets/styles/App.css';
 import Slideshow from '../../components/Slideshow';
 import { AuthContext } from '../../contexts/AuthContext';
 import { googleSignIn } from '../../firebase/firebase';
+import landingSplashVideo from '../../assets/Task Management System - Landing Splash.mp4';
 
 
 export default function Login(){
@@ -23,6 +24,14 @@ export default function Login(){
   return (
     <div className="App">
       <header className="App-header">
+      <video
+          src={landingSplashVideo}
+          autoPlay
+          muted
+          playsInline
+          style={{ maxWidth: '100vh', height: 'auto' }}
+        />
+        <br /><br />
         <Slideshow />
         <p>Be more productive. Be more organised. Be more coordinated.</p>
         <p>Start your project journey here.</p>
