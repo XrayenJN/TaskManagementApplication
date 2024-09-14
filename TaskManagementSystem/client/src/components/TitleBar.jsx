@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft, faBell } from '@fortawesome/free-solid-svg-icons';
 
 const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
@@ -11,6 +11,7 @@ const TitleBar = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const { chosenProjectId } = useContext(TaskContext);
   const location = useLocation();
@@ -34,6 +35,10 @@ const TitleBar = () => {
 
   const handleMouseLeaveMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleNotificationToggle = () => {
+    setIsNotificationOpen(!isNotificationOpen);
   };
 
   const isActive = (path) => location.pathname === path;
@@ -95,52 +100,87 @@ const TitleBar = () => {
         </div>
       )}
 
-      <div style={{ flex: 1 }}></div>
+    <div style={{ flex: 1 }}></div>
       <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>Task Management System</h1>
       {user && (
-        <div 
-          style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}
-          onMouseEnter={handleDropdownToggle}
-          onMouseLeave={handleMouseLeave}
-        >
-          <FontAwesomeIcon
-            icon={faUser}
-            style={{ fontSize: '30px', marginLeft: '10px' }}
-          />
-          <span style={{ marginLeft: '10px' }}>{user.displayName || user.name}</span>
-
-          {isDropdownOpen && (
-            <div style={{
-              position: 'absolute',
-              top: '50px',
-              right: '10px',
-              backgroundColor: '#051622',
-              borderRadius: '5px',
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-              zIndex: 10,
-              marginRight: '50px',
-            }}>
-              <ul style={{
-                listStyle: 'none',
-                padding: '20px',
-                color: '#fff',
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
+          <div 
+            onMouseEnter={handleNotificationToggle}
+            onMouseLeave={handleNotificationToggle}
+            style={{ position: 'relative' }}
+          >
+            <FontAwesomeIcon
+              icon={faBell}
+              style={{ fontSize: '30px', marginLeft: '10px', cursor: 'pointer', marginRight: '20px' }}
+            />
+            {isNotificationOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '30px',
+                right: '0',
+                backgroundColor: '#051622',
+                borderRadius: '5px',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                zIndex: 10,
+                width: '200px',
+                padding: '10px',
+                color: 'white'
               }}>
-                <li style={{ padding: '5px 10px' }}>
-                  <Link to="/profile" style={{ color: '#fff', textDecoration: 'none' }}>Profile</Link>
-                </li>
-                <li style={{ padding: '5px 10px' }}>
-                  <Link to="/settings" style={{ color: '#fff', textDecoration: 'none' }}>Settings</Link>
-                </li>
-                <hr></hr>
-                <li
-                  style={{ padding: '0px 10px', cursor: 'pointer' }}
-                  onClick={handleLogout}
-                >
-                  Log Out
-                </li>
-              </ul>
-            </div>
-          )}
+                <ul style={{
+                  listStyle: 'none',
+                  padding: '0',
+                  margin: '0'
+                }}>
+                  <li style={{ padding: '10px', borderBottom: '1px solid #fff' }}>No new notifications</li>
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <div 
+            onMouseEnter={handleDropdownToggle}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
+          >
+            <FontAwesomeIcon
+              icon={faUser}
+              style={{ fontSize: '30px', marginLeft: '10px', cursor: 'pointer' }}
+            />
+            <span style={{ marginLeft: '10px' }}>{user.displayName || user.name}</span>
+
+            {isDropdownOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '30px',
+                right: '-50px',
+                backgroundColor: '#051622',
+                borderRadius: '5px',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                zIndex: 10,
+                marginRight: '50px',
+              }}>
+                <ul style={{
+                  listStyle: 'none',
+                  padding: '20px',
+                  color: '#fff',
+                }}>
+                  <li style={{ padding: '5px 10px' }}>
+                    <Link to="/profile" style={{ color: '#fff', textDecoration: 'none' }}>Profile</Link>
+                  </li>
+                  <li style={{ padding: '5px 10px' }}>
+                    <Link to="/settings" style={{ color: '#fff', textDecoration: 'none' }}>Settings</Link>
+                  </li>
+                  <hr />
+                  <li
+                    style={{ padding: '0px 10px', cursor: 'pointer' }}
+                    onClick={handleLogout}
+                  >
+                    Log Out
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
