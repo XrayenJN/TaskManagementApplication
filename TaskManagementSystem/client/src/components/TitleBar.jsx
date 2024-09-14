@@ -4,7 +4,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
 import { ProjectContext } from '../contexts/ProjectContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft, faBell } from '@fortawesome/free-solid-svg-icons';
 
 const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
@@ -13,6 +13,7 @@ const TitleBar = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const { chosenProjectId } = useContext(TaskContext);
   const location = useLocation();
@@ -67,9 +68,11 @@ const TitleBar = () => {
     setIsMenuOpen(false);
   };
 
-  const isActive = (path) => {
-    location.pathname === path;
+  const handleNotificationToggle = () => {
+    setIsNotificationOpen(!isNotificationOpen);
   };
+
+  const isActive = (path) => location.pathname === path;
 
   const getPageHeading = () => {
     const currentPath = location.pathname;
@@ -155,22 +158,56 @@ const TitleBar = () => {
       <div style={{ flex: 1 }}></div>
       <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>{getPageHeading()}</h1>
       {user && (
-        <div
-          style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}
-          onMouseEnter={handleDropdownToggle}
-          onMouseLeave={handleMouseLeave}
-        >
-          <FontAwesomeIcon
-            icon={faUser}
-            style={{ fontSize: '30px', marginLeft: '10px' }}
-          />
-          <span style={{ marginLeft: '10px' }}>{user.displayName || user.name}</span>
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
+          <div 
+            onMouseEnter={handleNotificationToggle}
+            onMouseLeave={handleNotificationToggle}
+            style={{ position: 'relative' }}
+          >
+            <FontAwesomeIcon
+              icon={faBell}
+              style={{ fontSize: '30px', marginLeft: '10px', cursor: 'pointer', marginRight: '20px' }}
+            />
+            {isNotificationOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '30px',
+                right: '0',
+                backgroundColor: '#051622',
+                borderRadius: '5px',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                zIndex: 10,
+                width: '200px',
+                padding: '10px',
+                color: 'white'
+              }}>
+                <ul style={{
+                  listStyle: 'none',
+                  padding: '0',
+                  margin: '0'
+                }}>
+                  <li style={{ padding: '10px', borderBottom: '1px solid #fff' }}>No new notifications</li>
+                </ul>
+              </div>
+            )}
+          </div>
 
-          {isDropdownOpen && (
+          <div 
+            onMouseEnter={handleDropdownToggle}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
+          >
+            <FontAwesomeIcon
+              icon={faUser}
+              style={{ fontSize: '30px', marginLeft: '10px', cursor: 'pointer' }}
+            />
+            <span style={{ marginLeft: '10px' }}>{user.displayName || user.name}</span>
+
+            {isDropdownOpen && (
             <div style={{
               position: 'absolute',
-              top: '50px',
-              right: '10px',
+              top: '30px',
+              right: '-50px',
               backgroundColor: '#051622',
               borderRadius: '5px',
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
@@ -204,7 +241,8 @@ const TitleBar = () => {
                 </li>
               </ul>
             </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
