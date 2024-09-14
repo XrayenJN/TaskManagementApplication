@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../../assets/styles/App.css';
 import Slideshow from '../../components/Slideshow';
@@ -14,37 +14,11 @@ export default function Login(){
     await oktaAuth.signInWithRedirect();
   }
 
-  const logout = async () => {
-    await oktaAuth.signOut();
-    await auth.signOut();;
-  }
-
-  const goToProfile = () => {
-    history.push('/profile');
-  }
-
-  const goToProjectList = () => {
-    history.push('/projects');
-  }
-
-  let body = null;
-  if (user) {
-    body = (
-      <div className="Buttons">
-        <button onClick={goToProjectList}>Project List</button>
-        <button onClick={goToProfile}>Profile</button>
-        <button onClick={logout}>Logout</button>
-        {/* Replace me with your root component. */}
-      </div>
-    );
-  } else {
-    body = (
-      <div className="Buttons">
-        <button onClick={loginWithOkta}>Login With Okta</button>
-        <button onClick={googleSignIn}>Login With Google</button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (user) {
+      history.push('/projects');
+    }
+  }, [user, history]);
 
   return (
     <div className="App">
@@ -54,7 +28,10 @@ export default function Login(){
         <p>Start your project journey here.</p>
         <hr></hr>
         <br></br>
-        {body}
+        <div className="Buttons">
+          <button onClick={loginWithOkta}>Login With Okta</button>
+          <button onClick={googleSignIn}>Login With Google</button>
+        </div>
       </header>
     </div>
   );
