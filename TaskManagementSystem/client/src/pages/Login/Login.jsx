@@ -25,9 +25,16 @@ export default function Login(){
   }, [user, history]);
 
   return (
-    <div className="App">
+    /* Background circles: https://codepen.io/vaibhavarora/pen/xmpxjp */
+    <div className="App body-login">
+      <div className="circle xxlarge shade1"></div>
+      <div className="circle xlarge shade2"></div>
+      <div className="circle large shade3"></div>
+      <div className="circle medium shade4"></div>
+      <div className="circle small shade5"></div>
+
       <header className="App-header">
-      <video
+        <video
           src={landingSplashVideo}
           autoPlay
           muted
@@ -47,7 +54,8 @@ export default function Login(){
           </button>
         </div>
       </header>
-      <footer style={{ position: 'absolute', bottom: '0px' }}>
+
+      <footer style={{ position: 'absolute', bottom: '0px', width: '100%' }}>
         <p>© 2024 S1_CS_01 - Ethan Fernandez (31558445), Libin Yang (31379788), John Bui (30566495), Jordan Nathanael (31893902)</p>
       </footer>
     </div>
