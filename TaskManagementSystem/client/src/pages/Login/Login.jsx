@@ -36,10 +36,8 @@ export default function Login(){
         />
         <br /><br />
         <Slideshow />
-        <p>Be more productive. Be more organised. Be more coordinated.</p>
-        <p>Start your project journey here.</p>
-        <hr></hr>
-        <br></br>
+        <p><b>Be more productive. Be more organised. Be more coordinated.</b></p>
+        <br />
         <div className="Buttons">
           <button onClick={loginWithOkta}>Login with
             <img src={oktaLogo} alt="Okta Login" style={{ height: '24px', padding: '0px 0px 0px 6px' }} />
@@ -49,6 +47,9 @@ export default function Login(){
           </button>
         </div>
       </header>
+      <footer style={{ position: 'absolute', bottom: '0px' }}>
+        <p>© 2024 S1_CS_01 - Ethan Fernandez (31558445), Libin Yang (31379788), John Bui (30566495), Jordan Nathanael (31893902)</p>
+      </footer>
     </div>
   );
 }
