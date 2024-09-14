@@ -8,6 +8,12 @@ const slideImages = [
   '/src/assets/images/about_slideshow/image3.jpg'
 ];
 
+const slideCaptions = [
+  "Caption for Image 1",
+  "Caption for Image 2",
+  "Caption for Image 3"
+];
+
 const Slideshow = () => {
     return (
       <div className="slideshow-container">
@@ -16,6 +22,9 @@ const Slideshow = () => {
             <div className="each-slide" key={index}>
               <div className="image-container">
                 <img src={image} alt={`slide-${index}`} />
+              </div>
+              <div className="caption-container">
+                <p>{slideCaptions[index]}</p>
               </div>
             </div>
           ))}
