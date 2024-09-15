@@ -111,7 +111,7 @@ const NewProjectForm = () => {
               placeholder='Email Address'
               value={email}
               style={{ marginLeft: '10px', marginTop: '25px' }}
-              onClick={handleEmailChange}
+              onChange={handleEmailChange}
             />
             <button type="button" onClick={handleAddContributor} style={{ backgroundColor: '#F4F1E7', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0'}}>Add Contributor</button>
           </div>
