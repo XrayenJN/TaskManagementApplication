@@ -47,6 +47,10 @@ const TitleBar = () => {
     }
   }, [location.pathname, setInViewPage]);
 
+  const [lookaheadPeriod, setLookaheadPeriod] = useState('7 days');
+
+  const dummyTasks = [];
+
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -161,8 +165,7 @@ const TitleBar = () => {
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
           {inViewPage && (
             <div 
-            onMouseEnter={handleNotificationToggle}
-            onMouseLeave={handleNotificationToggle}
+            onClick={handleNotificationToggle}
             style={{ position: 'relative' }}
           >
             <FontAwesomeIcon
@@ -187,7 +190,20 @@ const TitleBar = () => {
                   padding: '0',
                   margin: '0'
                 }}>
-                  <li style={{ padding: '10px', borderBottom: '1px solid #fff' }}>No new notifications</li>
+                  <li style={{ padding: '5px 10px' }}>
+                    <label style={{ marginRight: '10px' }}>Lookahead Period:</label>
+                    <select 
+                      value={lookaheadPeriod} 
+                      onChange={(e) => setLookaheadPeriod(e.target.value)} 
+                      style={{ backgroundColor: '#051622', color: '#fff', borderRadius: '5px', padding: '5px', border: '1px solid #fff' }}
+                    >
+                      <option value="7 days">7 days</option>
+                      <option value="2 weeks">2 weeks</option>
+                      <option value="1 month">1 month</option>
+                    </select>
+                    <hr />
+                  </li>
+                  <li style={{ padding: '10px' }}>No upcoming tasks</li>
                 </ul>
               </div>
             )}
