@@ -113,11 +113,11 @@ const NewProjectForm = () => {
               style={{ marginLeft: '10px', marginTop: '25px' }}
               onChange={handleEmailChange}
             />
-            <button type="button" onClick={handleAddContributor} style={{ backgroundColor: '#F4F1E7', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0'}}>Add Contributor</button>
+            <button type="button" onClick={handleAddContributor} style={{ backgroundColor: '#F4F1E7', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '15px'}}>Add Contributor</button>
           </div>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <button type="submit" style={{ backgroundColor: '#1BA098', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Create Project</button>
-          <button type="button" onClick = {handleCancelButton} style={{ backgroundColor: '#A5A58D', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Cancel</button>
+          <button type="submit" style={{ backgroundColor: '#1BA098', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '15px' }}>Create Project</button>
+          <button type="button" onClick = {handleCancelButton} style={{ backgroundColor: '#A5A58D', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '15px' }}>Cancel</button>
           </div>
         </form>
       </div> 
