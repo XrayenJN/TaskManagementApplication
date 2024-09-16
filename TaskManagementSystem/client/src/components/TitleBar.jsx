@@ -66,7 +66,7 @@ const TitleBar = () => {
     await auth.signOut();;
   };
 
-  const handleMouseEnterMenu = () => {
+  const handleMenuToggle = () => {
     setIsMenuOpen(true);
   };
 
@@ -122,7 +122,7 @@ const TitleBar = () => {
                 borderRadius: '5px',
                 boxShadow: '2px 0px 5px rgba(0,0,0,0.5)',
               }}
-              onMouseEnter={handleMouseEnterMenu}
+              onMouseEnter={handleMenuToggle}
               onMouseLeave={handleMouseLeaveMenu}
             >
               <ul style={{ listStyle: 'none', padding: '0px 30px', textAlign: 'left' }}>
@@ -167,7 +167,8 @@ const TitleBar = () => {
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
           {inViewPage && (
             <div 
-            onClick={handleNotificationToggle}
+            onMouseEnter={handleNotificationToggle}
+            onMouseLeave={handleNotificationToggle}
             style={{ position: 'relative' }}
           >
             <FontAwesomeIcon
@@ -207,7 +208,7 @@ const TitleBar = () => {
           
           <div 
             onMouseEnter={handleDropdownToggle}
-            onMouseLeave={handleMouseLeave}
+            onMouseLeave={handleDropdownToggle}
             style={{ position: 'relative' }}
           >
             <FontAwesomeIcon
