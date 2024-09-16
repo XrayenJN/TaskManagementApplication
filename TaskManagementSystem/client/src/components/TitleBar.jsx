@@ -19,7 +19,8 @@ const TitleBar = () => {
 
   const { lookaheadPeriod } = useContext(SettingsContext);
 
-  const dummyTasks = [];
+  const dummyTasks = [{comments: "HEHEHEHAsdf", description: "By Jordan aaaaa", endDate: "2024-08-31", id: "FmJiYS4JtlQslStnTkog", isMilestone: false, links: "sdfaPLS", name: "Task", owners: ["Blah"], startDate: "2024-08-07", status: "InProgress"},
+  {comments: "wow", description: "By John wow", endDate: "2024-09-20", id: "FmJiYS4JtlQslStnTkoh", isMilestone: true, links: "asd", name: "Task 2", owners: ["Blah"], startDate: "2024-09-07", status: "Backlog"}];
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -134,10 +135,11 @@ const TitleBar = () => {
                   margin: '0'
                 }}>
                   <li style={{ padding: '5px 10px' }}>
-                    <label style={{ marginRight: '10px' }}>Lookahead Period:</label>
+                    <label style={{ marginRight: '10px' }}>Lookahead:</label>
                     <span>{lookaheadPeriod}</span>
                   </li>
-                  <li style={{ padding: '10px', borderBottom: '1px solid #fff' }}>
+                  <hr />
+                  <li style={{ padding: '10px' }}>
                     No new notifications
                   </li>
                 </ul>

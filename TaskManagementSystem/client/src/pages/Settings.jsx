@@ -7,8 +7,9 @@ const Settings = () => {
   return (
     <div style={{ padding: '20px' }}>
       <h1>Settings</h1>
+      <b>Notifications</b>
       <div style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '10px' }}>Lookahead Period:</label>
+        <label style={{ marginRight: '10px' }}>Notification lookahead period:</label>
         <select 
           value={lookaheadPeriod} 
           onChange={(e) => setLookaheadPeriod(e.target.value)} 
