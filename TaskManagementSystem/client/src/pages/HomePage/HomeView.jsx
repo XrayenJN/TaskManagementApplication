@@ -69,11 +69,13 @@ const ProjectList = () => {
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
     if (result.length > 0) {
-      setUserId(result[0].userId);
+      const user = result[0]
+      setUserId(user.userId);
       setIsEmailValid(true);
       await updateProjectContributors(projectId, userId);
       await updateUserProject(userId, projectId);
       setEmail('');
+      setContributors(value => [...value, user.email])
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
