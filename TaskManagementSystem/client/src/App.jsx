@@ -16,6 +16,7 @@ import Settings from './pages/Settings';
 import { ProjectProvider } from './contexts/ProjectContext';
 import { TaskProvider } from './contexts/TaskContext';
 import GanttChart from './pages/HomePage/TaskViews/GanttView/TimelineView';
+import { SettingsProvider } from './contexts/SettingsContext';
 
 function App() {
   return (
