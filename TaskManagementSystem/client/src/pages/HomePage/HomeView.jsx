@@ -1,37 +1,52 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { db, checkUsersExists, getContributors, updateProjectContributors, updateUserProject } from '../../firebase/firebase';
+import { db, checkUsersExists, getContributors, updateProjectContributors, updateUserProject, getUser } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { doc, updateDoc } from 'firebase/firestore';
 import { ProjectContext } from '../../contexts/ProjectContext';
 import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';
 
 const ProjectList = () => {
-  const { projects, contributors, setChosenProjectId } = useContext(ProjectContext);
+  const { projects, setChosenProjectId } = useContext(ProjectContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [projectId, setProjectId] = useState('');
+  const [contributors, setContributors] = useState([]);
   const [editedProject, setEditedProject] = useState({
     name: '',
     description: '',
     startDate: '',
     endDate: '',
+    contributors: []
   });
+
+  const retrieveContributors = async (contributors) => {
+    contributors.forEach(contributor => 
+      retrieveContributorDetails(contributor)
+    )
+  }
+
+  const retrieveContributorDetails = async (contributorRef) => {
+    const theContributors = await getUser(contributorRef);
+    setContributors(value => [...value, theContributors])
+  }
 
   const togglePopup = (project) => {
     setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
     setProjectId(project.id);
+    setContributors([]); // reset it again
+    retrieveContributors(project.contributors)
     setEditedProject({
       name: project.name,
       description: project.description,
       startDate: project.startDate,
       endDate: project.endDate,
+      contributors: contributors.map(contributor => contributor.email)
     });
-    fetchContributors(project.id)
   };
 
   const handleInputChange = (e) => {
@@ -42,11 +57,6 @@ const ProjectList = () => {
   const handleSave = async () => {
     const projectRef = doc(db, 'projects', projectId);
     await updateDoc(projectRef, editedProject);
-    setProjects((prevProjects) =>
-      prevProjects.map((project) =>
-        project.id === projectId ? { ...project, ...editedProject } : project
-      )
-    );
     setShowPopup(false);
   };
 
@@ -147,14 +157,16 @@ const ProjectList = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {contributors[project.id]?.map((contributor, index) => (
-                                <tr key={index}>
-                                  <td>{contributor.name}</td>
-                                  <td>
-                                    <button style={{ backgroundColor: '#BD7676', padding: '4px'}}>x</button>
-                                  </td>
-                                </tr>
-                              ))}
+                              {contributors.map((contributor, index) => {
+                                return (
+                                  <tr key={index}>
+                                    <td>{contributor.name}</td>
+                                    <td>
+                                      <button style={{ backgroundColor: '#BD7676', padding: '4px'}}>x</button>
+                                    </td>
+                                  </tr>
+                                )
+                              })}
                             </tbody>
                           </table>
                         </div>
@@ -191,6 +203,13 @@ const ProjectList = () => {
   // idk why, without this, the hook doesn't work for the setUserId...
   useEffect(() => {
   }, [userId]);
+
+  useEffect(() => {
+    const contributorsEmail = contributors.map(contributor => contributor.email)
+    setEditedProject({
+      contributors: contributorsEmail
+    })
+  }, [contributors])
 
   // if (loading) {
   //   /**
