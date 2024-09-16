@@ -15,27 +15,30 @@ import Settings from './pages/Settings';
 import { ProjectProvider } from './contexts/ProjectContext';
 import { TaskProvider } from './contexts/TaskContext';
 import GanttChart from './pages/HomePage/TaskViews/GanttView/TimelineView';
+import { SettingsProvider } from './contexts/SettingsContext';
 
 function App() {
   return (
     <Router>
       <Switch>
         <AuthProvider>
-          <Route path="/" exact={true} component={Login}/>
-          <Route path="/login/callback" component={LoginCallback}/>
-          <PrivateRoute path="/profile" component={Profile}/>
-          <Route path="/settings" component={Settings} />
-          <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
-          <ProjectProvider>
-            <PrivateRoute path="/projects" component={ProjectList} />
-            <TaskProvider>
-              <TitleBar toggleNavbar={() => {}} />
-              <PrivateRoute path="/project/:projectId/timeline" exact={true} component={GanttChart} />
-              <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
-              <Route path="/project/:projectId/kanban" component={KanbanView} />+
-              <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
-            </TaskProvider>
-          </ProjectProvider>
+          <SettingsProvider>
+            <Route path="/" exact={true} component={Login}/>
+            <Route path="/login/callback" component={LoginCallback}/>
+            <PrivateRoute path="/profile" component={Profile}/>
+            <Route path="/settings" component={Settings} />
+            <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
+            <ProjectProvider>
+              <PrivateRoute path="/projects" component={ProjectList} />
+              <TaskProvider>
+                <TitleBar toggleNavbar={() => {}} />
+                <PrivateRoute path="/project/:projectId/timeline" exact={true} component={GanttChart} />
+                <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
+                <Route path="/project/:projectId/kanban" component={KanbanView} />+
+                <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
+              </TaskProvider>
+            </ProjectProvider>
+          </SettingsProvider>
         </AuthProvider>
       </Switch>
     </Router>

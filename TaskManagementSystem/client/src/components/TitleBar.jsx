@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
+import { SettingsContext } from '../contexts/SettingsContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft, faBell } from '@fortawesome/free-solid-svg-icons';
 
@@ -16,7 +17,7 @@ const TitleBar = () => {
   const { chosenProjectId } = useContext(TaskContext);
   const location = useLocation();
 
-  const [lookaheadPeriod, setLookaheadPeriod] = useState('7 days');
+  const { lookaheadPeriod } = useContext(SettingsContext);
 
   const dummyTasks = [];
 
@@ -137,18 +138,11 @@ const TitleBar = () => {
                 }}>
                   <li style={{ padding: '5px 10px' }}>
                     <label style={{ marginRight: '10px' }}>Lookahead Period:</label>
-                    <select 
-                      value={lookaheadPeriod} 
-                      onChange={(e) => setLookaheadPeriod(e.target.value)} 
-                      style={{ backgroundColor: '#051622', color: '#fff', borderRadius: '5px', padding: '5px', border: '1px solid #fff' }}
-                    >
-                      <option value="7 days">7 days</option>
-                      <option value="2 weeks">2 weeks</option>
-                      <option value="1 month">1 month</option>
-                    </select>
-                    <hr />
+                    <span>{lookaheadPeriod}</span>
                   </li>
-                  <li style={{ padding: '10px' }}>No upcoming tasks</li>
+                  <li style={{ padding: '10px', borderBottom: '1px solid #fff' }}>
+                    No new notifications
+                  </li>
                 </ul>
               </div>
             )}
