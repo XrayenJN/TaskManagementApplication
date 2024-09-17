@@ -139,9 +139,19 @@ const TitleBar = () => {
                     <span>{lookaheadPeriod}</span>
                   </li>
                   <hr />
-                  <li style={{ padding: '10px' }}>
-                    No new notifications
-                  </li>
+                  {dummyTasks.length > 0 ? (
+                    dummyTasks.map((task) => (
+                      <li key={task.id} style={{ padding: '10px', borderBottom: '1px solid #fff' }}>
+                        <strong>{task.name}</strong>
+                        <p style={{ margin: '5px 0' }}>
+                          <em>End Date: {task.endDate}</em><br/>
+                          Status: {task.status}
+                        </p>
+                      </li>
+                    ))
+                  ) : (
+                    <li style={{ padding: '10px' }}>No tasks found</li>
+                  )}
                 </ul>
               </div>
             )}
