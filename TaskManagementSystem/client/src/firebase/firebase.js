@@ -140,12 +140,17 @@ export const createNewProjectDocument = async(project) => {
  * @param {*} uid user id
  */
 export const updateProjectContributors = async(pid, uid) => {
+  console.log(pid, uid)
   const pRef = doc(db, "projects", pid);
   const uRef = doc(db, "users", uid);
 
   await updateDoc(pRef, {
     contributors: arrayUnion(uRef)
   })
+}
+
+export const removeProjectContributors = async(pid, userEmail) => {
+  const pRef = doc(db, "projects", pid);
 }
 
 export const checkUsersExists = async(userEmail) => {

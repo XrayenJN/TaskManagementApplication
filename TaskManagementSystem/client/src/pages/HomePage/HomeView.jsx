@@ -7,7 +7,7 @@ import { ProjectContext } from '../../contexts/ProjectContext';
 import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';
 
 const ProjectList = () => {
-  const { projects, setChosenProjectId } = useContext(ProjectContext);
+  const { projects, setChosenProjectId, allProjectContributors, refreshTrigger, setRefreshTrigger } = useContext(ProjectContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [email, setEmail] = useState('');
@@ -74,12 +74,18 @@ const ProjectList = () => {
       setIsEmailValid(true);
       await updateProjectContributors(projectId, userId);
       await updateUserProject(userId, projectId);
+      setRefreshTrigger(true);
+      alert('The new contributors has been added.');
       setEmail('');
       setContributors(value => [...value, user.email])
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
     }
+  }
+
+  const handleRemoveContributor = async (contributorEmail) => {
+    console.log(contributorEmail)
   }
 
   const showEditProjectButton = (project) => {
@@ -162,9 +168,9 @@ const ProjectList = () => {
                               {contributors.map((contributor, index) => {
                                 return (
                                   <tr key={index}>
-                                    <td>{contributor.name}</td>
+                                    <td>{contributor?.name}</td>
                                     <td>
-                                      <button style={{ backgroundColor: '#BD7676', padding: '4px'}}>x</button>
+                                      <button onClick={() => handleRemoveContributor(contributor)} style={{ backgroundColor: '#BD7676', padding: '4px'}}>x</button>
                                     </td>
                                   </tr>
                                 )
@@ -207,6 +213,7 @@ const ProjectList = () => {
   }, [userId]);
 
   useEffect(() => {
+    console.log(contributors)
     const contributorsEmail = contributors.map(contributor => contributor.email)
     setEditedProject({
       contributors: contributorsEmail
@@ -235,9 +242,9 @@ const ProjectList = () => {
       {Object.entries(reverseDictionary(projectListSortedByEndDate(projects)))
       .map(([id, project]) => {
         const backgroundColor = isExpired(project.endDate) ? '#BD7676' : '#1BA098';
-        const contributorsOfProject = Object.keys(contributors).length > 0 
-          ? (contributors[id]
-              ? contributors[id].map((value) => value.name)
+        const contributorsOfEachProject = allProjectContributors && Object.keys(allProjectContributors).length > 0 
+          ? (allProjectContributors[id]
+              ? allProjectContributors[id].map((value) => value.name)
               : []
             )
           : []
@@ -249,7 +256,7 @@ const ProjectList = () => {
                 <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
                 <div style={{ textAlign: 'left', color: 'black' }}>
                   <div>{project.description}</div>
-                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i> </div>
+                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfEachProject.join(", ")}</i> </div>
                 </div>
               </div>
               <div>
