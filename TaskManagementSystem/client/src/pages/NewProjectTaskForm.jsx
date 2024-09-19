@@ -16,7 +16,7 @@ const NewProjectTaskForm = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [comments, setComments] = useState("Additional information / comments");
   const [links, setLinks] = useState("Links provided here");
-  const [isMeeting, setMilestone] = useState(false);
+  const [isMeeting, setMeeting] = useState(false);
   const [status, setStatus] = useState(null);
   const [owners, setOwners] = useState([]);
   const [contributors, setContributors] = useState([]);
@@ -75,7 +75,7 @@ const NewProjectTaskForm = () => {
           <label>
             <input
               type="checkbox"
-              onChange={(e) => setMilestone(e.target.checked)}
+              onChange={(e) => setMeeting(e.target.checked)}
             />
             Meeting
           </label>
