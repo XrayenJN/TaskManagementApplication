@@ -16,7 +16,7 @@ const NewProjectTaskForm = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [comments, setComments] = useState("Additional information / comments");
   const [links, setLinks] = useState("Links provided here");
-  const [isMilestone, setMilestone] = useState(false);
+  const [isMeeting, setMilestone] = useState(false);
   const [status, setStatus] = useState(null);
   const [owners, setOwners] = useState([]);
   const [contributors, setContributors] = useState([]);
@@ -32,7 +32,7 @@ const NewProjectTaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newProjectTask = new ProjectTask( name, description, startDate, endDate, comments, links, isMilestone, status, owners );
+    const newProjectTask = new ProjectTask( name, description, startDate, endDate, comments, links, isMeeting, status, owners );
 
     await createNewProjectTaskDocument(newProjectTask, projectId);
     refreshTasks();  // Call refreshTasks function
@@ -77,7 +77,7 @@ const NewProjectTaskForm = () => {
               type="checkbox"
               onChange={(e) => setMilestone(e.target.checked)}
             />
-            Milestone
+            Meeting
           </label>
         </div>
         <div style={{ paddingTop: '10px' }}>

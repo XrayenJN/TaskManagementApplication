@@ -1,10 +1,10 @@
 export class ProjectTask {
-    constructor(name, description, startDate, endDate, comments, links, isMilestone, status, owners){
+    constructor(name, description, startDate, endDate, comments, links, isMeeting, status, owners){
         this.name = name;
         this.description = description;
         this.comments = comments;
         this.links = links;
-        this.isMilestone = isMilestone;
+        this.isMeeting = isMeeting;
         this.status = status;
         this.owners = owners;
 
@@ -21,7 +21,7 @@ export const projectTaskConverter = {
             description: projectTask.description,
             comments: projectTask.comments,
             links: projectTask.links,
-            isMilestone: projectTask.isMilestone,
+            isMeeting: projectTask.isMeeting,
             status: projectTask.status,
             owners: projectTask.owners,
             startDate: projectTask.startDate,
@@ -30,6 +30,6 @@ export const projectTaskConverter = {
     },
     fromFirestore: (snapshot, options) => {
         const data = snapshot.data(options);
-        return new ProjectTask(data.name, data.description, data.startDate, data.endDate, data.comments, data.links, data.isMilestone, data.status, data.owners);
+        return new ProjectTask(data.name, data.description, data.startDate, data.endDate, data.comments, data.links, data.isMeeting, data.status, data.owners);
     }
 }
