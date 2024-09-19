@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { TaskContext } from '../../../../contexts/TaskContext';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -6,13 +8,11 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 const localizer = momentLocalizer(moment);
 
 const CalendarView = () => {
-  const dummyTasks = [
-    { comments: "HEHEHEHAsdf", description: "By Jordan aaaaa", endDate: "2024-08-31", id: "FmJiYS4JtlQslStnTkog", isMilestone: false, links: "sdfaPLS", name: "Task", owners: ["Blah"], startDate: "2024-08-07", status: "InProgress" },
-    { comments: "wow", description: "By John wow", endDate: "2024-09-20", id: "FmJiYS4JtlQslStnTkoh", isMilestone: true, links: "asd", name: "Task 2", owners: ["Blah"], startDate: "2024-09-07", status: "Backlog" },
-    { comments: "done task", description: "By Alex", endDate: "2024-09-12", id: "FmJiYS4JtlQslStnTkop", isMilestone: false, links: "asd", name: "Task 3", owners: ["John"], startDate: "2024-09-07", status: "Done" },
-  ];
+  const { projectId } = useParams();
+  const { projectTasks } = useContext(TaskContext);
+  const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
 
-  const events = dummyTasks.map(task => ({
+  const events = tasks.map(task => ({
     title: task.name,
     start: new Date(task.endDate),
     end: new Date(task.endDate),
@@ -44,7 +44,7 @@ const CalendarView = () => {
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '90vh'}}>
       <h1 style={{ textAlign: 'left', padding: '40px 0 0 0' }}>Calendar View</h1>
-      <hr /><br/>
+      <hr style={{padding: '0 1500px 0 0', marginTop: '-20px'}}/><br/>
       <div style={{flexGrow: '1', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <Calendar
           localizer={localizer}
