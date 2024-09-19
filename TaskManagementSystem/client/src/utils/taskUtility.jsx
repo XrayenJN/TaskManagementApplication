@@ -1,36 +1,31 @@
 export const sortTaskByAToZ = (tasksDict) => {
     const taskArrays = Object.entries(tasksDict);
     taskArrays.sort(([, a], [, b]) => a.name > b.name);
-    const sortedTaskDict = Object.fromEntries(taskArrays);
-    return sortedTaskDict
+    return Object.fromEntries(taskArrays);
 }
 
 export const sortTaskByZToA = (tasksDict) => {
     const taskArrays = Object.entries(tasksDict);
     taskArrays.sort(([, a], [, b]) => a.name < b.name);
-    const sortedTaskDict = Object.fromEntries(taskArrays);
-    return sortedTaskDict
+    return Object.fromEntries(taskArrays);
 }
 
 export const sortTaskByDueDate = (tasksDict) => {
     const taskArrays = Object.entries(tasksDict);
     taskArrays.sort(([, a], [, b]) => new Date(a.endDate) - new Date(b.endDate));
-    const sortedTaskDict = Object.fromEntries(taskArrays);
-    return sortedTaskDict
+    return Object.fromEntries(taskArrays);
 }
 
-export const filterTaskByCurrentStatus = (tasksDict) => {
+export const filterTaskByActiveStatus = (tasksDict) => {
     const taskArrays = Object.entries(tasksDict);
     taskArrays.filter(([, a]) => new Date(a.endDate) < new Date());
-    const filteredTaskDict = Object.fromEntries(taskArrays);
-    return filteredTaskDict
+    return Object.fromEntries(taskArrays);
 }
 
 export const filterTaskByExpiredStatus = (tasksDict) => {
     const taskArrays = Object.entries(tasksDict);
     taskArrays.filter(([, a]) => new Date(a.endDate) > new Date());
-    const filteredTaskDict = Object.fromEntries(taskArrays);
-    return filteredTaskDict
+    return Object.fromEntries(taskArrays);
 }
 
 export const filterTaskByOwner = (taskDict, ownerDict) => {
@@ -51,7 +46,5 @@ export const filterTaskByOwner = (taskDict, ownerDict) => {
         return indexA - indexB;
     });
 
-    // Convert back to object
-    const filteredTaskDict = Object.fromEntries(filteredTaskArrays);
-    return filteredTaskDict;
+    return Object.fromEntries(filteredTaskArrays);
 }
