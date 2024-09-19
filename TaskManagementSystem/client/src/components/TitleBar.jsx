@@ -166,7 +166,6 @@ const TitleBar = () => {
       <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>{getPageHeading()}</h1>
       {user && (
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
-          {inViewPage && (
             <div 
             onMouseEnter={handleNotificationToggle}
             onMouseLeave={handleNotificationToggle}
@@ -216,7 +215,6 @@ const TitleBar = () => {
               </div>
             )}
           </div>
-          )}
           
           <div 
             onMouseEnter={handleDropdownToggle}
