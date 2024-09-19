@@ -73,11 +73,12 @@ const ProjectList = () => {
       setUserId(user.userId);
       setIsEmailValid(true);
       await updateProjectContributors(projectId, userId);
-      await updateUserProject(userId, projectId);
+      const newUserRef = await updateUserProject(userId, projectId);
+      const newUserDetails = await getUser(newUserRef)
       setRefreshTrigger(true);
       alert('The new contributors has been added.');
       setEmail('');
-      setContributors(value => [...value, user.email])
+      setContributors(value => [...value, newUserDetails])
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
@@ -214,10 +215,6 @@ const ProjectList = () => {
 
   useEffect(() => {
     console.log(contributors)
-    const contributorsEmail = contributors.map(contributor => contributor.email)
-    setEditedProject({
-      contributors: contributorsEmail
-    })
   }, [contributors])
 
   // if (loading) {

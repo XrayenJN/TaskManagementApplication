@@ -102,6 +102,8 @@ export const updateUserProject = async(uid, pid) => {
   await updateDoc(ref, {
     projects: arrayUnion(projectRef)
   });
+
+  return ref;
 }
 
 /**
