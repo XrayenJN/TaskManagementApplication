@@ -5,6 +5,7 @@ import TitleBar from './components/TitleBar';
 import { AuthProvider } from './contexts/AuthContext';
 import ListView from './pages/ListView';
 import KanbanView from './pages/HomePage/TaskViews/KanBanBoardView/KanBanBoard';
+import CalendarView from './pages/HomePage/TaskViews/CalenderView/CalenderView';
 import NewProjectTaskForm from './pages/NewProjectTaskForm';
 import NewProjectForm from './pages/HomePage/NewProjectForm';
 import ProjectList from './pages/HomePage/HomeView';
@@ -32,7 +33,8 @@ function App() {
               <TitleBar toggleNavbar={() => {}} />
               <PrivateRoute path="/project/:projectId/timeline" exact={true} component={GanttChart} />
               <PrivateRoute path="/project/:projectId" exact={true} component={ListView} />
-              <Route path="/project/:projectId/kanban" component={KanbanView} />+
+              <Route path="/project/:projectId/kanban" component={KanbanView} />
+              <Route path="/project/:projectId/calendar" component={CalendarView} />
               <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
             </TaskProvider>
           </ProjectProvider>
