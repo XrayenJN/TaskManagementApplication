@@ -262,7 +262,7 @@ const ProjectList = () => {
                   <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', fontSize: '24px' }}>{project.name}</p>
                   <div style={{ textAlign: 'left' }}>
                     <div>{project.description}</div>
-                    <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i></div>
+                    <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfEachProject.join(", ")}</i></div>
                   </div>
                 </div>
               </Link>
