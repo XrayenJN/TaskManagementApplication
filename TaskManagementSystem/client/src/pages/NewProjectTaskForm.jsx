@@ -3,11 +3,9 @@ import { useHistory, useParams } from 'react-router-dom';
 import { createNewProjectTaskDocument, getContributors } from '../firebase/firebase';
 import { ProjectTask } from '../models/ProjectTask';
 import { TaskContext } from '../contexts/TaskContext';
-import { TimePicker } from 'antd';
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { DatePicker, Space } from 'antd';
 
-dayjs.extend(customParseFormat);
+
 
 
 const NewProjectTaskForm = () => {
@@ -36,6 +34,11 @@ const NewProjectTaskForm = () => {
     history.goBack();
   };
 
+  const { RangePicker } = DatePicker;
+  const onOk = (value) => {
+    setMeetingStartTime(value[0])
+    setMeetingEndTime(value[1])
+  };
   //Find all the contributors of the projects
   const retrieveContributors = async () => {
     const theContributors = await getContributors(projectId);
@@ -86,29 +89,16 @@ const NewProjectTaskForm = () => {
     else {
       return (
         <div>
-
-          <div>
-            <h2>Start Date:</h2>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+          <h2>Meeting time</h2>
+          <Space direction="vertical" size={12}>
+            <RangePicker
+              showTime={{
+                format: 'HH:mm',
+              }}
+              format="YYYY-MM-DD HH:mm"
+              onOk={onOk}
             />
-            <div style={{ paddingTop: '5px' }}>
-              <TimePicker onChange={(time, timeString) => setMeetingStartTime(time)} defaultOpenValue={dayjs('00:00:00', 'HH:mm:ss')} />
-            </div>
-          </div>
-          <div>
-            <h2>End Date:</h2>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-            <div style={{ paddingTop: '5px' }}>
-              <TimePicker onChange={(time, timeString) => setMeetingEndTime(time)} defaultOpenValue={dayjs('00:00:00', 'HH:mm:ss')} />
-            </div>
-          </div>
+          </Space>
         </div>
       )
     }
