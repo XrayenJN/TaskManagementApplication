@@ -38,6 +38,7 @@ const ProjectProvider = ({ children }) => {
     if (refreshTrigger){
       fetchProjects();
       Object.entries(projects).map(([id, _]) => fetchContributors(id))
+      setRefreshTrigger(false)
     }
   }, [refreshTrigger])
 
