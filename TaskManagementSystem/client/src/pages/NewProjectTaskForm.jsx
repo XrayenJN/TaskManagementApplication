@@ -1,8 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { createNewProjectTaskDocument, getContributors } from '../firebase/firebase';
 import { ProjectTask } from '../models/ProjectTask';
 import { TaskContext } from '../contexts/TaskContext';
+import { TimePicker } from 'antd';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
+
 
 const NewProjectTaskForm = () => {
   /**
@@ -19,11 +25,20 @@ const NewProjectTaskForm = () => {
   const [isMeeting, setMeeting] = useState(false);
   const [status, setStatus] = useState(null);
   const [owners, setOwners] = useState([]);
+  const [meetingTime, setMeetingTime] = useState(null);
   const [contributors, setContributors] = useState([]);
   const history = useHistory();
   const { projectId } = useParams();
   const { refreshTasks } = useContext(TaskContext);
 
+  const goBack = () => {
+    history.goBack();
+  };
+
+  
+  const onChange = (time, timeString) => {
+    setMeetingTime(time)
+  }
   //Find all the contributors of the projects
   const retrieveContributors = async () => {
     const theContributors = await getContributors(projectId);
@@ -32,11 +47,34 @@ const NewProjectTaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newProjectTask = new ProjectTask( name, description, startDate, endDate, comments, links, isMeeting, status, owners );
+    const newProjectTask = new ProjectTask( name, description, startDate, endDate, comments, links, isMeeting, status, owners, meetingTime);
 
     await createNewProjectTaskDocument(newProjectTask, projectId);
     refreshTasks();  // Call refreshTasks function
     history.replace(`/project/${projectId}`);
+  };
+
+  const meetingComponent = () => {
+    if (!isMeeting){
+      return (
+        <div style={{ paddingTop: '10px' }}>
+          <select onChange={(e) => setStatus(e.target.value)} required>
+            <option value="">Select Status</option>
+            <option value="Backlog">Backlog</option>
+            <option value="Ready">Ready</option>
+            <option value="InProgress">InProgress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+      )
+    }
+    else {
+      return (
+        <div style={{ paddingTop: '10px',  marginTop: '10px', textAlign: '-webkit-match-parent', alignItems: 'center' }}>
+        <TimePicker onChange={onChange} defaultOpenValue={dayjs('00:00:00', 'HH:mm:ss')} />
+        </div>
+      )
+    }
   };
 
   retrieveContributors()
@@ -71,7 +109,7 @@ const NewProjectTaskForm = () => {
             onChange={(e) => setLinks(e.target.value)}
           />
         </div>
-        <div style={{ paddingTop: '10px' }}>
+        <div style={{ paddingTop: '10px' } }>
           <label>
             <input
               type="checkbox"
@@ -80,18 +118,7 @@ const NewProjectTaskForm = () => {
             Meeting
           </label>
         </div>
-        <div style={{ paddingTop: '10px' }}>
-          <select
-            onChange={(e) => setStatus(e.target.value)}
-            required
-          >
-            <option value="">Select Status</option>
-            <option value="Backlog">Backlog</option>
-            <option value="Ready">Ready</option>
-            <option value="InProgress">InProgress</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </div>
+        {meetingComponent()}
         <div style={{ paddingTop: '10px' }}>
           <select
             onChange={(e) => setOwners(e.target.value)}
@@ -121,8 +148,13 @@ const NewProjectTaskForm = () => {
             onChange={(e) => setEndDate(e.target.value)}
           />
         </div>
-        <button type="submit">Create Project Task</button>
+        <div style={{paddingTop: "10px"}}>
+          <button type="submit">Create Project Task</button>
+        </div>
       </form>
+      <div style={{paddingTop: "10px"}}>
+        <button onClick={goBack}>Back</button>
+      </div>
     </div>
   );
 };

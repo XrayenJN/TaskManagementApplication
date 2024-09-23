@@ -1,5 +1,5 @@
 export class ProjectTask {
-    constructor(name, description, startDate, endDate, comments, links, isMeeting, status, owners){
+    constructor(name, description, startDate, endDate, comments, links, isMeeting, status, owners, time){
         this.name = name;
         this.description = description;
         this.comments = comments;
@@ -8,9 +8,11 @@ export class ProjectTask {
         this.status = status;
         this.owners = owners;
 
+
         // yyyy-mm-dd
         this.startDate = startDate;
         this.endDate = endDate;
+        this.meetingTime = this.meetingTime;
     }
 }
 
@@ -26,6 +28,7 @@ export const projectTaskConverter = {
             owners: projectTask.owners,
             startDate: projectTask.startDate,
             endDate: projectTask.endDate,
+            startMeetingTime: projectTask.meetingTime
         }
     },
     fromFirestore: (snapshot, options) => {
