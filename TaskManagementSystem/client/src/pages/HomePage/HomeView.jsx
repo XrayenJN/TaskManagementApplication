@@ -50,6 +50,11 @@ const ProjectList = () => {
     setShowPopup(false);
   };
 
+  const handleClose = (event) => {
+    event.preventDefault();
+    setShowPopup(false);
+  };
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setIsEmailValid(false);
@@ -178,7 +183,7 @@ const ProjectList = () => {
               <hr />
               <div>
                 <button onClick={handleSave}>Save</button>
-                <button onClick={() => setShowPopup(false)}>Close</button>
+                <button onClick={handleClose}>Close</button>
               </div>
             </div>
           </div>
@@ -222,21 +227,21 @@ const ProjectList = () => {
           : []
 
         return (
-          <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+          <div style={{ backgroundColor, padding: '20px', marginBottom: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
-                <div style={{ textAlign: 'left', color: 'black' }}>
-                  <div>{project.description}</div>
-                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i> </div>
+              <Link to={`/project/${id}`} onClick={() => setChosenProjectId(id)} style={{ flex: 1, textDecoration: 'none', color: 'black', display: 'block' }}>
+                <div style={{ paddingRight: '20px' }}>
+                  <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', fontSize: '24px' }}>{project.name}</p>
+                  <div style={{ textAlign: 'left' }}>
+                    <div>{project.description}</div>
+                    <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i></div>
+                  </div>
                 </div>
-              </div>
-              <div>
+              </Link>
+              <div style={{ marginLeft: '20px' }}>
                 <div style={{ color: 'black', fontSize: '18px' }}>
-                <Link to={`/project/${id}`} onClick={() => setChosenProjectId(id)}>
                   <div><b>Start date:</b> {project.startDate}</div>
                   <div><b>End date:</b> {project.endDate}</div>
-                </Link>
                 </div>
                 <div style={{ margin: '15px 0', textAlign: 'right' }}>
                   {showEditProjectButton(project)}
