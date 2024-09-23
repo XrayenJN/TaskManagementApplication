@@ -81,9 +81,6 @@ const ProjectList = () => {
     if (result.length > 0) {
       setIsEmailValid(true);
       const user = result[0]
-      // await updateProjectContributors(projectId, user.userId);
-      // const newUserRef = await updateUserProject(user.userId, projectId);
-      // const newUserDetails = await getUser(newUserRef)
       alert('The email is valid');
       setContributors(value => [...value, user])
       setRefreshTrigger(true);
