@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
+import '../../../../assets/styles/KanbanView.css';
 
 const KanbanView = () => {
   const currentDate = new Date();
