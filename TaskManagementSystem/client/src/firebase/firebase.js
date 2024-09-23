@@ -142,12 +142,45 @@ export const createNewProjectDocument = async(project) => {
  * @param {*} uid user id
  */
 export const updateProjectContributors = async(pid, uid) => {
-  console.log(pid, uid)
   const pRef = doc(db, "projects", pid);
   const uRef = doc(db, "users", uid);
 
   await updateDoc(pRef, {
     contributors: arrayUnion(uRef)
+  })
+}
+
+export const updateProject = async (pid, newUpdateProject) => {
+  console.log(pid)
+  console.log(newUpdateProject)
+  const pRef = doc(db, 'projects', pid);
+  const userCollection = collection(db, "users");
+
+  const contributorsRef = []
+ 
+  await Promise.all(
+    newUpdateProject.contributors.map(async (eachEmail) => {
+      const q = query(userCollection, where("email", "==", eachEmail))
+
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((res) => {
+        const uRef = doc(db, "users", res.id)
+        contributorsRef.push(uRef)
+      })
+    })
+  );
+  
+  // this one, the contributors are the ref, not the email anymore
+  const finalUpdatedProject = { ...newUpdateProject, contributors: [] }
+
+  await updateDoc(pRef, finalUpdatedProject);
+  
+  //manually update the contributors again
+  contributorsRef.forEach(async ref => {
+    await updateDoc(pRef, {
+      contributors: arrayUnion(ref)
+    })
   })
 }
 
@@ -163,7 +196,7 @@ export const checkUsersExists = async(userEmail) => {
   const user = []
 
   querySnapshot.forEach((doc) => {
-    user.push({userId: doc.id})
+    user.push({...doc.data()})
   })
   return user;
 }

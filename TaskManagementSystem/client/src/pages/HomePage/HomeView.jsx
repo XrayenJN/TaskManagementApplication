@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { db, checkUsersExists, getContributors, updateProjectContributors, updateUserProject, getUser } from '../../firebase/firebase';
+import { db, checkUsersExists, getContributors, updateProjectContributors, updateUserProject, getUser, updateProject } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { doc, updateDoc } from 'firebase/firestore';
 import { ProjectContext } from '../../contexts/ProjectContext';
 import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';
 
 const ProjectList = () => {
-  const { projects, setChosenProjectId, allProjectContributors, refreshTrigger, setRefreshTrigger } = useContext(ProjectContext);
+  const { projects, setChosenProjectId, allProjectContributors, setRefreshTrigger } = useContext(ProjectContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [email, setEmail] = useState('');
@@ -21,6 +21,10 @@ const ProjectList = () => {
     endDate: '',
     contributors: []
   });
+
+  useEffect(() => {
+    console.log(allProjectContributors)
+  }, [allProjectContributors])
 
   const retrieveContributors = async (contributors) => {
     contributors.forEach(contributor => 
@@ -55,10 +59,16 @@ const ProjectList = () => {
   };
 
   const handleSave = async () => {
-    const projectRef = doc(db, 'projects', projectId);
-    await updateDoc(projectRef, editedProject);
+    await updateProject(projectId, editedProject);
+    setRefreshTrigger(true)
     setShowPopup(false);
+    // location.reload();
   };
+
+  const handleClose = async () => {
+    setRefreshTrigger(true);
+    setShowPopup(false);
+  }
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -66,24 +76,28 @@ const ProjectList = () => {
   };
 
   const handleAddContributor = async () => {
+    console.log(email)
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
     if (result.length > 0) {
-      const user = result[0]
-      setUserId(user.userId);
       setIsEmailValid(true);
-      await updateProjectContributors(projectId, userId);
-      const newUserRef = await updateUserProject(userId, projectId);
-      const newUserDetails = await getUser(newUserRef)
       setRefreshTrigger(true);
-      alert('The new contributors has been added.');
+      const user = result[0]
+      // await updateProjectContributors(projectId, user.userId);
+      // const newUserRef = await updateUserProject(user.userId, projectId);
+      // const newUserDetails = await getUser(newUserRef)
+      alert('The email is valid');
+      setContributors(value => [...value, user])
       setEmail('');
-      setContributors(value => [...value, newUserDetails])
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
     }
   }
+
+  useEffect(() => {
+    console.log(contributors)
+  }, [contributors])
 
   const handleRemoveContributor = async (contributorEmail) => {
     console.log(contributorEmail)
@@ -199,7 +213,7 @@ const ProjectList = () => {
               <hr />
               <div>
                 <button onClick={handleSave}>Save</button>
-                <button onClick={() => setShowPopup(false)}>Close</button>
+                <button onClick={handleClose}>Close</button>
               </div>
             </div>
           </div>
@@ -214,7 +228,10 @@ const ProjectList = () => {
   }, [userId]);
 
   useEffect(() => {
-    console.log(contributors)
+    setEditedProject({
+      ...editedProject,
+      contributors: contributors.map(contributor => contributor.email),
+    });
   }, [contributors])
 
   // if (loading) {

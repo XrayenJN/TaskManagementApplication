@@ -16,6 +16,7 @@ const ProjectProvider = ({ children }) => {
       const userProjectIds = await getUserProjectIds(user.uid);
       const projects = await getProjects(userProjectIds);
       setProjects({}) // reset it back
+      setAllProjectContributors({})
       projects.forEach(project => setProjects(value => ({...value, [project.id]: project})))
     }
   };
@@ -30,16 +31,13 @@ const ProjectProvider = ({ children }) => {
   }, [user, refreshTrigger])
 
   useEffect(() => {
-    console.log(allProjectContributors)
-  }, [allProjectContributors])
-
-  useEffect(() => {
     Object.entries(projects).map(([id, _]) => fetchContributors(id))
   }, [projects])
 
   useEffect(() => {
     if (refreshTrigger){
       fetchProjects();
+      Object.entries(projects).map(([id, _]) => fetchContributors(id))
     }
   }, [refreshTrigger])
 
