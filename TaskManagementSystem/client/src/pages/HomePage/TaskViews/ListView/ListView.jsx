@@ -34,27 +34,19 @@ const ListView = () => {
                 <i>{task.endDate}</i>
                 </div>
                 <div style={{ backgroundColor: '#3BAEA0', padding: '20px', cursor: 'pointer' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                    <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{task.name}</p>
-                    <div style={{ textAlign: 'left', color: 'black' }}>
-                        <div>{task.description}</div>
-                        <div style={{ margin: '10px 0' }}>Contributors: <i>{task.owners.join(", ")}</i> </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                        <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{task.name}</p>
+                        <div style={{ textAlign: 'left', color: 'black' }}>
+                            <div>{task.description}</div>
+                            <div style={{ margin: '10px 0' }}>Contributors: <i>{task.owners.join(", ")}</i> </div>
+                        </div>
+                        </div>
                     </div>
-                    </div>
-                    {/* <div>
-                    <div style={{ color: 'black', fontSize: '18px' }}>
-                        <Link to={`/project/${projectId}/task/${task.id}`}>
-                        <div><b>Start date:</b> {task.startDate}</div>
-                        <div><b>End date:</b> {task.endDate}</div>
-                        </Link>
-                    </div>
-                    </div> */}
                 </div>
-                </div>
-            </div>
+        </div>
             ))}
-        </div>  
+    </div>  
     </div>
   );
 }
