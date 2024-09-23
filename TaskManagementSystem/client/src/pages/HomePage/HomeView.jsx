@@ -227,7 +227,7 @@ const ProjectList = () => {
           : []
 
         return (
-          <div style={{ backgroundColor, padding: '20px', marginBottom: '20px' }}>
+          <div key={project.name} style={{ backgroundColor, padding: '20px', marginBottom: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Link to={`/project/${id}`} onClick={() => setChosenProjectId(id)} style={{ flex: 1, textDecoration: 'none', color: 'black', display: 'block' }}>
                 <div style={{ paddingRight: '20px' }}>
