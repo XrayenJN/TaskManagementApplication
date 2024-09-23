@@ -51,6 +51,11 @@ const ProjectList = () => {
     setShowPopup(false);
   };
 
+  const handleClose = (event) => {
+    event.preventDefault();
+    setShowPopup(false);
+  };
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setIsEmailValid(false);
@@ -179,7 +184,7 @@ const ProjectList = () => {
               <hr />
               <div>
                 <button onClick={handleSave}>Save</button>
-                <button onClick={() => setShowPopup(false)}>Close</button>
+                <button onClick={handleClose}>Close</button>
               </div>
             </div>
           </div>
