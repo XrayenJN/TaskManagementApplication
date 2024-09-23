@@ -254,15 +254,15 @@ export const removeProjectWithAllTasks = async (projectId) => {
   const ref = doc(db, "projects", projectId);
   const docSnap = await getDoc(ref);
 
-if (docSnap.exists()) {
-  const projectDetails = docSnap.data();
-  const tasksRefs = projectDetails.tasks;
-  tasksRefs.forEach(async taskRef => await deleteDoc(taskRef))
-  await deleteDoc(ref);
-} else {
-  // docSnap.data() will be undefined in this case
-  console.log("No such document!");
-}
+  if (docSnap.exists()) {
+    const projectDetails = docSnap.data();
+    const tasksRefs = projectDetails.tasks;
+    tasksRefs.forEach(async taskRef => await deleteDoc(taskRef))
+    await deleteDoc(ref);
+  } else {
+    // docSnap.data() will be undefined in this case
+    // console.log("No such document!");
+  }
 }
 
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {
