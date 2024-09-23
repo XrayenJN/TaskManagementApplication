@@ -20,8 +20,7 @@ const ProjectList = () => {
     endDate: '',
   });
 
-  const togglePopup = (event, project) => {
-    event.preventDefault();
+  const togglePopup = (project) => {
     setShowPopup(!showPopup);
     setIsEmailValid(false);
     setEmail('');
@@ -79,7 +78,7 @@ const ProjectList = () => {
   const showEditProjectButton = (project) => {
     return (
       <div>
-        <button onClick={(event) => togglePopup(event, project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
+        <button onClick={(event) => togglePopup(project)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
         {showPopup && (
           <div className="popup">
             <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
