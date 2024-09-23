@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { db, checkUsersExists, getContributors, updateProjectContributors, updateUserProject, getUser, updateProject } from '../../firebase/firebase';
+import { db, checkUsersExists, getContributors, updateProjectContributors, updateUserProject, getUser, updateProject, removeProjectWithAllTasks } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { doc, updateDoc } from 'firebase/firestore';
 import { ProjectContext } from '../../contexts/ProjectContext';
@@ -21,10 +21,6 @@ const ProjectList = () => {
     endDate: '',
     contributors: []
   });
-
-  useEffect(() => {
-    console.log(allProjectContributors)
-  }, [allProjectContributors])
 
   const retrieveContributors = async (contributors) => {
     contributors.forEach(contributor => 
@@ -59,10 +55,16 @@ const ProjectList = () => {
   };
 
   const handleSave = async () => {
-    await updateProject(projectId, editedProject);
-    setRefreshTrigger(true)
+    if (contributors.length > 0){
+      await updateProject(projectId, editedProject);
+      setRefreshTrigger(true)
+      setShowPopup(false);
+      return;
+    }
+    // otherwise just remove all the task that we have within in
+    removeProjectWithAllTasks(projectId)
+    setRefreshTrigger(true);
     setShowPopup(false);
-    // location.reload();
   };
 
   const handleClose = async () => {
@@ -76,7 +78,6 @@ const ProjectList = () => {
   };
 
   const handleAddContributor = async () => {
-    console.log(email)
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
     if (result.length > 0) {
@@ -95,12 +96,9 @@ const ProjectList = () => {
     }
   }
 
-  useEffect(() => {
-    console.log(contributors)
-  }, [contributors])
-
   const handleRemoveContributor = async (contributorEmail) => {
-    console.log(contributorEmail)
+    const filteredContributors = contributors.filter(email => email !== contributorEmail);
+    setContributors(filteredContributors)
   }
 
   const showEditProjectButton = (project) => {

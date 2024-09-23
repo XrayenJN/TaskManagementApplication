@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } from "firebase/auth";
-import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId } from "firebase/firestore";
+import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId, deleteDoc } from "firebase/firestore";
 import { User, userConverter } from "../models/User";
 import { projectTaskConverter } from "../models/ProjectTask";
 import { projectConverter } from "../models/Project";
@@ -151,8 +151,6 @@ export const updateProjectContributors = async(pid, uid) => {
 }
 
 export const updateProject = async (pid, newUpdateProject) => {
-  console.log(pid)
-  console.log(newUpdateProject)
   const pRef = doc(db, 'projects', pid);
   const userCollection = collection(db, "users");
 
@@ -182,10 +180,6 @@ export const updateProject = async (pid, newUpdateProject) => {
       contributors: arrayUnion(ref)
     })
   })
-}
-
-export const removeProjectContributors = async(pid, userEmail) => {
-  const pRef = doc(db, "projects", pid);
 }
 
 export const checkUsersExists = async(userEmail) => {
@@ -254,6 +248,21 @@ export const getUser = async(userRef) => {
     return snapshot.data();
   } 
   return null
+}
+
+export const removeProjectWithAllTasks = async (projectId) => {
+  const ref = doc(db, "projects", projectId);
+  const docSnap = await getDoc(ref);
+
+if (docSnap.exists()) {
+  const projectDetails = docSnap.data();
+  const tasksRefs = projectDetails.tasks;
+  tasksRefs.forEach(async taskRef => await deleteDoc(taskRef))
+  await deleteDoc(ref);
+} else {
+  // docSnap.data() will be undefined in this case
+  console.log("No such document!");
+}
 }
 
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {
