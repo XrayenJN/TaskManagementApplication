@@ -26,9 +26,9 @@ function App() {
           <Route path="/login/callback" component={LoginCallback}/>
           <PrivateRoute path="/profile" component={Profile}/>
           <Route path="/settings" component={Settings} />
-          <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
           <ProjectProvider>
             <PrivateRoute path="/projects" component={ProjectList} />
+            <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
             <TaskProvider>
               <TitleBar toggleNavbar={() => {}} />
               <PrivateRoute path="/project/:projectId/timeline" exact={true} component={GanttChart} />

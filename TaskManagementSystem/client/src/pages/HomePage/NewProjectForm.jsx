@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { createNewProjectDocument } from '../../firebase/firebase';
 import { Project } from '../../models/Project';
+import { ProjectContext } from '../../contexts/ProjectContext';
 
 const NewProjectForm = () => {
+  const { setRefreshTrigger } = useContext(ProjectContext);
   const [name, setName] = useState('New Project');
   const [description, setDescription] = useState('No Description Given');
   const [startDate, setStartDate] = useState(new Date());
@@ -18,6 +20,7 @@ const NewProjectForm = () => {
      * @todo : Ethan said that "this return needs to be cleaned up its way too long"
      */
     await createNewProjectDocument(newProject);
+    setRefreshTrigger(true)
     history.replace('/projects');
   };
 
