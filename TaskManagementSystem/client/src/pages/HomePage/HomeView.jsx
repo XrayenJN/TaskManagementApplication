@@ -222,28 +222,28 @@ const ProjectList = () => {
           : []
 
         return (
-          <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
-                <div style={{ textAlign: 'left', color: 'black' }}>
-                  <div>{project.description}</div>
-                  <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i> </div>
+          <Link to={`/project/${id}`} onClick={() => setChosenProjectId(id)}>
+            <div style={{ backgroundColor, padding: '20px', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
+                  <div style={{ textAlign: 'left', color: 'black' }}>
+                    <div>{project.description}</div>
+                    <div style={{ margin: '10px 0' }}>Contributors: <i>{contributorsOfProject.join(", ")}</i> </div>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <div style={{ color: 'black', fontSize: '18px' }}>
-                <Link to={`/project/${id}`} onClick={() => setChosenProjectId(id)}>
-                  <div><b>Start date:</b> {project.startDate}</div>
-                  <div><b>End date:</b> {project.endDate}</div>
-                </Link>
-                </div>
-                <div style={{ margin: '15px 0', textAlign: 'right' }}>
-                  {showEditProjectButton(project)}
+                <div>
+                  <div style={{ color: 'black', fontSize: '18px' }}>
+                    <div><b>Start date:</b> {project.startDate}</div>
+                    <div><b>End date:</b> {project.endDate}</div>
+                  </div>
+                  <div style={{ margin: '15px 0', textAlign: 'right' }}>
+                    {showEditProjectButton(project)}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         )
       })}
     </div>
