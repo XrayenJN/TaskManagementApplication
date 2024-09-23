@@ -25,7 +25,8 @@ const NewProjectTaskForm = () => {
   const [isMeeting, setMeeting] = useState(false);
   const [status, setStatus] = useState(null);
   const [owners, setOwners] = useState([]);
-  const [meetingTime, setMeetingTime] = useState(null);
+  const [meetingStartTime, setMeetingStartTime] = useState(null);
+  const [meetingEndTime, setMeetingEndTime] = useState(null);
   const [contributors, setContributors] = useState([]);
   const history = useHistory();
   const { projectId } = useParams();
@@ -35,19 +36,15 @@ const NewProjectTaskForm = () => {
     history.goBack();
   };
 
-  
-  const onChange = (time, timeString) => {
-    setMeetingTime(time)
-  }
   //Find all the contributors of the projects
   const retrieveContributors = async () => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
-  }  
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newProjectTask = new ProjectTask( name, description, startDate, endDate, comments, links, isMeeting, status, owners, meetingTime);
+    const newProjectTask = new ProjectTask(name, description, startDate, endDate, comments, links, isMeeting, status, owners, meetingTime);
 
     await createNewProjectTaskDocument(newProjectTask, projectId);
     refreshTasks();  // Call refreshTasks function
@@ -55,23 +52,63 @@ const NewProjectTaskForm = () => {
   };
 
   const meetingComponent = () => {
-    if (!isMeeting){
+    if (!isMeeting) {
       return (
-        <div style={{ paddingTop: '10px' }}>
-          <select onChange={(e) => setStatus(e.target.value)} required>
-            <option value="">Select Status</option>
-            <option value="Backlog">Backlog</option>
-            <option value="Ready">Ready</option>
-            <option value="InProgress">InProgress</option>
-            <option value="Completed">Completed</option>
-          </select>
+        <div>
+          <div style={{ paddingTop: '10px' }}>
+            <select onChange={(e) => setStatus(e.target.value)} required>
+              <option value="">Select Status</option>
+              <option value="Backlog">Backlog</option>
+              <option value="Ready">Ready</option>
+              <option value="InProgress">InProgress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <h2>Start Date:</h2>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+          <div>
+            <h2>End Date:</h2>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
         </div>
       )
     }
     else {
       return (
-        <div style={{ paddingTop: '10px',  marginTop: '10px', textAlign: '-webkit-match-parent', alignItems: 'center' }}>
-        <TimePicker onChange={onChange} defaultOpenValue={dayjs('00:00:00', 'HH:mm:ss')} />
+        <div>
+
+          <div>
+            <h2>Start Date:</h2>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <div style={{ paddingTop: '5px' }}>
+              <TimePicker onChange={(time, timeString) => setMeetingStartTime(time)} defaultOpenValue={dayjs('00:00:00', 'HH:mm:ss')} />
+            </div>
+          </div>
+          <div>
+            <h2>End Date:</h2>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+            <div style={{ paddingTop: '5px' }}>
+              <TimePicker onChange={(time, timeString) => setMeetingEndTime(time)} defaultOpenValue={dayjs('00:00:00', 'HH:mm:ss')} />
+            </div>
+          </div>
         </div>
       )
     }
@@ -89,27 +126,27 @@ const NewProjectTaskForm = () => {
             placeholder='Project Task name'
             onChange={(e) => setName(e.target.value)}
             required
-          />  
+          />
         </div>
-        <div style={{paddingTop:'10px'}}>
+        <div style={{ paddingTop: '10px' }}>
           <textarea
             placeholder='Description'
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
-        <div style={{paddingTop:'10px'}}>
+        <div style={{ paddingTop: '10px' }}>
           <textarea
             placeholder='Comments'
             onChange={(e) => setComments(e.target.value)}
           />
         </div>
-        <div style={{paddingTop:'10px'}}>
+        <div style={{ paddingTop: '10px' }}>
           <textarea
             placeholder='Links'
             onChange={(e) => setLinks(e.target.value)}
           />
         </div>
-        <div style={{ paddingTop: '10px' } }>
+        <div style={{ paddingTop: '10px' }}>
           <label>
             <input
               type="checkbox"
@@ -118,7 +155,6 @@ const NewProjectTaskForm = () => {
             Meeting
           </label>
         </div>
-        {meetingComponent()}
         <div style={{ paddingTop: '10px' }}>
           <select
             onChange={(e) => setOwners(e.target.value)}
@@ -132,27 +168,14 @@ const NewProjectTaskForm = () => {
             ))}
           </select>
         </div>
-        <div>
-          <h2>Start Date:</h2>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </div>
-        <div>
-          <h2>End Date:</h2>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </div>
-        <div style={{paddingTop: "10px"}}>
+        {meetingComponent()}
+
+
+        <div style={{ paddingTop: "10px" }}>
           <button type="submit">Create Project Task</button>
         </div>
       </form>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button onClick={goBack}>Back</button>
       </div>
     </div>
