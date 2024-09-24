@@ -11,6 +11,7 @@ const KanbanView = () => {
   const { projectTasks } = useContext(TaskContext);
   const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
 
+  /* Used for future implementation of task edit popup */
   const handleTaskClick = (task) => {
     console.log('Task clicked:', task);
   };
