@@ -90,7 +90,6 @@ const ListView = () => {
   };
 
   const removeTask = async(taskId) => {
-    console.log(taskId)
     await removeParticularTask(taskId);
     refreshTasks();
     setShowPopup(false)
