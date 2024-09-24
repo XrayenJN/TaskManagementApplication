@@ -93,6 +93,7 @@ const ListView = () => {
     console.log(taskId)
     await removeParticularTask(taskId);
     refreshTasks();
+    setShowPopup(false)
   }
 
   const handleFilterButtonClick = () => {
@@ -203,9 +204,6 @@ const ListView = () => {
                   <button onClick={() => togglePopup(task)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
                     Edit Project Details
                   </button>
-                  <button onClick={() => removeTask(task.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-                    Remove Task
-                  </button>
                   {showPopup && (
                   <div className="popup">
                     <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
@@ -295,6 +293,9 @@ const ListView = () => {
                     <hr />
                     <div>
                       <button onClick={handleSave}>Save</button>
+                      <button onClick={() => removeTask(task.id)}>
+                        Remove Task
+                      </button>
                       <button onClick={() => setShowPopup(false)}>Close</button>
                     </div>
                   </div>
