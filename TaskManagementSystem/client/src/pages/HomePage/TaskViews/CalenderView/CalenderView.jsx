@@ -27,10 +27,10 @@ const CalendarView = () => {
     const now = new Date();
     let backgroundColor = '#A5A58D';
 
-    if (event.status === 'Done') {
+    if (event.status === 'Completed') {
       backgroundColor = '#1BA098';
     }
-    else if (new Date(event.end) < now && event.status !== 'Done') {
+    else if (new Date(event.end) < now && event.status !== 'Completed') {
       backgroundColor = '#BD7676';
     }
 
