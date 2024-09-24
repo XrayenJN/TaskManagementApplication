@@ -265,6 +265,11 @@ export const removeProjectWithAllTasks = async (projectId) => {
   }
 }
 
+export const removeParticularTask = async (taskId) => {
+  const ref = doc(db, "projectTasks", taskId);
+  await deleteDoc(ref)
+}
+
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {
   const ref = doc(collection(db, "projectTasks")).withConverter(projectTaskConverter);
   await setDoc(ref, projectTask);

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TaskContext } from '../contexts/TaskContext';
-import { getContributors, getUser, updateTask } from '../firebase/firebase';
+import { getContributors, getUser, removeParticularTask, updateTask } from '../firebase/firebase';
 import Select from 'react-select';
 import { DatePicker, Space } from 'antd';
 import { addTimeToDate, extractDate } from '../utils/dateHandler';
@@ -88,6 +88,12 @@ const ListView = () => {
     refreshTasks();
     setShowPopup(false);
   };
+
+  const removeTask = async(taskId) => {
+    console.log(taskId)
+    await removeParticularTask(taskId);
+    refreshTasks();
+  }
 
   const handleFilterButtonClick = () => {
     setIsFilterOpen(!isFilterOpen);
@@ -196,6 +202,9 @@ const ListView = () => {
                   </div>
                   <button onClick={() => togglePopup(task)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
                     Edit Project Details
+                  </button>
+                  <button onClick={() => removeTask(task.id)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+                    Remove Task
                   </button>
                   {showPopup && (
                   <div className="popup">
