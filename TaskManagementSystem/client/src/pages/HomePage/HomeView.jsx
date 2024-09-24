@@ -233,6 +233,7 @@ const ProjectList = () => {
   Todo make this smaller with the use of a sorting function
   */
   return (
+    document.title = "My Projects | TMS",
     <div style={{ padding: '20px', backgroundColor: '#F4F1E7', height: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>Projects</h1>
