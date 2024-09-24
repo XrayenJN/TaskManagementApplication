@@ -89,12 +89,6 @@ const ListView = () => {
     })
   };
 
-  const [defaultRange, setDefaultRange] = useState([
-    moment().subtract(7, 'days'), // Start date: 7 days ago
-    moment() // End date: today
-  ]);
-
-
   const meetingComponent = () => {
     if (!editedTask.isMeeting) {
       return (
@@ -142,7 +136,7 @@ const ListView = () => {
               showTime={{
                 format: 'HH:mm',
               }}
-              value={defaultRange}
+              value={[moment(editedTask.startDate, "YYYY-MM-DD HH:mm"), moment(editedTask.endDate, "YYYY-MM-DD HH:mm")]}
               // value={[editedTask.startDate, editedTask.endDate]}
               onChange={onChange}
               format="YYYY-MM-DD HH:mm"
