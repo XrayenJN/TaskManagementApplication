@@ -4,28 +4,28 @@ import 'react-slideshow-image/dist/styles.css';
 import '../assets/styles/Slideshow.css';
 
 const slideImages = [
-  '/src/assets/images/about_slideshow/image1.jpg',
-  '/src/assets/images/about_slideshow/image2.jpg',
-  '/src/assets/images/about_slideshow/image3.jpg'
+  '/src/assets/images/about_slideshow/SS-Projects.png',
+  '/src/assets/images/about_slideshow/SS-Kanban.png',
+  '/src/assets/images/about_slideshow/SS-Calendar.png'
 ];
 
 const slideCaptions = [
-  "Caption for Image 1",
-  "Caption for Image 2",
-  "Caption for Image 3"
+  "Home page listing all projects you are contributing to",
+  "Kanban board for managing tasks in a project, categorised by status",
+  "Calendar view categorised by date with a day, week, and month view"
 ];
 
 const Slideshow = () => {
     return (
       <div className="slideshow-container">
-        <Slide duration={5000} transitionDuration={1000}>
+        <Slide duration={4000} transitionDuration={1000}>
           {slideImages.map((image, index) => (
             <div className="each-slide" key={index}>
               <div className="image-container">
                 <img src={image} alt={`slide-${index}`} />
               </div>
               <div className="caption-container">
-                <p>{slideCaptions[index]}</p>
+                <p><i>{slideCaptions[index]}</i></p>
               </div>
             </div>
           ))}
