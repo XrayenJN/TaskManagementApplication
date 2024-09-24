@@ -61,7 +61,7 @@ const TitleBar = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 1 }}>
+    <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 10 }}>
       {inViewPage && (
         <div 
           style={{ marginRight: '20px', cursor: 'pointer' }} 
