@@ -4,6 +4,7 @@ import { createNewProjectTaskDocument, getContributors } from '../firebase/fireb
 import { ProjectTask } from '../models/ProjectTask';
 import { TaskContext } from '../contexts/TaskContext';
 import { DatePicker, Space } from 'antd';
+import { addTimeToDate } from '../utils/dateHandler';
 
 
 
@@ -16,15 +17,13 @@ const NewProjectTaskForm = () => {
    */
   const [name, setName] = useState('New Project Task');
   const [description, setDescription] = useState('No Description Given');
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const [comments, setComments] = useState("Additional information / comments");
   const [links, setLinks] = useState("Links provided here");
   const [isMeeting, setMeeting] = useState(false);
   const [status, setStatus] = useState(null);
   const [owners, setOwners] = useState([]);
-  const [meetingStartTime, setMeetingStartTime] = useState(null);
-  const [meetingEndTime, setMeetingEndTime] = useState(null);
   const [contributors, setContributors] = useState([]);
   const history = useHistory();
   const { projectId } = useParams();
@@ -35,8 +34,8 @@ const NewProjectTaskForm = () => {
   };
 
   const onChange = (_, dateStrings) => {
-    setMeetingStartTime(dateStrings[0])
-    setMeetingEndTime(dateStrings[1])
+    setStartTime(dateStrings[0])
+    setEndTime(dateStrings[1])
   };
 
   const { RangePicker } = DatePicker;
@@ -49,12 +48,10 @@ const NewProjectTaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(selectedRange)
+    const formattedStartDate = startTime ? addTimeToDate(startTime, isMeeting) : startTime 
+    const formattedEndDate = endTime ? addTimeToDate(endTime, isMeeting) : endTime
+    const newProjectTask = new ProjectTask(name, description, formattedStartDate, formattedEndDate, comments, links, isMeeting, status, owners);
 
-
-    const newProjectTask = new ProjectTask(name, description, startDate, endDate, comments, links, isMeeting, status, owners, meetingStartTime, meetingEndTime);
-
-    console.log(newProjectTask)
     await createNewProjectTaskDocument(newProjectTask, projectId);
     refreshTasks();  // Call refreshTasks function
     history.replace(`/project/${projectId}`);
@@ -77,16 +74,16 @@ const NewProjectTaskForm = () => {
             <h2>Start Date:</h2>
             <input
               type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
             />
           </div>
           <div>
             <h2>End Date:</h2>
             <input
               type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
             />
           </div>
         </div>

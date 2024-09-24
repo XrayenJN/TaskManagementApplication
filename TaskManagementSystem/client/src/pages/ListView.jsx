@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 import { TaskContext } from '../contexts/TaskContext';
 import { getContributors, updateTask } from '../firebase/firebase';
+import { extractDate } from '../utils/dateHandler';
 
 const ListView = () => {
   const { projectId } = useParams();
@@ -181,7 +182,7 @@ const ListView = () => {
                                         <input
                                           type="date"
                                           name="startDate"
-                                          value={editedTask.startDate}
+                                          value={extractDate(editedTask.startDate)}
                                           onChange={handleInputChange}
                                         />
                                       </td>
@@ -189,7 +190,7 @@ const ListView = () => {
                                         <input
                                           type="date"
                                           name="endDate"
-                                          value={editedTask.endDate}
+                                          value={extractDate(editedTask.endDate)}
                                           onChange={handleInputChange}
                                         />
                                       </td>
