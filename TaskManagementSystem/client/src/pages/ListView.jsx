@@ -68,8 +68,8 @@ const ListView = () => {
     const { type, name, checked, value } = e.target;
     console.log(type, name, checked, value)
     setEditedTask({ ...editedTask, 
-      [name]: type === "checkbox" ? checked : value, 
-      [name]: type === "date" ? addTimeToDate(value) : value });
+      [name]: type === "checkbox" ? checked : type === "date" ? addTimeToDate(value) : value,
+    })
   };
 
   const handleSave = async () => {
