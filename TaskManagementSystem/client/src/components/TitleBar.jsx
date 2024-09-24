@@ -16,7 +16,6 @@ const TitleBar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // On component mount, check if the state is saved in localStorage
     const storedInViewPage = localStorage.getItem('inViewPage');
     if (storedInViewPage !== null) {
       setInViewPage(JSON.parse(storedInViewPage));
@@ -24,14 +23,12 @@ const TitleBar = () => {
   }, [setInViewPage]);
   
   useEffect(() => {
-    // Whenever inViewPage changes, save it to localStorage
     localStorage.setItem('inViewPage', JSON.stringify(inViewPage));
   }, [inViewPage]);
 
-  // Update inViewPage based on the current route
   useEffect(() => {
     const currentPath = location.pathname;
-    if (currentPath.includes('project')) {
+    if (currentPath.includes('project') && !currentPath.includes('projects')) {
       setInViewPage(true);
     } else {
       setInViewPage(false);
@@ -62,8 +59,6 @@ const TitleBar = () => {
   const isActive = (path) => {
     location.pathname === path;
   };
-
-  console.log(inViewPage);
 
   return (
     <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 1 }}>
