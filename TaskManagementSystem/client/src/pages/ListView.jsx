@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 import { TaskContext } from '../contexts/TaskContext';
-import { getContributors, updateTask } from '../firebase/firebase';
-import { extractDate } from '../utils/dateHandler';
+import { getContributors, getUser, updateTask } from '../firebase/firebase';
+import { DatePicker, Space } from 'antd';
+import { addTimeToDate, extractDate } from '../utils/dateHandler';
+import moment from 'moment';
 
 const ListView = () => {
+  const { RangePicker } = DatePicker;
   const { projectId } = useParams();
   const { projectTasks, refreshTasks, setInViewPage } = useContext(TaskContext)
   const { setChosenProjectId } = useContext(TaskContext);
@@ -19,7 +22,7 @@ const ListView = () => {
     endDate: '',
     comments: '',
     links: '',
-    isMilestone: false,
+    isMeeting: false,
     status: null,
     owners: [],
   });
@@ -40,7 +43,8 @@ const ListView = () => {
     setChosenProjectId(projectId);
   }, [])
 
-  const togglePopup = (task) => {
+  const togglePopup = async (task) => {
+    const ownerDetails = await getUser(task.owners[0]);
     setChosenTaskId(task.id);
     setEditedTask({
       name: task.name,
@@ -49,22 +53,104 @@ const ListView = () => {
       endDate: task.endDate,
       comments: task.comments,
       links: task.links,
-      isMilestone: task.isMilestone,
+      isMeeting: task.isMeeting,
       status: task.status,
-      owners: task.owners[0] ? task.owners[0].email : task.owners,
+      owners: ownerDetails.email
     });
     setShowPopup(!showPopup);
   };
 
+  useEffect(() => {
+    console.log(editedTask)
+  }, [editedTask])
+
   const handleInputChange = (e) => {
     const { type, name, checked, value } = e.target;
-    setEditedTask({ ...editedTask, [name]: type === "checkbox" ? checked : value });
+    console.log(type, name, checked, value)
+    setEditedTask({ ...editedTask, 
+      [name]: type === "checkbox" ? checked : value, 
+      [name]: type === "date" ? addTimeToDate(value) : value });
   };
 
   const handleSave = async () => {
     await updateTask(chosenTaskId, editedTask)
     refreshTasks();
     setShowPopup(false);
+  };
+
+  const onChange = (_, dateStrings) => {
+    const formattedStartDate = dateStrings[0] ? addTimeToDate(dateStrings[0], editedTask.isMeeting) : startTime 
+    const formattedEndDate = dateStrings[1] ? addTimeToDate(dateStrings[1], editedTask.isMeeting) : endTime
+    console.log(formattedEndDate, formattedStartDate)
+    setEditedTask({
+      ...editedTask,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate
+    })
+  };
+
+  const [defaultRange, setDefaultRange] = useState([
+    moment().subtract(7, 'days'), // Start date: 7 days ago
+    moment() // End date: today
+  ]);
+
+
+  const meetingComponent = () => {
+    if (!editedTask.isMeeting) {
+      return (
+        <div>
+          <div style={{ paddingTop: '10px' }}>
+            <select
+            name="status"
+            value={editedTask.status}
+            onChange={handleInputChange}
+            required>
+              <option value="">Select Status</option>
+              <option value="Backlog">Backlog</option>
+              <option value="Ready">Ready</option>
+              <option value="InProgress">InProgress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <h2>Start Date:</h2>
+            <input
+              name="startDate"
+              type="date"
+              value={extractDate(editedTask.startDate)}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <h2>End Date:</h2>
+            <input
+              name="endDate"
+              type="date"
+              value={extractDate(editedTask.endDate)}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+      )
+    }
+    else {
+      return (
+        <div>
+          <h2>Meeting time</h2>
+          <Space direction="vertical" size={12}>
+            <RangePicker
+              showTime={{
+                format: 'HH:mm',
+              }}
+              value={defaultRange}
+              // value={[editedTask.startDate, editedTask.endDate]}
+              onChange={onChange}
+              format="YYYY-MM-DD HH:mm"
+            />
+          </Space>
+        </div>
+      )
+    }
   };
 
   const tasksOutput = () => {
@@ -129,29 +215,13 @@ const ListView = () => {
                               <div>
                               <label>
                                 <input
-                                  name="isMilestone"
+                                  name="isMeeting"
                                   type="checkbox"
-                                  checked={editedTask.isMilestone}
+                                  checked={editedTask.isMeeting}
                                   onChange={handleInputChange}
                                 />
-                                  Milestone
+                                  Meeting
                                 </label>
-                              </div>
-
-                              <div>
-                                <h3><u>Task Status</u></h3>
-                                <select
-                                  name="status"
-                                  value={editedTask.status}
-                                  onChange={handleInputChange}
-                                  required
-                                >
-                                  <option value="">Select Status</option>
-                                  <option value="Backlog">Backlog</option>
-                                  <option value="Ready">Ready</option>
-                                  <option value="InProgress">InProgress</option>
-                                  <option value="Completed">Completed</option>
-                                </select>
                               </div>
                               <div>
                                 <select
@@ -169,34 +239,7 @@ const ListView = () => {
                                 </select>
                               </div>
                               <div>
-                                <table style={{ margin: 'auto' }}>
-                                  <thead>
-                                    <tr>
-                                      <th><h3><u>Start Date</u></h3></th>
-                                      <th><h3><u>End Date</u></h3></th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td>
-                                        <input
-                                          type="date"
-                                          name="startDate"
-                                          value={extractDate(editedTask.startDate)}
-                                          onChange={handleInputChange}
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="date"
-                                          name="endDate"
-                                          value={extractDate(editedTask.endDate)}
-                                          onChange={handleInputChange}
-                                        />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
+                                {meetingComponent()}
                               </div>
                             </td>
                           </tr>
