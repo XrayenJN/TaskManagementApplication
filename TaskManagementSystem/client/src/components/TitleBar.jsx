@@ -66,6 +66,15 @@ const TitleBar = () => {
     location.pathname === path;
   };
 
+  const getPageHeading = () => {
+    const currentPath = location.pathname;
+    if (currentPath.includes('project') && !currentPath.includes('projects')) {
+      return projects[chosenProjectId].name;
+    } else {
+      return 'Task Management System';
+    }
+  };
+
   return (
     <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 10 }}>
       {inViewPage && (
@@ -124,7 +133,7 @@ const TitleBar = () => {
       )}
 
       <div style={{ flex: 1 }}></div>
-      <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>{projects[chosenProjectId].name}</h1>
+      <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>{getPageHeading()}</h1>
       {user && (
         <div 
           style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}
