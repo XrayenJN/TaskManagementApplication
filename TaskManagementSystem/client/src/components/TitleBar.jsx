@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
@@ -14,6 +14,30 @@ const TitleBar = () => {
 
   const { chosenProjectId } = useContext(TaskContext);
   const location = useLocation();
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const storedInViewPage = localStorage.getItem('inViewPage');
+    if (storedInViewPage !== null) {
+      setInViewPage(JSON.parse(storedInViewPage));
+    }
+  }, [setInViewPage]);
+  
+  useEffect(() => {
+    localStorage.setItem('inViewPage', JSON.stringify(inViewPage));
+  }, [inViewPage]);
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (currentPath.includes('project') && !currentPath.includes('projects')) {
+      setInViewPage(true);
+    } else {
+      setInViewPage(false);
+    }
+  }, [location.pathname, setInViewPage]);
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -36,10 +60,12 @@ const TitleBar = () => {
     setIsMenuOpen(false);
   };
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => {
+    location.pathname === path;
+  };
 
   return (
-    <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 1 }}>
+    <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 10 }}>
       {inViewPage && (
         <div 
           style={{ marginRight: '20px', cursor: 'pointer' }} 
@@ -79,14 +105,14 @@ const TitleBar = () => {
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faCalendar} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}/calendar`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/calendar`) ? 'bold' : 'normal' }}>Calendar View</Link>
+                  <Link to={`/project/${chosenProjectId}/calendar`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/calendar`) ? 'bold' : 'normal'}}>Calendar View</Link>
                 </li>
                 <hr/>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
                   <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '10px' }} />
                   <Link to="/projects" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => {
-                    console.log(inViewPage)
-                    setInViewPage(false)
+                    localStorage.setItem('inViewPage', JSON.stringify(false));
+                    setInViewPage(false);
                   }}>Exit to Projects</Link>
                 </li>
               </ul>
