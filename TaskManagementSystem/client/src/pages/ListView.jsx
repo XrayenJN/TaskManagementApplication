@@ -13,6 +13,8 @@ const ListView = () => {
   const [contributors, setContributors] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortByOpen, setIsSortByOpen] = useState(false);
+  const [selectedSortBy, setSelectedSortBy] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState([]);
   const [editedTask, setEditedTask] = useState({
     name: '',
     description: '',
@@ -293,7 +295,7 @@ const ListView = () => {
                   className='basic-multi-select'
                   classNamePrefix="select"
                   options={sortByOptions}
-                  placeholder='Select one or more'
+                  placeholder='Please select one'
                   styles={{ container: () => ({ width: '300px' }) }}
                 />
               </div>
