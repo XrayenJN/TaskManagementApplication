@@ -259,13 +259,8 @@ export const getTaskDocuments = async(projectId) => {
         const taskData = taskSnap.data();
 
         // retrieve the owners details as well
-        const ownersDetails = []
-        taskData.owners.forEach(async ownerRef => {
-          const userDetails = await getUser(ownerRef)
-          if (userDetails) ownersDetails.push(userDetails)
-        })
-        taskData.owners = ownersDetails
-        tasks.push({id:taskSnap.id, ...taskData});
+        if (taskData)
+          tasks.push({id:taskSnap.id, ...taskData});
       }));
       return tasks;
     }

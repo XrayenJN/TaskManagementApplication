@@ -16,8 +16,8 @@ const NewProjectTaskForm = () => {
    */
   const [name, setName] = useState('New Project Task');
   const [description, setDescription] = useState('No Description Given');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [comments, setComments] = useState("Additional information / comments");
   const [links, setLinks] = useState("Links provided here");
   const [isMeeting, setMeeting] = useState(false);
@@ -34,11 +34,15 @@ const NewProjectTaskForm = () => {
     history.goBack();
   };
 
-  const { RangePicker } = DatePicker;
-  const onOk = (value) => {
-    setMeetingStartTime(value[0])
-    setMeetingEndTime(value[1])
+  const [selectedRange, setSelectedRange] = useState([]);
+
+  const onChange = (_, dateStrings) => {
+    setMeetingStartTime(dateStrings[0])
+    setMeetingEndTime(dateStrings[1])
   };
+
+  const { RangePicker } = DatePicker;
+
   //Find all the contributors of the projects
   const retrieveContributors = async () => {
     const theContributors = await getContributors(projectId);
@@ -47,8 +51,12 @@ const NewProjectTaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newProjectTask = new ProjectTask(name, description, startDate, endDate, comments, links, isMeeting, status, owners, meetingTime);
+    console.log(selectedRange)
 
+
+    const newProjectTask = new ProjectTask(name, description, startDate, endDate, comments, links, isMeeting, status, owners, meetingStartTime, meetingEndTime);
+
+    console.log(newProjectTask)
     await createNewProjectTaskDocument(newProjectTask, projectId);
     refreshTasks();  // Call refreshTasks function
     history.replace(`/project/${projectId}`);
@@ -95,8 +103,8 @@ const NewProjectTaskForm = () => {
               showTime={{
                 format: 'HH:mm',
               }}
+              onChange={onChange}
               format="YYYY-MM-DD HH:mm"
-              onOk={onOk}
             />
           </Space>
         </div>
