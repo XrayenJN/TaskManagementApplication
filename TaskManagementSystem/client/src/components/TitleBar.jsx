@@ -16,6 +16,10 @@ const TitleBar = () => {
   const location = useLocation();
 
   useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
     const storedInViewPage = localStorage.getItem('inViewPage');
     if (storedInViewPage !== null) {
       setInViewPage(JSON.parse(storedInViewPage));
