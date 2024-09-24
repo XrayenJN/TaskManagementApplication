@@ -51,8 +51,6 @@ const KanbanView = () => {
     Done: tasks.filter(task => task.status === "Completed")
   };
 
-  console.log(tasks)
-
   return (
     <div className="kanban-view">
       <div className="kanban-header">
