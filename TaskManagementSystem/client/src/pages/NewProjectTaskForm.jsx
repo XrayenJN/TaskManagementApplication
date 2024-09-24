@@ -15,12 +15,12 @@ const NewProjectTaskForm = () => {
    * @todo : make sure the start date is before the end date or vice versa
    * @todo : maybe there will be an option to have a placeholder
    */
-  const [name, setName] = useState('New Project Task');
-  const [description, setDescription] = useState('No Description Given');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [comments, setComments] = useState("Additional information / comments");
-  const [links, setLinks] = useState("Links provided here");
+  const [comments, setComments] = useState("");
+  const [links, setLinks] = useState("");
   const [isMeeting, setMeeting] = useState(false);
   const [status, setStatus] = useState(null);
   const [owners, setOwners] = useState([]);
