@@ -1,3 +1,8 @@
+#root {
+    padding: 2rem;
+    text-align: center;
+}
+
 body-login {
     background: #F4F1E7;
     position: relative;

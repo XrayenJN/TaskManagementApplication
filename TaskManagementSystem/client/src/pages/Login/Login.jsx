@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import '../../assets/styles/App.css';
 import '../../assets/styles/Login.css';
 import Slideshow from '../../components/Slideshow';
 import { AuthContext } from '../../contexts/AuthContext';
