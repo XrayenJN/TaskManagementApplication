@@ -6,9 +6,6 @@ import { TaskContext } from '../contexts/TaskContext';
 import { DatePicker, Space } from 'antd';
 import { addTimeToDate } from '../utils/dateHandler';
 
-
-
-
 const NewProjectTaskForm = () => {
   /**
    * @todo : make sure that the name, description, start date and end date is filled
@@ -162,7 +159,6 @@ const NewProjectTaskForm = () => {
           </select>
         </div>
         {meetingComponent()}
-
 
         <div style={{ paddingTop: "10px" }}>
           <button type="submit">Create Project Task</button>

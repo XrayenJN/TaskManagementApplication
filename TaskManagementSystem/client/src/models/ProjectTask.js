@@ -8,7 +8,6 @@ export class ProjectTask {
         this.status = status;
         this.owners = owners;
 
-
         // YYYY-MM-dd HH:mm
         // HH:mm default value is 08:00
         this.startDate = startDate;

@@ -76,13 +76,8 @@ const ListView = () => {
     setShowPopup(!showPopup);
   };
 
-  useEffect(() => {
-    console.log(editedTask)
-  }, [editedTask])
-
   const handleInputChange = (e) => {
     const { type, name, checked, value } = e.target;
-    console.log(type, name, checked, value)
     setEditedTask({ ...editedTask, 
       [name]: type === "checkbox" ? checked : type === "date" ? addTimeToDate(value) : value,
     })
@@ -114,7 +109,6 @@ const ListView = () => {
   const onChange = (_, dateStrings) => {
     const formattedStartDate = dateStrings[0] ? addTimeToDate(dateStrings[0], editedTask.isMeeting) : startTime 
     const formattedEndDate = dateStrings[1] ? addTimeToDate(dateStrings[1], editedTask.isMeeting) : endTime
-    console.log(formattedEndDate, formattedStartDate)
     setEditedTask({
       ...editedTask,
       startDate: formattedStartDate,
@@ -170,7 +164,6 @@ const ListView = () => {
                 format: 'HH:mm',
               }}
               value={[moment(editedTask.startDate, "YYYY-MM-DD HH:mm"), moment(editedTask.endDate, "YYYY-MM-DD HH:mm")]}
-              // value={[editedTask.startDate, editedTask.endDate]}
               onChange={onChange}
               format="YYYY-MM-DD HH:mm"
             />
