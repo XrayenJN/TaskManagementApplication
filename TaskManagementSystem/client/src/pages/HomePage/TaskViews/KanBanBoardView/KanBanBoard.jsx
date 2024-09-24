@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
+import moment from 'moment';
+import '../../../../assets/styles/KanbanView.css';
 
 const KanbanView = () => {
   const currentDate = new Date();
@@ -9,14 +11,23 @@ const KanbanView = () => {
   const { projectTasks } = useContext(TaskContext);
   const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
 
+  /* Used for future implementation of task edit popup */
   const handleTaskClick = (task) => {
     console.log('Task clicked:', task);
   };
 
+  const formatDate = (date) => {
+    if (!date) return "None";
+    if (date.seconds) {
+      return moment(date.toDate()).format('MMMM Do, YYYY');
+    }
+    return moment(date).format('DD/MM/YYYY');
+  };
+
   const renderTasks = (tasks) => {
     return tasks.map((task, index) => {
-      const taskEndDate = new Date(task.endDate);
-      const isPastDue = taskEndDate < currentDate;
+      const taskEndDate = task.endDate.seconds ? task.endDate.toDate() : task.endDate;
+      const isPastDue = new Date(taskEndDate) < currentDate;
       const taskBoxClass = isPastDue ? 'task-box past-due' : 'task-box';
 
       return (
@@ -26,7 +37,7 @@ const KanbanView = () => {
           onClick={() => handleTaskClick(task)}
         >
           <strong>{task.name}</strong>
-          <em>Due date: {task.endDate}</em>
+          <em>Due date: {formatDate(taskEndDate)}</em>
           <p>{task.description}</p>
         </button>
       );
@@ -37,7 +48,7 @@ const KanbanView = () => {
     Backlog: tasks.filter(task => task.status === "Backlog"),
     ToDo: tasks.filter(task => task.status === "Ready"),
     InProgress: tasks.filter(task => task.status === "InProgress"),
-    Done: tasks.filter(task => task.status === "Done")
+    Done: tasks.filter(task => task.status === "Completed")
   };
 
   return (

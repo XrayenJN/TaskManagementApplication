@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import '../../assets/styles/App.css';
+import '../../assets/styles/Login.css';
 import Slideshow from '../../components/Slideshow';
 import { AuthContext } from '../../contexts/AuthContext';
 import { googleSignIn } from '../../firebase/firebase';
@@ -41,7 +41,7 @@ export default function Login(){
           playsInline
           style={{ maxWidth: '100vh', height: 'auto' }}
         />
-        <br /><br />
+        <br /><br /><br />
         <Slideshow />
         <p><b>Be more productive. Be more organised. Be more coordinated.</b></p>
         <br />
@@ -55,7 +55,7 @@ export default function Login(){
         </div>
       </header>
 
-      <footer style={{ position: 'absolute', bottom: '0px', width: '100%' }}>
+      <footer style={{ padding: '40px' }}>
         <p>© 2024 S1_CS_01 - Ethan Fernandez (31558445), Libin Yang (31379788), John Bui (30566495), Jordan Nathanael (31893902)</p>
       </footer>
     </div>

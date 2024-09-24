@@ -27,6 +27,7 @@ const TaskProvider = ({ children }) => {
   // Fetch tasks when the projects change
   useEffect(() => {
     if (projects) {
+      setProjectTasks({})
       Object.entries(projects).forEach(([id, _]) => fetchTasks(id));
     }
   }, [projects]);

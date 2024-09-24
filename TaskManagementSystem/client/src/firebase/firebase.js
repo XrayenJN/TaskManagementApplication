@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } from "firebase/auth";
-import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId } from "firebase/firestore";
+import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId, deleteDoc } from "firebase/firestore";
 import { User, userConverter } from "../models/User";
 import { projectTaskConverter } from "../models/ProjectTask";
 import { projectConverter } from "../models/Project";
@@ -102,6 +102,8 @@ export const updateUserProject = async(uid, pid) => {
   await updateDoc(ref, {
     projects: arrayUnion(projectRef)
   });
+
+  return ref;
 }
 
 /**
@@ -148,6 +150,38 @@ export const updateProjectContributors = async(pid, uid) => {
   })
 }
 
+export const updateProject = async (pid, newUpdateProject) => {
+  const pRef = doc(db, 'projects', pid);
+  const userCollection = collection(db, "users");
+
+  const contributorsRef = []
+ 
+  await Promise.all(
+    newUpdateProject.contributors.map(async (eachEmail) => {
+      const q = query(userCollection, where("email", "==", eachEmail))
+
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((res) => {
+        const uRef = doc(db, "users", res.id)
+        contributorsRef.push(uRef)
+      })
+    })
+  );
+  
+  // this one, the contributors are the ref, not the email anymore
+  const finalUpdatedProject = { ...newUpdateProject, contributors: [] }
+
+  await updateDoc(pRef, finalUpdatedProject);
+  
+  //manually update the contributors again
+  contributorsRef.forEach(async ref => {
+    await updateDoc(pRef, {
+      contributors: arrayUnion(ref)
+    })
+  })
+}
+
 export const checkUsersExists = async(userEmail) => {
   const ref = collection(db, "users");
   const q = query(ref, where("email", "==", userEmail))
@@ -156,7 +190,7 @@ export const checkUsersExists = async(userEmail) => {
   const user = []
 
   querySnapshot.forEach((doc) => {
-    user.push({userId: doc.id})
+    user.push({...doc.data()})
   })
   return user;
 }
@@ -214,6 +248,21 @@ export const getUser = async(userRef) => {
     return snapshot.data();
   } 
   return null
+}
+
+export const removeProjectWithAllTasks = async (projectId) => {
+  const ref = doc(db, "projects", projectId);
+  const docSnap = await getDoc(ref);
+
+  if (docSnap.exists()) {
+    const projectDetails = docSnap.data();
+    const tasksRefs = projectDetails.tasks;
+    tasksRefs.forEach(async taskRef => await deleteDoc(taskRef))
+    await deleteDoc(ref);
+  } else {
+    // docSnap.data() will be undefined in this case
+    // console.log("No such document!");
+  }
 }
 
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {
