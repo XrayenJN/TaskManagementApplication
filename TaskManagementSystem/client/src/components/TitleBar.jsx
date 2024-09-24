@@ -68,11 +68,14 @@ const TitleBar = () => {
 
   const getPageHeading = () => {
     const currentPath = location.pathname;
-    if (currentPath.includes('project') && !currentPath.includes('projects')) {
-      return projects[chosenProjectId].name;
-    } else {
-      return 'Task Management System';
-    }
+    try {
+      if (currentPath.includes('project') && !currentPath.includes('projects')) {
+        return projects[chosenProjectId].name;
+      } 
+    } catch (e) {
+        return "Task Management System";
+      }
+    return "Task Management System";
   };
 
   return (
