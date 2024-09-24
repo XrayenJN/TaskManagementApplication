@@ -4,7 +4,7 @@ import { createNewProjectTaskDocument, getContributors } from '../firebase/fireb
 import { ProjectTask } from '../models/ProjectTask';
 import { TaskContext } from '../contexts/TaskContext';
 
-const NewProjectTaskForm = () => {
+export default function NewProjectTaskForm() {
   /**
    * @todo : make sure that the name, description, start date and end date is filled
    * @todo : make sure the start date is before the end date or vice versa
@@ -127,4 +127,3 @@ const NewProjectTaskForm = () => {
   );
 };
 
-export default NewProjectTaskForm;
