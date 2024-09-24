@@ -2,12 +2,14 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
+import { ProjectContext } from '../contexts/ProjectContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
   const { inViewPage, setInViewPage } = useContext(TaskContext);
+  const { projects } = useContext(ProjectContext);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -64,7 +66,24 @@ const TitleBar = () => {
     location.pathname === path;
   };
 
+  const getPageHeading = () => {
+    const currentPath = location.pathname;
+    try {
+      if (currentPath.includes('project') && !currentPath.includes('projects')) {
+        return projects[chosenProjectId].name;
+      } else if (currentPath.includes('profile')) {
+        return "Profile | TMS";
+      } else if (currentPath.includes('settings')) {
+        return "Settings | TMS";
+      }
+    } catch (e) {
+        return "Task Management System";
+      }
+    return "Task Management System";
+  };
+
   return (
+    document.title = getPageHeading() + " | TMS",
     <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 10 }}>
       {inViewPage && (
         <div 
@@ -122,7 +141,7 @@ const TitleBar = () => {
       )}
 
       <div style={{ flex: 1 }}></div>
-      <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>Task Management System</h1>
+      <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>{getPageHeading()}</h1>
       {user && (
         <div 
           style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}
