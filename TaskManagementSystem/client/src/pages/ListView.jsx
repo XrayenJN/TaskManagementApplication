@@ -129,7 +129,7 @@ const ListView = () => {
     if (groupedTasks) {
       const sortedTaskByDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
       return (
-        <ul>
+        <ul style={{ listStyle: 'none' }} >
           {sortedTaskByDates.map(date => (
             <li key={date} style={{ marginBottom: '30px' }}>
               <div style={{ textAlign: 'left', marginBottom: '10px', color: 'black', fontSize: '20px', fontWeight: 'bold' }}>
@@ -142,7 +142,7 @@ const ListView = () => {
                       <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{task.name}</p>
                       <div style={{ textAlign: 'left', color: 'black' }}>
                         <div>{task.description}</div>
-                        <div style={{ margin: '10px 0' }}>Contributors: <i>{task.owners.join(", ")}</i></div>
+                        <div style={{ margin: '10px 0' }}>Contributors: <i>{task.owners.map(owner => owner.name).join(",")}</i></div>
                       </div>
                     </div>
                   </div>
