@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TaskContext } from '../contexts/TaskContext';
-import { getContributors, getUser, updateTask } from '../firebase/firebase';
+import { getContributors, getUser, removeParticularTask, updateTask } from '../firebase/firebase';
 import Select from 'react-select';
 import { DatePicker, Space } from 'antd';
 import { addTimeToDate, extractDate } from '../utils/dateHandler';
@@ -88,6 +88,12 @@ const ListView = () => {
     refreshTasks();
     setShowPopup(false);
   };
+
+  const removeTask = async(taskId) => {
+    await removeParticularTask(taskId);
+    refreshTasks();
+    setShowPopup(false)
+  }
 
   const handleFilterButtonClick = () => {
     setIsFilterOpen(!isFilterOpen);
@@ -286,6 +292,9 @@ const ListView = () => {
                     <hr />
                     <div>
                       <button onClick={handleSave}>Save</button>
+                      <button onClick={() => removeTask(task.id)}>
+                        Remove Task
+                      </button>
                       <button onClick={() => setShowPopup(false)}>Close</button>
                     </div>
                   </div>
