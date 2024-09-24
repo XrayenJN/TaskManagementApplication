@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { TaskContext } from '../contexts/TaskContext';
 import { getContributors, updateTask } from '../firebase/firebase';
 import Select from 'react-select';
+import { sortTaskByAToZ, sortTaskByZToA, sortTaskByDueDate, filterTaskByActiveStatus, filterTaskByExpiredStatus, filterTaskByOwner } from '../utils/taskUtility';
 
 const ListView = () => {
   const { projectId } = useParams();
@@ -13,7 +14,7 @@ const ListView = () => {
   const [contributors, setContributors] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortByOpen, setIsSortByOpen] = useState(false);
-  const [selectedSortBy, setSelectedSortBy] = useState([]);
+  const [selectedSortBy, setSelectedSortBy] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState([]);
   const [editedTask, setEditedTask] = useState({
     name: '',
@@ -27,19 +28,6 @@ const ListView = () => {
     owners: [],
   });
 
-  const filterOptions = [
-    { value: 'filterOption 1', label: 'Active Task' },
-    { value: 'filterOption 2', label: 'Expired Task' },
-    { value: 'filterOption 3', label: 'Owner 1' },
-    { value: 'filterOption 4', label: 'Owner 2' }
-  ]
-
-  const sortByOptions = [
-    { value: 'sortByOption 1', label: 'Sort Tasks BY (A to Z)' },
-    { value: 'sortByOption 2', label: 'Sort Tasks BY (Z to A)' },
-    { value: 'sortByOption 3', label: 'Sort Tasks By Due Date' }
-  ]
-
   window.addEventListener("popstate", () => {
     setInViewPage(false);
   });
@@ -47,13 +35,30 @@ const ListView = () => {
   const retrieveContributors = async () => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
-  };  
+  };
 
   useEffect(() => {
     retrieveContributors();
     setInViewPage(true);
     setChosenProjectId(projectId);
   }, []);
+
+  const filterOptions = [
+    { value: 'filterTaskByActiveStatus', label: 'Active Task' },
+    { value: 'filterTaskByExpiredStatus', label: 'Expired Task' }
+  ]
+
+  const contributorOptions = contributors.map(contributor => 
+    ({ value: contributor.name, label: contributor.name })
+  )
+
+  const filterOptionsWithOwner = filterOptions.concat(contributorOptions);
+
+  const sortByOptions = [
+    { value: 'sortTaskByAToZ', label: 'Sort Tasks BY (A to Z)' },
+    { value: 'sortTaskByZToA', label: 'Sort Tasks BY (Z to A)' },
+    { value: 'sortTaskByDueDate', label: 'Sort Tasks By Due Date' }
+  ]
 
   const togglePopup = (task) => {
     setChosenTaskId(task.id);
@@ -88,6 +93,27 @@ const ListView = () => {
 
   const handleSortButtonClick = () => {
     setIsSortByOpen(!isSortByOpen);
+  }
+
+  const handleSortByChanges = (selectedOption) => {
+    setSelectedSortBy(selectedOption ? selectedOption.value : null);
+    console.log(selectedSortBy);
+  }
+
+  const handleFilterChanges = (selectedOptions) => {
+    const values = selectedOptions.map(option => option.value);
+    setSelectedFilter(values);
+    console.log(selectedOptions);
+  }
+
+  const handleFilterAndSortBy = (selectedSortBy, selectedFilter) => {
+    if (selectedSortBy === 'sortTaskByAToZ') {
+      return sortTaskByAToZ(projectTasks);
+    } else if (selectedSortBy === 'sortTaskByZToA') {
+      return sortTaskByZToA(projectTasks);
+    } else if (selectedSortBy === 'sortTaskByDueDate') {
+      return sortTaskByDueDate(projectTasks);
+    }
   }
 
   const groupedTasks = projectTasks[projectId]?.reduce((acc, task) => {
@@ -279,9 +305,10 @@ const ListView = () => {
                 <Select
                   className='basic-multi-select'
                   classNamePrefix='select'
-                  options={filterOptions}
+                  options={filterOptionsWithOwner}
                   placeholder='Select one or more'
                   styles={{ container: () => ({ width: '300px' }) }}
+                  onChange={handleFilterChanges}
                   isMulti
                 />
               </div>
@@ -297,6 +324,7 @@ const ListView = () => {
                   options={sortByOptions}
                   placeholder='Please select one'
                   styles={{ container: () => ({ width: '300px' }) }}
+                  onChange={handleSortByChanges}
                 />
               </div>
             )}
