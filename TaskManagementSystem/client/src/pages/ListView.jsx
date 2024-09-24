@@ -1,16 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { TaskContext } from '../contexts/TaskContext';
 import { getContributors, updateTask } from '../firebase/firebase';
+import Select from 'react-select';
 
 const ListView = () => {
   const { projectId } = useParams();
-  const { projectTasks, refreshTasks, setInViewPage } = useContext(TaskContext)
+  const { projectTasks, refreshTasks, setInViewPage } = useContext(TaskContext);
   const { setChosenProjectId } = useContext(TaskContext);
   const [chosenTaskId, setChosenTaskId] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [contributors, setContributors] = useState([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isSortByOpen, setIsSortByOpen] = useState(false);
+  const [selectedSortBy, setSelectedSortBy] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState([]);
   const [editedTask, setEditedTask] = useState({
     name: '',
     description: '',
@@ -23,21 +27,33 @@ const ListView = () => {
     owners: [],
   });
 
-  //https://stackoverflow.com/questions/1462719/javascript-change-the-function-of-the-browsers-back-button
+  const filterOptions = [
+    { value: 'filterOption 1', label: 'Active Task' },
+    { value: 'filterOption 2', label: 'Expired Task' },
+    { value: 'filterOption 3', label: 'Owner 1' },
+    { value: 'filterOption 4', label: 'Owner 2' }
+  ]
+
+  const sortByOptions = [
+    { value: 'sortByOption 1', label: 'Sort Tasks BY (A to Z)' },
+    { value: 'sortByOption 2', label: 'Sort Tasks BY (Z to A)' },
+    { value: 'sortByOption 3', label: 'Sort Tasks By Due Date' }
+  ]
+
   window.addEventListener("popstate", () => {
-    setInViewPage(false)
-  })
+    setInViewPage(false);
+  });
 
   const retrieveContributors = async () => {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
-  }  
+  };  
 
   useEffect(() => {
     retrieveContributors();
     setInViewPage(true);
     setChosenProjectId(projectId);
-  }, [])
+  }, []);
 
   const togglePopup = (task) => {
     setChosenTaskId(task.id);
@@ -61,156 +77,189 @@ const ListView = () => {
   };
 
   const handleSave = async () => {
-    await updateTask(chosenTaskId, editedTask)
+    await updateTask(chosenTaskId, editedTask);
     refreshTasks();
     setShowPopup(false);
   };
 
+  const handleFilterButtonClick = () => {
+    setIsFilterOpen(!isFilterOpen);
+  }
+
+  const handleSortButtonClick = () => {
+    setIsSortByOpen(!isSortByOpen);
+  }
+
+  const groupedTasks = projectTasks[projectId]?.reduce((acc, task) => {
+    const dateKey = task.endDate;
+    if (!acc[dateKey]) {
+      acc[dateKey] = [];
+    }
+    acc[dateKey].push(task);
+    return acc;
+  }, {});
+
   const tasksOutput = () => {
-    if (projectTasks && projectTasks[projectId]) {
+    if (groupedTasks) {
+      const sortedTaskByDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
       return (
         <ul>
-          {projectTasks[projectId].map(task => (
-            <li key={task.id}>
-              Name: {task.name} - Desc: {task.description}
-              <button onClick={() => togglePopup(task)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '5px 10px', cursor: 'pointer', borderRadius: '0' }}>Edit Project Details</button>
-              {showPopup && (
-                <div className="popup">
-                  <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
-                    <h2>Edit Task Details</h2>
-                    <hr />
-
+          {sortedTaskByDates.map(date => (
+            <li key={date} style={{ marginBottom: '30px' }}>
+              <div style={{ textAlign: 'left', marginBottom: '10px', color: 'black', fontSize: '20px', fontWeight: 'bold' }}>
+                <i>{date}</i>
+              </div>
+              {groupedTasks[date].map(task => (
+                <div key={task.id} style={{ backgroundColor: '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <table style={{ margin: 'auto' }}>
-                        <tbody>
-                          <tr>
-                            <td>
-                              <div>
-                                <h3><u>Task Name</u></h3>
-                                <input
-                                  type="text"
-                                  name="name"
-                                  value={editedTask.name}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-
-                              <div>
-                                <h3><u>Task Description</u></h3>
-                                <textarea
-                                  name="description"
-                                  style={{ color: 'black' }}
-                                  value={editedTask.description}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-
-                              <div>
-                                <h3><u>Task Comments</u></h3>
-                                <textarea
-                                  type="text"
-                                  name="comments"
-                                  value={editedTask.comments}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <div>
-                                <h3><u>Task Links</u></h3>
-                                <textarea
-                                  name="links"
-                                  style={{ color: 'black' }}
-                                  value={editedTask.links}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-                              <div>
-                              <label>
-                                <input
-                                  name="isMilestone"
-                                  type="checkbox"
-                                  checked={editedTask.isMilestone}
-                                  onChange={handleInputChange}
-                                />
-                                  Milestone
-                                </label>
-                              </div>
-
-                              <div>
-                                <h3><u>Task Status</u></h3>
-                                <select
-                                  name="status"
-                                  value={editedTask.status}
-                                  onChange={handleInputChange}
-                                  required
-                                >
-                                  <option value="">Select Status</option>
-                                  <option value="Backlog">Backlog</option>
-                                  <option value="Ready">Ready</option>
-                                  <option value="InProgress">InProgress</option>
-                                  <option value="Completed">Completed</option>
-                                </select>
-                              </div>
-                              <div>
-                                <select
-                                  name="owners"
-                                  value={editedTask.owners}
-                                  onChange={handleInputChange}
-                                  required
-                                >
-                                  <option value="">Select Owner</option>
-                                  {contributors.map((contributor, index) => (
-                                    <option key={index} value={contributor.email}>
-                                      {contributor.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <table style={{ margin: 'auto' }}>
-                                  <thead>
-                                    <tr>
-                                      <th><h3><u>Start Date</u></h3></th>
-                                      <th><h3><u>End Date</u></h3></th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td>
-                                        <input
-                                          type="date"
-                                          name="startDate"
-                                          value={editedTask.startDate}
-                                          onChange={handleInputChange}
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          type="date"
-                                          name="endDate"
-                                          value={editedTask.endDate}
-                                          onChange={handleInputChange}
-                                        />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <hr />
-                    <div>
-                      <button onClick={handleSave}>Save</button>
-                      <button onClick={() => setShowPopup(false)}>Close</button>
+                      <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{task.name}</p>
+                      <div style={{ textAlign: 'left', color: 'black' }}>
+                        <div>{task.description}</div>
+                        <div style={{ margin: '10px 0' }}>Contributors: <i>{task.owners.join(", ")}</i></div>
+                      </div>
                     </div>
                   </div>
+                  <button onClick={() => togglePopup(task)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+                    Edit Project Details
+                  </button>
+                  {showPopup && (
+                  <div className="popup">
+                    <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
+                      <h2>Edit Task Details</h2>
+                      <hr />
+
+                      <div>
+                        <table style={{ margin: 'auto' }}>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <div>
+                                  <h3><u>Task Name</u></h3>
+                                  <input
+                                    type="text"
+                                    name="name"
+                                    value={editedTask.name}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+
+                                <div>
+                                  <h3><u>Task Description</u></h3>
+                                  <textarea
+                                    name="description"
+                                    style={{ color: 'black' }}
+                                    value={editedTask.description}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                                <div>
+                                  <h3><u>Task Comments</u></h3>
+                                  <textarea
+                                    type="text"
+                                    name="comments"
+                                    value={editedTask.comments}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div>
+                                  <h3><u>Task Links</u></h3>
+                                  <textarea
+                                    name="links"
+                                    style={{ color: 'black' }}
+                                    value={editedTask.links}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                                <div>
+                                <label>
+                                  <input
+                                    name="isMilestone"
+                                    type="checkbox"
+                                    checked={editedTask.isMilestone}
+                                    onChange={handleInputChange}
+                                  />
+                                    Milestone
+                                  </label>
+                                </div>
+
+                                <div>
+                                  <h3><u>Task Status</u></h3>
+                                  <select
+                                    name="status"
+                                    value={editedTask.status}
+                                    onChange={handleInputChange}
+                                    required
+                                  >
+                                    <option value="">Select Status</option>
+                                    <option value="Backlog">Backlog</option>
+                                    <option value="Ready">Ready</option>
+                                    <option value="InProgress">InProgress</option>
+                                    <option value="Completed">Completed</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <select
+                                    name="owners"
+                                    value={editedTask.owners}
+                                    onChange={handleInputChange}
+                                    required
+                                  >
+                                    <option value="">Select Owner</option>
+                                    {contributors.map((contributor, index) => (
+                                      <option key={index} value={contributor.email}>
+                                        {contributor.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                                <div>
+                                  <table style={{ margin: 'auto' }}>
+                                    <thead>
+                                      <tr>
+                                        <th><h3><u>Start Date</u></h3></th>
+                                        <th><h3><u>End Date</u></h3></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>
+                                          <input
+                                            type="date"
+                                            name="startDate"
+                                            value={editedTask.startDate}
+                                            onChange={handleInputChange}
+                                          />
+                                        </td>
+                                        <td>
+                                          <input
+                                            type="date"
+                                            name="endDate"
+                                            value={editedTask.endDate}
+                                            onChange={handleInputChange}
+                                          />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <hr />
+                      <div>
+                        <button onClick={handleSave}>Save</button>
+                        <button onClick={() => setShowPopup(false)}>Close</button>
+                      </div>
+                    </div>
                 </div>
-              )}
+                )}
+              </div>
+              ))}
             </li>
           ))}
         </ul>
@@ -221,12 +270,44 @@ const ListView = () => {
   return (
     <div>
       <div>
-        <h1>Project Task List</h1>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link to={`/project/${projectId}/new-project-task-form`} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-            Add Project Task
-          </Link>
+        <h1 style={{ textAlign: 'left', marginTop: '50px' }}>List View</h1>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ position: 'relative', marginRight: '5px' }}>
+            <button onClick={handleFilterButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer', marginRight: '25px' }}>Filter</button>
+            {isFilterOpen && (
+              <div style={{ position: 'absolute', top: '100%', left: '0', marginTop: '5px', zIndex: '1' }}>
+                <Select
+                  className='basic-multi-select'
+                  classNamePrefix='select'
+                  options={filterOptions}
+                  placeholder='Select one or more'
+                  styles={{ container: () => ({ width: '300px' }) }}
+                  isMulti
+                />
+              </div>
+            )}
+          </div>
+          <div style={{ position: 'relative', marginRight: '15px' }}>
+            <button onClick={handleSortButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>Sort By</button>
+            {isSortByOpen && (
+              <div style={{ position: 'absolute', top: '100%', left: '0', marginTop: '5px', zIndex: '1' }}>
+                <Select
+                  className='basic-multi-select'
+                  classNamePrefix="select"
+                  options={sortByOptions}
+                  placeholder='Please select one'
+                  styles={{ container: () => ({ width: '300px' }) }}
+                />
+              </div>
+            )}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Link to={`/project/${projectId}/new-project-task-form`} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+              Add Project Task
+            </Link>
+          </div>
         </div>
+        <hr style={{ margin: '20px 0', border: '1px solid #ccc'}}/>
         <div>
           {tasksOutput()}
         </div>
