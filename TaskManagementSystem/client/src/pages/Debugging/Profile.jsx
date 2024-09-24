@@ -62,7 +62,6 @@ const Profile = () => {
   }
 
   return (
-    document.title = "Profile | TMS",
     <div>
       {body}
       <br/>

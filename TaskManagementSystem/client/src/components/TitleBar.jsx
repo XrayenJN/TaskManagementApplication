@@ -71,7 +71,11 @@ const TitleBar = () => {
     try {
       if (currentPath.includes('project') && !currentPath.includes('projects')) {
         return projects[chosenProjectId].name;
-      } 
+      } else if (currentPath.includes('profile')) {
+        return "Profile | TMS";
+      } else if (currentPath.includes('settings')) {
+        return "Settings | TMS";
+      }
     } catch (e) {
         return "Task Management System";
       }
@@ -79,6 +83,7 @@ const TitleBar = () => {
   };
 
   return (
+    document.title = getPageHeading() + " | TMS",
     <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 10 }}>
       {inViewPage && (
         <div 
