@@ -34,8 +34,6 @@ const NewProjectTaskForm = () => {
     history.goBack();
   };
 
-  const [selectedRange, setSelectedRange] = useState([]);
-
   const onChange = (_, dateStrings) => {
     setMeetingStartTime(dateStrings[0])
     setMeetingEndTime(dateStrings[1])
