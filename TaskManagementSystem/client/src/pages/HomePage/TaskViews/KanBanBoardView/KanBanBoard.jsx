@@ -27,7 +27,7 @@ const KanbanView = () => {
           onClick={() => handleTaskClick(task)}
         >
           <strong>{task.name}</strong>
-          <em>Due date: {task.endDate}</em>
+          <em>Due date: {task.endDate || "None"}</em>
           <p>{task.description}</p>
         </button>
       );
