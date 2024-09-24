@@ -1,6 +1,9 @@
 #root {
     padding: 2rem;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 body-login {
@@ -8,6 +11,9 @@ body-login {
     position: relative;
     overflow: hidden;
     height: 100vh;
+    flex: 1;
+    margin: 0;
+    padding: 0;
 }
 
 html {
