@@ -24,6 +24,10 @@ const NewProjectForm = () => {
     history.replace('/projects');
   };
 
+  const goBack = () => {
+    history.goBack();
+  };
+
   return (
     <div>
       <h1>Create New Project</h1>
@@ -64,6 +68,9 @@ const NewProjectForm = () => {
         </div>
         <button type="submit">Create Project</button>
       </form>
+      <div style={{ paddingTop: "10px" }}>
+        <button onClick={goBack}>Back</button>
+      </div>
     </div>
   );
 };
