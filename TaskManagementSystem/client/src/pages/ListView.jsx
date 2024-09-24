@@ -26,15 +26,16 @@ const ListView = () => {
   });
 
   const filterOptions = [
-    { value: 'filterOption 1', label: 'Option 1' },
-    { value: 'filterOption 2', label: 'Option 2' },
-    { value: 'filterOption 3', label: 'Option 3' }
+    { value: 'filterOption 1', label: 'Active Task' },
+    { value: 'filterOption 2', label: 'Expired Task' },
+    { value: 'filterOption 3', label: 'Owner 1' },
+    { value: 'filterOption 4', label: 'Owner 2' }
   ]
 
   const sortByOptions = [
-    { value: 'sortByOption 1', label: 'SortByOption 1' },
-    { value: 'sortByOption 2', label: 'SortByOption 2' },
-    { value: 'sortByOption 3', label: 'SortByOption 3' }
+    { value: 'sortByOption 1', label: 'Sort Tasks BY (A to Z)' },
+    { value: 'sortByOption 2', label: 'Sort Tasks BY (Z to A)' },
+    { value: 'sortByOption 3', label: 'Sort Tasks By Due Date' }
   ]
 
   window.addEventListener("popstate", () => {
@@ -269,30 +270,33 @@ const ListView = () => {
       <div>
         <h1 style={{ textAlign: 'left', marginTop: '50px' }}>List View</h1>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '25px' }}>
+          <div style={{ position: 'relative', marginRight: '5px' }}>
             <button onClick={handleFilterButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer', marginRight: '25px' }}>Filter</button>
             {isFilterOpen && (
-              <Select
-                className='basic-multi-select'
-                classNamePrefix='select'
-                options={filterOptions}
-                placeholder='Select one or more'
-                styles={{ marginTop: '10px'}}
-                isMulti
-              />
+              <div style={{ position: 'absolute', top: '100%', left: '0', marginTop: '5px', zIndex: '1' }}>
+                <Select
+                  className='basic-multi-select'
+                  classNamePrefix='select'
+                  options={filterOptions}
+                  placeholder='Select one or more'
+                  styles={{ container: () => ({ width: '300px' }) }}
+                  isMulti
+                />
+              </div>
             )}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '25px' }}>
+          <div style={{ position: 'relative', marginRight: '15px' }}>
             <button onClick={handleSortButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>Sort By</button>
             {isSortByOpen && (
-              <Select
-                className='basic-multi-select'
-                classNamePrefix="select"
-                options={sortByOptions}
-                placeholder='Select one or more'
-                styles={{ marginTop: '10px'}}
-                isMulti
-              />
+              <div style={{ position: 'absolute', top: '100%', left: '0', marginTop: '5px', zIndex: '1' }}>
+                <Select
+                  className='basic-multi-select'
+                  classNamePrefix="select"
+                  options={sortByOptions}
+                  placeholder='Select one or more'
+                  styles={{ container: () => ({ width: '300px' }) }}
+                />
+              </div>
             )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
