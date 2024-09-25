@@ -16,6 +16,7 @@ const ListView = () => {
   const [isSortByOpen, setIsSortByOpen] = useState(false);
   const [selectedSortBy, setSelectedSortBy] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState([]);
+  const [groupedTasks, setGroupedTasks] = useState({});
   const [editedTask, setEditedTask] = useState({
     name: '',
     description: '',
@@ -42,6 +43,13 @@ const ListView = () => {
     setInViewPage(true);
     setChosenProjectId(projectId);
   }, []);
+
+  useEffect(() => {
+    if (projectTasks && projectTasks[projectId]) {
+      const grouped = groupTasksByEndDate(projectTasks, projectId);
+      setGroupedTasks(grouped);
+    }
+  }, [projectTasks, projectId]);
 
   const filterOptions = [
     { value: 'filterTaskByActiveStatus', label: 'Active Task' },
@@ -97,13 +105,11 @@ const ListView = () => {
 
   const handleSortByChanges = (selectedOption) => {
     setSelectedSortBy(selectedOption ? selectedOption.value : null);
-    console.log(selectedSortBy);
   }
 
   const handleFilterChanges = (selectedOptions) => {
     const values = selectedOptions.map(option => option.value);
     setSelectedFilter(values);
-    console.log(selectedOptions);
   }
 
   const handleFilterAndSortBy = (selectedSortBy, selectedFilter) => {
@@ -116,26 +122,27 @@ const ListView = () => {
     }
   }
 
-  const groupedTasks = projectTasks[projectId]?.reduce((acc, task) => {
-    const dateKey = task.endDate;
-    if (!acc[dateKey]) {
-      acc[dateKey] = [];
-    }
-    acc[dateKey].push(task);
-    return acc;
-  }, {});
+  const groupTasksByEndDate = (projectTasks, projectId) => {
+    return projectTasks[projectId]?.reduce((acc, task) => {
+      const dateKey = task.endDate;
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(task);
+      return acc;
+    }, {});
+  }
 
   const tasksOutput = () => {
-    if (groupedTasks) {
-      const sortedTaskByDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
+    if (projectTasks) {
       return (
         <ul style={{ listStyle: 'none' }} >
-          {sortedTaskByDates.map(date => (
+          {Object.entries(groupedTasks).map(([date, tasks]) => (
             <li key={date} style={{ marginBottom: '30px' }}>
               <div style={{ textAlign: 'left', marginBottom: '10px', color: 'black', fontSize: '20px', fontWeight: 'bold' }}>
                 <i>{date}</i>
               </div>
-              {groupedTasks[date].map(task => (
+              {tasks.map(task => (
                 <div key={task.id} style={{ backgroundColor: '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
