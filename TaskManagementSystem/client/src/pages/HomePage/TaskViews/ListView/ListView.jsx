@@ -4,6 +4,8 @@ import { TaskContext } from '../../../../contexts/TaskContext';
 import { getContributors, updateTask } from '../../../../firebase/firebase';
 import Select from 'react-select';
 import { sortTaskByAToZ, sortTaskByZToA, sortTaskByDueDate, filterTaskByActiveStatus, filterTaskByExpiredStatus, filterTaskByOwner } from '../../../../utils/taskUtility';
+import moment from 'moment';
+
 
 const ListView = () => {
   const { projectId } = useParams();
@@ -141,7 +143,7 @@ const ListView = () => {
           {Object.entries(groupedTasks).map(([date, tasks]) => (
             <li key={date} style={{ marginBottom: '30px' }}>
               <div style={{ textAlign: 'left', marginBottom: '10px', color: 'black', fontSize: '20px', fontWeight: 'bold' }}>
-                <i>{date}</i>
+                <i>{moment(date).format('ddd - DD, MMM, YYYY')}</i>
               </div>
               {tasks.map(task => (
                 <div key={task.id} style={{ backgroundColor: '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }}>
