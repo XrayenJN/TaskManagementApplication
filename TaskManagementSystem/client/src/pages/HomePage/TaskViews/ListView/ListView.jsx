@@ -146,7 +146,7 @@ const ListView = () => {
                 <i>{moment(date).format('ddd - DD, MMM, YYYY')}</i>
               </div>
               {tasks.map(task => (
-                <div key={task.id} style={{ backgroundColor: '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }}>
+                <div key={task.id} style={{ backgroundColor: '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }} onClick={() => togglePopup(task)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                       <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{task.name}</p>
@@ -156,9 +156,6 @@ const ListView = () => {
                       </div>
                     </div>
                   </div>
-                  <button onClick={() => togglePopup(task)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-                    Edit Task Detail
-                  </button>
                   {showPopup && (
                   <div className="popup">
                     <div className="popup-content" style={{ backgroundColor: '#DEB992' }}>
