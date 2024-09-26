@@ -105,6 +105,7 @@ const ListView = () => {
 
   const handleSortByChanges = (selectedOption) => {
     setSelectedSortBy(selectedOption ? selectedOption.value : null);
+    handleFilterAndSortBy(selectedSortBy, selectedFilter);
   }
 
   const handleFilterChanges = (selectedOptions) => {
@@ -112,13 +113,13 @@ const ListView = () => {
     setSelectedFilter(values);
   }
 
-  const handleFilterAndSortBy = (selectedSortBy, selectedFilter) => {
-    if (selectedSortBy === 'sortTaskByAToZ') {
-      return sortTaskByAToZ(projectTasks);
-    } else if (selectedSortBy === 'sortTaskByZToA') {
-      return sortTaskByZToA(projectTasks);
-    } else if (selectedSortBy === 'sortTaskByDueDate') {
-      return sortTaskByDueDate(projectTasks);
+  const handleFilterAndSortBy = (sortByValue, filterValue) => {
+    if (sortByValue === 'sortTaskByAToZ') {
+      setGroupedTasks(sortTaskByAToZ(groupedTasks));
+    } else if (sortByValue === 'sortTaskByZToA') {
+      setGroupedTasks(sortTaskByZToA(groupedTasks));
+    } else if (sortByValue === 'sortTaskByDueDate') {
+      setGroupedTasks(sortTaskByDueDate(groupedTasks));
     }
   }
 
@@ -154,7 +155,7 @@ const ListView = () => {
                     </div>
                   </div>
                   <button onClick={() => togglePopup(task)} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-                    Edit Project Details
+                    Edit Task Detail
                   </button>
                   {showPopup && (
                   <div className="popup">
