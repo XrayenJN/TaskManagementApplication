@@ -1,5 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+import 'firebase/compat/auth';
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } from "firebase/auth";
 import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId } from "firebase/firestore";
 import { User, userConverter } from "../models/User";
@@ -8,23 +11,36 @@ import { projectConverter } from "../models/Project";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyC4a0ArH-o-61VEJ7qIYEaF7tkSTZgNpF4",
+  authDomain: "tms-backup-2.firebaseapp.com",
+  databaseURL: "tms-backup-2",
+  projectId: "tms-backup-2.appspot.com",
+  storageBucket: "tms-backup-2.appspot.com",
+  messagingSenderId: "187242686111",
+  appId: "1:187242686111:web:e2c1719692af103862a4aa"
 };
 
+// const firebaseConfig = {
+//   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+//   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+//   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+//   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+//   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+//   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+//   appId: import.meta.env.VITE_FIREBASE_APP_ID
+// };
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// const app = initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 
 // Firebase Auth
-export const auth = getAuth(app);
+// export const auth = geAuth(app);
+export const auth = firebase.auth(app);
 
 // Firebase firestore
-export const db = getFirestore(app);
+// export const db = getFirestore(app);
+export const db = firebase.firestore(app);
 
 const provider = new GoogleAuthProvider();
 
@@ -80,7 +96,7 @@ export const customSignIn = async (token) => {
  * @param {*} uid uid of the user
  * @param {*} user user object containing user identification such as email, displayName
  */
-const createUserDocument = async(uid, user) => {
+export const createUserDocument = async(uid, user) => {
   // check if we already have the user or not
   // if we don't then create a new one
   const ref = doc(db, "users", uid).withConverter(userConverter);
