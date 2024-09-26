@@ -265,6 +265,11 @@ export const removeProjectWithAllTasks = async (projectId) => {
   }
 }
 
+export const removeParticularTask = async (taskId) => {
+  const ref = doc(db, "projectTasks", taskId);
+  await deleteDoc(ref)
+}
+
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {
   const ref = doc(collection(db, "projectTasks")).withConverter(projectTaskConverter);
   await setDoc(ref, projectTask);
@@ -308,13 +313,8 @@ export const getTaskDocuments = async(projectId) => {
         const taskData = taskSnap.data();
 
         // retrieve the owners details as well
-        const ownersDetails = []
-        taskData.owners.forEach(async ownerRef => {
-          const userDetails = await getUser(ownerRef)
-          if (userDetails) ownersDetails.push(userDetails)
-        })
-        taskData.owners = ownersDetails
-        tasks.push({id:taskSnap.id, ...taskData});
+        if (taskData)
+          tasks.push({id:taskSnap.id, ...taskData});
       }));
       return tasks;
     }

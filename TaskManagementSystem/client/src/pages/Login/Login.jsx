@@ -25,6 +25,7 @@ export default function Login(){
   }, [user, history]);
 
   return (
+    document.title = "Task Management System",
     /* Background circles: https://codepen.io/vaibhavarora/pen/xmpxjp */
     <div className="App body-login">
       <div className="circle xxlarge shade1"></div>
