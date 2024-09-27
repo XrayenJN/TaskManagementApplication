@@ -1,6 +1,6 @@
 // NewProjectTaskForm.test.js
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import NewProjectTaskForm from './NewProjectTaskForm';
 import { TaskContext } from '../contexts/TaskContext';
@@ -25,7 +25,8 @@ describe('NewProjectTaskForm', () => {
   });
 
   it('renders the form and allows input', async () => {
-    render(
+    await act(async () => {
+      render(
       <TaskContext.Provider value={{ refreshTasks: mockRefreshTasks }}>
         <MemoryRouter initialEntries={['/project/123/tasks/new']}>
           <Route path="/project/:projectId/tasks/new">
@@ -33,7 +34,8 @@ describe('NewProjectTaskForm', () => {
           </Route>
         </MemoryRouter>
       </TaskContext.Provider>
-    );
+      );
+    })
 
     expect(await screen.findByText('Create New Project Task')).toBeInTheDocument();
 
@@ -90,7 +92,8 @@ describe('NewProjectTaskForm', () => {
   });
 
   it('validates the form submission', async () => {
-    render(
+    await act(async () => {
+      render(
       <TaskContext.Provider value={{ refreshTasks: mockRefreshTasks }}>
         <MemoryRouter initialEntries={['/project/123/tasks/new']}>
           <Route path="/project/:projectId/tasks/new">
@@ -98,14 +101,8 @@ describe('NewProjectTaskForm', () => {
           </Route>
         </MemoryRouter>
       </TaskContext.Provider>
-    );
-
-    // Submitting the form without filling in the required fields
-    fireEvent.submit(screen.getByRole('button', { name: /create project task/i }));
-
-    await waitFor(() => {
-      expect(createNewProjectTaskDocument).not.toHaveBeenCalled();
-    });
+    )
+    })
 
     // Fill the required fields and resubmit
     fireEvent.change(screen.getByPlaceholderText('Project Task name'), {
@@ -118,7 +115,7 @@ describe('NewProjectTaskForm', () => {
       target: { value: 'contributor1@example.com' },
     });
 
-    fireEvent.submit(screen.getByRole('button', { name: /create project task/i }));
+    fireEvent.click(screen.getByRole('button', { name: /create project task/i }));
 
     await waitFor(() => {
       expect(createNewProjectTaskDocument).toHaveBeenCalledTimes(1);

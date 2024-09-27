@@ -41,32 +41,36 @@ export default function NewProjectTaskForm() {
 
   retrieveContributors()
   return (
-    <div>
+    <div aria-label="main">
       <h1>Create New Project Task</h1>
-      <form onSubmit={handleSubmit}>
+      <form aria-label="form" onSubmit={handleSubmit}>
         <div>
           <h2>Project Task Name</h2>
           <input
+            aria-label="Project Task Name"
             type="text"
             placeholder='Project Task name'
             onChange={(e) => setName(e.target.value)}
             required
           />  
         </div>
-        <div style={{paddingTop:'10px'}}>
+        <div aria-label="Description" style={{paddingTop:'10px'}}>
           <textarea
+            aria-label="Description"
             placeholder='Description'
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
         <div style={{paddingTop:'10px'}}>
           <textarea
+          aria-label="Comments"
             placeholder='Comments'
             onChange={(e) => setComments(e.target.value)}
           />
         </div>
         <div style={{paddingTop:'10px'}}>
           <textarea
+          aria-label="Links"
             placeholder='Links'
             onChange={(e) => setLinks(e.target.value)}
           />
@@ -74,6 +78,7 @@ export default function NewProjectTaskForm() {
         <div style={{ paddingTop: '10px' }}>
           <label>
             <input
+            aria-label="combobox"
               type="checkbox"
               onChange={(e) => setMilestone(e.target.checked)}
             />
@@ -82,6 +87,7 @@ export default function NewProjectTaskForm() {
         </div>
         <div style={{ paddingTop: '10px' }}>
           <select
+          aria-label="Status"
             onChange={(e) => setStatus(e.target.value)}
             required
           >
@@ -94,6 +100,7 @@ export default function NewProjectTaskForm() {
         </div>
         <div style={{ paddingTop: '10px' }}>
           <select
+          aria-label="owners"
             onChange={(e) => setOwners(e.target.value)}
             required
           >
@@ -108,6 +115,7 @@ export default function NewProjectTaskForm() {
         <div>
           <h2>Start Date:</h2>
           <input
+          aria-label="Start Date:"
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
@@ -116,6 +124,7 @@ export default function NewProjectTaskForm() {
         <div>
           <h2>End Date:</h2>
           <input
+          aria-label="End Date:"
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
