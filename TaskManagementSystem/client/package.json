@@ -4,7 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "jest": {
-    "watchman": false
+    "watchman": false,
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTest.js"
+    ]
   },
   "scripts": {
     "dev": "vite --port 8080",
@@ -23,6 +27,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@okta/okta-auth-js": "^7.7.0",
     "@okta/okta-react": "^6.9.0",
+    "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
     "axios": "^1.7.2",
@@ -60,6 +65,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "react-test-renderer": "^18.3.1",
     "vite": "^5.2.0"
   }

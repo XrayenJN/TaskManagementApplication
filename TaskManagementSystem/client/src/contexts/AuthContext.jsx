@@ -11,7 +11,8 @@ const oktaAuth = new OktaAuth({
   // Required config
   clientId: `${import.meta.env.VITE_OKTA_CLIENT_ID}`,
   issuer: `https://${import.meta.env.VITE_OKTA_DOMAIN}/oauth2/default`,
-  redirectUri: `${window.location.origin}/login/callback`,
+  // redirectUri: `${window.location.origin}/login/callback`,
+  redirectUri: `localhost:8080/login/callback`,
 });
 
 const restoreOriginalUri = async (_oktaAuth, originalUri) => {
