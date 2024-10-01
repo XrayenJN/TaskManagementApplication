@@ -51,7 +51,7 @@ const NewProjectTaskForm = () => {
 
     await createNewProjectTaskDocument(newProjectTask, projectId);
     refreshTasks();  // Call refreshTasks function
-    history.replace(`/project/${projectId}`);
+    history.goBack();
   };
 
   const meetingComponent = () => {

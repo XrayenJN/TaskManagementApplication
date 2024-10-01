@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
@@ -9,8 +9,13 @@ const localizer = momentLocalizer(moment);
 
 const CalendarView = () => {
   const { projectId } = useParams();
+  const { setChosenProjectId } = useContext(TaskContext);
   const { projectTasks } = useContext(TaskContext);
   const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
+
+  useEffect(() => {
+    setChosenProjectId(projectId)
+  }, [projectId])
 
   const events = tasks.map(task => ({
     title: task.name,

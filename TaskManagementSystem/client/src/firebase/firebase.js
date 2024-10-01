@@ -279,18 +279,19 @@ export const createNewProjectTaskDocument = async(projectTask, projectId) => {
   const q = query(userCollectionRef, where("email", "==", projectTask.owners))
 
   // get the user uid for the ref
-  const userUids = []
+  const userUid = []
   const userQuerySnapshot = await getDocs(q);
   userQuerySnapshot.forEach((doc) => {
-    userUids.push(doc.id)
+    userUid.push({id: doc.id, name:doc.data().name, email: doc.data().email})
   })
 
+  const user = userUid[0]
   // get the user reference
-  const userRef = doc(db, "users", userUids[0])
+  const userRef = doc(db, "users", user.id)
 
   // Update the owner of the projectTask so that it would link to the particular user
   await updateDoc(ref, {
-    owners: [userRef]
+    owners: [{ref: userRef, name: user.name, email: user.email}]
   })
 
   // update the project data to link to the task that the project has
