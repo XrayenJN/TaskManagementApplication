@@ -26,7 +26,7 @@ const KanbanView = () => {
 
   const renderTasks = (tasks) => {
     return tasks.map((task, index) => {
-      const taskEndDate = task.endDate.seconds ? task.endDate.toDate() : task.endDate;
+      const taskEndDate = task.endDate?.seconds ? task.endDate.toDate() : task.endDate;
       const isPastDue = new Date(taskEndDate) < currentDate;
       const taskBoxClass = isPastDue ? 'task-box past-due' : 'task-box';
 
