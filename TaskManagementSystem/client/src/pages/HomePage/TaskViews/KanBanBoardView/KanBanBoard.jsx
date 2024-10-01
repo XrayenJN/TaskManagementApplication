@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import moment from 'moment';
@@ -8,6 +8,7 @@ const KanbanView = () => {
   const currentDate = new Date();
 
   const { projectId } = useParams();
+  const { setChosenProjectId } = useContext(TaskContext);
   const { projectTasks } = useContext(TaskContext);
   const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
 
@@ -23,6 +24,10 @@ const KanbanView = () => {
     }
     return moment(date).format('DD/MM/YYYY');
   };
+
+  useEffect(() => {
+    setChosenProjectId(projectId)
+  }, [projectId])
 
   const renderTasks = (tasks) => {
     return tasks.map((task, index) => {

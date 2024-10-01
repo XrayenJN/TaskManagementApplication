@@ -14,6 +14,7 @@ dayjs.extend(isBetween);
 export default function GanttChart() {
   const { projectId } = useParams();
   const { projectTasks } = useContext(TaskContext);
+  const { setChosenProjectId } = useContext(TaskContext);
   const [contributors, setContributors] = useState([]);
   var loadingStatus = true;
 
@@ -22,9 +23,15 @@ export default function GanttChart() {
     const theContributors = await getContributors(projectId);
     setContributors(theContributors);
   }
+  
   useEffect(() => {
     retrieveContributors()
   }, [])
+
+  useEffect(() => {
+    setChosenProjectId(projectId)
+  }, [projectId])
+
 
   // Once we have the data 
   var finialisedData = []
