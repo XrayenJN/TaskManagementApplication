@@ -25,7 +25,7 @@ const CalendarView = () => {
     description: task.description,
     status: task.status,
     owners: task.owners,
-    isMilestone: task.isMilestone,
+    isMeeting: task.isMeeting,
   }));
 
   const eventStyleGetter = (event) => {
@@ -35,8 +35,12 @@ const CalendarView = () => {
     if (event.status === 'Completed') {
       backgroundColor = '#1BA098';
     }
-    else if (new Date(event.end) < now && event.status !== 'Completed') {
+    else if (new Date(event.end) < now && event.status !== 'Completed' && !event.isMeeting) {
       backgroundColor = '#BD7676';
+    }
+    // console.log(event.isMeeting)
+    else if (event.isMeeting){
+      backgroundColor = '#8da5a5';
     }
 
     return {
