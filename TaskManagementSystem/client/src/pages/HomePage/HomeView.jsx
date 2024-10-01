@@ -222,7 +222,7 @@ const ProjectList = () => {
           : []
 
         return (
-          <div style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+          <div key={project.id} style={{ backgroundColor, padding: '20px', marginBottom: '20px', cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{project.name}</p>
