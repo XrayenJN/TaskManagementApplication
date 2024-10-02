@@ -295,11 +295,8 @@ const ListView = () => {
   
     return filteredGroupedTasks;
   };
-  
 
-  // console.log(projectTasks[projectId]);
-  // console.log(groupedTasks);
-
+  console.log(groupedTasks);
   const tasksOutput = () => {
     if (projectTasks) {
       return (
@@ -310,7 +307,7 @@ const ListView = () => {
                 <i>{moment(date).format('ddd - DD, MMM, YYYY')}</i>
               </div>
               {tasks.map(task => (
-                <div key={task.id} style={{ backgroundColor: '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }} onClick={() => togglePopup(task)}>
+                <div key={task.id} style={{ backgroundColor: new Date(task.endDate) < new Date() ? '#BD7676' : '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }} onClick={() => togglePopup(task)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                       <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{task.name}</p>
