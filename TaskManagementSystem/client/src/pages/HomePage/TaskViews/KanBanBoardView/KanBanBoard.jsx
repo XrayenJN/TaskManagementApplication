@@ -1,8 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import moment from 'moment';
 import '../../../../assets/styles/KanbanView.css';
+import Select from 'react-select';
+import { sortTaskByAToZ, sortTaskByZToA, sortTaskByDueDate, filterTaskByActiveStatus, filterTaskByExpiredStatus, filterTaskByOwner } from '../../../../utils/taskUtility';
+
 
 const KanbanView = () => {
   const currentDate = new Date();
@@ -11,11 +14,64 @@ const KanbanView = () => {
   const { setChosenProjectId } = useContext(TaskContext);
   const { projectTasks } = useContext(TaskContext);
   const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isSortByOpen, setIsSortByOpen] = useState(false);
+  const [selectedSortBy, setSelectedSortBy] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState([]);
+
+  const filterOptions = [
+    { value: 'filterTaskByActiveStatus', label: 'Active Task' },
+    { value: 'filterTaskByExpiredStatus', label: 'Expired Task' }
+  ]
+
+  const sortByOptions = [
+    { value: 'sortTaskByAToZ', label: 'Sort Tasks BY (A to Z)' },
+    { value: 'sortTaskByZToA', label: 'Sort Tasks BY (Z to A)' },
+    { value: 'sortTaskByDueDate', label: 'Sort Tasks By Due Date' }
+  ]
 
   /* Used for future implementation of task edit popup */
   const handleTaskClick = (task) => {
     console.log('Task clicked:', task);
   };
+
+  const handleFilterButtonClick = () => {
+    setIsFilterOpen(!isFilterOpen);
+    if (isFilterOpen) {
+      // If the filter panel is closing, reset groupedTasks to the original state
+      if (projectTasks && projectTasks[projectId]) {
+        // Call groupTasksByEndDate to re-group the tasks without any filters
+        const grouped = groupTasksByEndDate(projectTasks, projectId);
+        setGroupedTasks(grouped);
+        setSelectedFilter([]);
+      }
+    }
+  }
+
+  const handleSortByButtonClick = () => {
+    setIsSortByOpen(!isSortByOpen);
+    if (isSortByOpen) {
+      // If the filter panel is closing, reset groupedTasks to the original state
+      if (projectTasks && projectTasks[projectId]) {
+        // Call groupTasksByEndDate to re-group the tasks without any filters
+        const grouped = groupTasksByEndDate(projectTasks, projectId);
+        setGroupedTasks(grouped);
+        setSelectedSortBy(null);
+      }
+    }
+  }
+
+  const handleSortByChanges = (selectedOption) => {
+    const sortByValue = selectedOption ? selectedOption.value : null;
+    setSelectedSortBy(sortByValue);
+    // applyFilterAndSort(selectedFilter, sortByValue);
+  }
+
+  const handleFilterChanges = (selectedOptions) => {
+    const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
+    setSelectedFilter(values);
+    // applyFilterAndSort(values, selectedSortBy);
+  }
 
   const formatDate = (date) => {
     if (!date) return "None";
@@ -61,8 +117,32 @@ const KanbanView = () => {
       <div className="kanban-header">
       <h1 style={{ textAlign: 'left', padding: '40px 0 0 0' }}>Kanban View</h1>
         <div className="kanban-buttons">
-          <button className="kanban-button">Filter</button>
-          <button className="kanban-button">Sort by</button>
+          <button className="kanban-button" onClick={() => handleFilterButtonClick()}>Filter</button>
+          {isFilterOpen && (
+            <div>
+              <Select
+                className='basic-multi-select'
+                classNamePrefix="select"
+                options={filterOptions}
+                placeholder="Filter Tasks"
+                onChange={handleFilterChanges}
+                isClearable={false}
+                isMulti
+              />
+            </div>
+          )}
+          <button className="kanban-button" onClick={() => handleSortByButtonClick()}>Sort by</button>
+          {isSortByOpen && (
+            <div>
+              <Select
+                className='basic-multi-select'
+                classNamePrefix="select"
+                options={sortByOptions}
+                placeholder="Sort By Tasks"
+                onChange={handleSortByChanges}
+              />
+            </div>
+          )}
           <Link to={`/project/${projectId}/new-project-task-form`} className="kanban-button">
             Add task
           </Link>
