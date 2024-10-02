@@ -25,6 +25,21 @@ const KanbanView = () => {
   const [selectedFilter, setSelectedFilter] = useState([]);
   const [outputTasks, setOutputTasks] = useState(groupedTasks);
 
+  const [contributors, setContributors] = useState([]);
+
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  useEffect(() => {
+    const retrieveContributors = async () => {
+      const theContributors = await getContributors(projectId);
+      setContributors(theContributors);
+    };
+
+    retrieveContributors();
+    setInViewPage(true);
+    setChosenProjectId(projectId);
+  }, [projectId]);
   const filterOptions = [
     { value: 'filterTaskByActiveStatus', label: 'Active Task' },
     { value: 'filterTaskByExpiredStatus', label: 'Expired Task' }
