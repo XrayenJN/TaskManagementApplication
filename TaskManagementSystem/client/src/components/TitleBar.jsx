@@ -66,7 +66,7 @@ const TitleBar = () => {
     }
 
     setNotifTasks(filterLookAheadDate(lookaheadDays, allTasks));
-  });
+  }, []);
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
