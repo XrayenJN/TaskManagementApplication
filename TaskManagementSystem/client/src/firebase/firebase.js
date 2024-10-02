@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } from "firebase/auth";
-import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId, deleteDoc, arrayRemove } from "firebase/firestore";
 import { User, userConverter } from "../models/User";
 import { projectTaskConverter } from "../models/ProjectTask";
 import { projectConverter } from "../models/Project";
@@ -285,9 +285,14 @@ export const removeProjectWithAllTasks = async (projectId) => {
   }
 }
 
-export const removeParticularTask = async (taskId) => {
+export const removeParticularTask = async (taskId, chosenProjectId) => {
   const ref = doc(db, "projectTasks", taskId);
   await deleteDoc(ref)
+
+  const pRef = doc(db, 'projects', chosenProjectId);
+  await updateDoc(pRef, {
+    tasks: arrayRemove(ref)
+  })
 }
 
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {

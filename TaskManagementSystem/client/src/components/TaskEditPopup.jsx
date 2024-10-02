@@ -2,12 +2,11 @@ import React, { useContext, useState, useEffect } from 'react';
 import { getUser, updateTask, removeParticularTask } from '../firebase/firebase';
 import { TaskContext } from '../contexts/TaskContext';
 import { DatePicker, Space } from 'antd';
-import Select from 'react-select';
 import { addTimeToDate, extractDate } from '../utils/dateHandler';
 import moment from 'moment';
 
 const TaskEditPopup = ({ task, contributors, onClose }) => {
-  const { refreshTasks } = useContext(TaskContext);
+  const { refreshTasks, chosenProjectId } = useContext(TaskContext);
   const [editedTask, setEditedTask] = useState({
     name: '',
     description: '',
@@ -22,7 +21,6 @@ const TaskEditPopup = ({ task, contributors, onClose }) => {
 
   useEffect(() => {
     const fetchOwnerDetails = async () => {
-      console.log(task.owners)
       const ownerDetails = await getUser(task.owners[0].ref);
       setEditedTask({
         ...task,
@@ -47,7 +45,7 @@ const TaskEditPopup = ({ task, contributors, onClose }) => {
   };
 
   const removeTask = async () => {
-    await removeParticularTask(task.id);
+    await removeParticularTask(task.id, chosenProjectId);
     refreshTasks();
     onClose();
   };
