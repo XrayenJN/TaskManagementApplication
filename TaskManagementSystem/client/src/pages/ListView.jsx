@@ -73,7 +73,7 @@ const ListView = () => {
       status: task.status,
       owners: ownerDetails.email
     });
-    setShowPopup(!showPopup);
+    setShowPopup(true);
   };
 
   const handleInputChange = (e) => {

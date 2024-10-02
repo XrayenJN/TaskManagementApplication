@@ -1,0 +1,25 @@
+Original
+VITE_FIREBASE_API_KEY="AIzaSyCKv_xoVeTNAQOIgJAL0RSA8aob0d3J5A8"
+VITE_FIREBASE_AUTH_DOMAIN="task-management-system-cs-01.firebaseapp.com"
+VITE_FIREBASE_DATABASE_URL="https://task-management-system-cs-01-default-rtdb.asia-southeast1.firebasedatabase.app"
+VITE_FIREBASE_PROJECT_ID="task-management-system-cs-01"
+VITE_FIREBASE_STORAGE_BUCKET="task-management-system-cs-01.appspot.com"
+VITE_FIREBASE_MESSAGING_SENDER_ID="438150743957"
+VITE_FIREBASE_APP_ID="1:438150743957:web:ded891ce2568435001989c"
+
+
+backup:
+VITE_FIREBASE_API_KEY="AIzaSyCuHyoPIBFXCIk_eGMeIVhVF1mfAeg0y7c"
+VITE_FIREBASE_AUTH_DOMAIN="taskmanagementbackup.firebaseapp.com"
+VITE_FIREBASE_PROJECT_ID="taskmanagementbackup"
+VITE_FIREBASE_STORAGE_BUCKET="taskmanagementbackup.appspot.com"
+VITE_FIREBASE_MESSAGING_SENDER_ID="272647437920"
+VITE_FIREBASE_APP_ID="1:272647437920:web:9900b29f53fa5c3bc70d05"
+
+b-2
+"AIzaSyC4a0ArH-o-61VEJ7qIYEaF7tkSTZgNpF4",
+  authDomain: "tms-backup-2.firebaseapp.com",
+  projectId: "tms-backup-2",
+  storageBucket: "tms-backup-2.appspot.com",
+  messagingSenderId: "187242686111",
+  appId: "1:187242686111:web:e2c1719692af103862a4aa"
