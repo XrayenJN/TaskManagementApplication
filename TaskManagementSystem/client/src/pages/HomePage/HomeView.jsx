@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { checkUsersExists, getUser, updateProject, removeProjectWithAllTasks } from '../../firebase/firebase';
+import { checkUsersExists, getUser, updateProject, removeProjectWithAllTasks, removeUserProjectList } from '../../firebase/firebase';
 import { isExpired } from '../../utils/dateHandler';
 import { ProjectContext } from '../../contexts/ProjectContext';
 import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';
@@ -12,6 +12,7 @@ const ProjectList = () => {
   const [email, setEmail] = useState('');
   const [projectId, setProjectId] = useState('');
   const [contributors, setContributors] = useState([]);
+  const [deletedContributors, setDeletedContributors] = useState([]);
   const [editedProject, setEditedProject] = useState({
     name: '',
     description: '',
@@ -55,6 +56,7 @@ const ProjectList = () => {
   const handleSave = async () => {
     if (contributors.length > 0){
       await updateProject(projectId, editedProject);
+      await removeUserProjectList(projectId, deletedContributors);
       setRefreshTrigger(true)
       setShowPopup(false);
       return;
@@ -94,6 +96,7 @@ const ProjectList = () => {
   const handleRemoveContributor = async (contributorEmail) => {
     const filteredContributors = contributors.filter(email => email !== contributorEmail);
     setContributors(filteredContributors)
+    setDeletedContributors((prevContributors) => [...prevContributors, contributorEmail]);
   }
 
   const showEditProjectButton = (project) => {

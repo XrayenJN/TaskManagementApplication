@@ -170,6 +170,32 @@ export const updateProjectContributors = async(pid, uid) => {
   })
 }
 
+export const removeUserProjectList = async (pid, deletedUser) => {
+  const pRef = doc(db, 'projects', pid);
+  const userCollection = collection(db, "users");
+
+  const contributorsRef = []
+ 
+  await Promise.all(
+    deletedUser.map(async (userDetail) => {
+      const q = query(userCollection, where("email", "==", userDetail.email))
+
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((res) => {
+        const uRef = doc(db, "users", res.id)
+        contributorsRef.push(uRef)
+      })
+    })
+  );
+
+  contributorsRef.map(async (eachRef) => {
+    await updateDoc(eachRef,{
+      projects: arrayRemove(pRef)
+    })
+  })
+}
+
 export const updateProject = async (pid, newUpdateProject) => {
   const pRef = doc(db, 'projects', pid);
   const userCollection = collection(db, "users");
@@ -188,7 +214,7 @@ export const updateProject = async (pid, newUpdateProject) => {
       })
     })
   );
-  
+
   // this one, the contributors are the ref, not the email anymore
   const finalUpdatedProject = { ...newUpdateProject, contributors: [] }
 
@@ -205,6 +231,9 @@ export const updateProject = async (pid, newUpdateProject) => {
       projects: arrayUnion(pRef)
     })
   })
+
+  // need to update the user's project list as well if we remove them
+
 }
 
 export const checkUsersExists = async(userEmail) => {
@@ -282,8 +311,12 @@ export const removeProjectWithAllTasks = async (projectId) => {
   if (docSnap.exists()) {
     const projectDetails = docSnap.data();
     const tasksRefs = projectDetails.tasks;
-    tasksRefs.forEach(async taskRef => await deleteDoc(taskRef))
+
+    tasksRefs?.forEach(async taskRef => await deleteDoc(taskRef))
     await deleteDoc(ref);
+
+    // need to update the user project list as well
+
   } else {
     // docSnap.data() will be undefined in this case
     // console.log("No such document!");
