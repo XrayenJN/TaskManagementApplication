@@ -66,6 +66,15 @@ const TaskEditPopup = ({ task, contributors, onClose }) => {
       return (
         <div>
           <div>
+            <select name="status" value={editedTask.status} onChange={handleInputChange} required>
+              <option value="">Select Status</option>
+              <option value="Backlog">Backlog</option>
+              <option value="Ready">Ready</option>
+              <option value="InProgress">InProgress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
             <h3>Start Date:</h3>
             <input
               name="startDate"
@@ -83,30 +92,24 @@ const TaskEditPopup = ({ task, contributors, onClose }) => {
               onChange={handleInputChange}
             />
           </div>
-          <div>
-            <select name="status" value={editedTask.status} onChange={handleInputChange} required>
-              <option value="">Select Status</option>
-              <option value="Backlog">Backlog</option>
-              <option value="Ready">Ready</option>
-              <option value="InProgress">InProgress</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </div>
+          
         </div>
       );
     } else {
       return (
-        <Space direction="vertical" size={12}>
-          <DatePicker.RangePicker
-            showTime={{ format: 'HH:mm' }}
-            value={[
-              moment(editedTask.startDate, 'YYYY-MM-DD HH:mm'),
-              moment(editedTask.endDate, 'YYYY-MM-DD HH:mm'),
-            ]}
-            onChange={onChange}
-            format="YYYY-MM-DD HH:mm"
-          />
-        </Space>
+        <div style={{paddingTop : '8px'}}>
+          <Space direction="vertical" size={12}>
+            <DatePicker.RangePicker
+              showTime={{ format: 'HH:mm' }}
+              value={[
+                moment(editedTask.startDate, 'YYYY-MM-DD HH:mm'),
+                moment(editedTask.endDate, 'YYYY-MM-DD HH:mm'),
+              ]}
+              onChange={onChange}
+              format="YYYY-MM-DD HH:mm"
+            />
+          </Space>
+        </div>
       );
     }
   };
@@ -142,34 +145,40 @@ const TaskEditPopup = ({ task, contributors, onClose }) => {
                   />
                 </td>
                 <td>
-                  <h3>Task Links</h3>
-                  <textarea
-                    name="links"
-                    value={editedTask.links}
-                    onChange={handleInputChange}
-                  />
-                  <label>
-                    <input
-                      name="isMeeting"
-                      type="checkbox"
-                      checked={editedTask.isMeeting}
+                  <div>
+                    <h3>Task Links</h3>
+                    <textarea
+                      name="links"
+                      value={editedTask.links}
                       onChange={handleInputChange}
                     />
-                    Meeting
+                  </div>
+                  <label>
+                    <b>Meeting</b>
+                    <div>
+                      <input
+                        name="isMeeting"
+                        type="checkbox"
+                        checked={editedTask.isMeeting}
+                        onChange={handleInputChange}
+                      />
+                    </div>
                   </label>
-                  <select
-                    name="owners"
-                    value={editedTask.owners}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select Owner</option>
-                    {contributors.map((contributor, index) => (
-                      <option key={index} value={contributor.email}>
-                        {contributor.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div>
+                    <select
+                      name="owners"
+                      value={editedTask.owners}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">Select Owner</option>
+                      {contributors.map((contributor, index) => (
+                        <option key={index} value={contributor.email}>
+                          {contributor.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   {meetingComponent()}
                 </td>
               </tr>
