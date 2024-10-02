@@ -14,11 +14,17 @@ const KanbanView = () => {
   const { setChosenProjectId } = useContext(TaskContext);
   const { projectTasks } = useContext(TaskContext);
   const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
+  const groupedTasks = {
+    Backlog: tasks.filter(task => task.status === "Backlog"),
+    ToDo: tasks.filter(task => task.status === "Ready"),
+    InProgress: tasks.filter(task => task.status === "InProgress"),
+    Done: tasks.filter(task => task.status === "Completed")
+  };
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortByOpen, setIsSortByOpen] = useState(false);
   const [selectedSortBy, setSelectedSortBy] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState([]);
-  const [outputTasks, setOutputTasks] = useState({});
+  const [outputTasks, setOutputTasks] = useState(groupedTasks);
 
   const filterOptions = [
     { value: 'filterTaskByActiveStatus', label: 'Active Task' },
@@ -149,13 +155,6 @@ const KanbanView = () => {
     });
   };
 
-  const groupedTasks = {
-    Backlog: tasks.filter(task => task.status === "Backlog"),
-    ToDo: tasks.filter(task => task.status === "Ready"),
-    InProgress: tasks.filter(task => task.status === "InProgress"),
-    Done: tasks.filter(task => task.status === "Completed")
-  };
-
   return (
     <div className="kanban-view">
       <div className="kanban-header">
@@ -196,19 +195,19 @@ const KanbanView = () => {
       <div className="kanban-columns">
         <div className="kanban-column">
           <h2>Backlog</h2>
-          {renderTasks(groupedTasks.Backlog)}
+          {renderTasks(outputTasks.Backlog)}
         </div>
         <div className="kanban-column">
           <h2>To Do</h2>
-          {renderTasks(groupedTasks.ToDo)}
+          {renderTasks(outputTasks.ToDo)}
         </div>
         <div className="kanban-column">
           <h2>In Progress</h2>
-          {renderTasks(groupedTasks.InProgress)}
+          {renderTasks(outputTasks.InProgress)}
         </div>
         <div className="kanban-column">
           <h2>Done</h2>
-          {renderTasks(groupedTasks.Done)}
+          {renderTasks(outputTasks.Done)}
         </div>
       </div>
     </div>
