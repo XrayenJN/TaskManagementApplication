@@ -22,7 +22,7 @@ const TitleBar = () => {
 
   const { lookaheadPeriod } = useContext(SettingsContext);
   const currentPath = location.pathname;
-  if (currentPath.includes('project') && !currentPath.includes('projects')) {
+  if (currentPath.includes('project') && !currentPath.includes('projects') && !currentPath.includes('new-project-form')) {
     setInViewPage(true);
   }
 
@@ -45,7 +45,7 @@ const TitleBar = () => {
 
   useEffect(() => {
     const currentPath = location.pathname;
-    if (currentPath.includes('project') && !currentPath.includes('projects')) {
+    if (currentPath.includes('project') && !currentPath.includes('projects') && !currentPath.includes('new-project-form')) {
       setInViewPage(true);
     } else {
       setInViewPage(false);
