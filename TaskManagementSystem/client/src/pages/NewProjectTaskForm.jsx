@@ -142,11 +142,13 @@ const NewProjectTaskForm = () => {
         </div>
         <div style={{ paddingTop: '10px' }}>
           <label>
+          <b>Meeting</b>
+            <div>
             <input
               type="checkbox"
               onChange={(e) => setMeeting(e.target.checked)}
             />
-            Meeting
+            </div>
           </label>
         </div>
         <div style={{ paddingTop: '10px' }}>
@@ -162,6 +164,7 @@ const NewProjectTaskForm = () => {
             ))}
           </select>
         </div>
+        
         {meetingComponent()}
 
         <div style={{ paddingTop: "10px" }}>

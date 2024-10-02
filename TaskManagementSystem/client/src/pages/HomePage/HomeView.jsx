@@ -196,6 +196,7 @@ const ProjectList = () => {
                           onChange={handleEmailChange}
                           placeholder="Enter contributor email"
                         />
+                        <hr/>
                         <button onClick={handleAddContributor}>Add</button>
                       </td>
                     </tr>

@@ -17,6 +17,11 @@ const TitleBar = () => {
   const { chosenProjectId } = useContext(TaskContext);
   const location = useLocation();
 
+  const currentPath = location.pathname;
+  if (currentPath.includes('project') && !currentPath.includes('projects')) {
+    setInViewPage(true);
+  }
+
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
@@ -91,7 +96,9 @@ const TitleBar = () => {
           onMouseEnter={handleMouseEnterMenu}
           onMouseLeave={handleMouseLeaveMenu}
         >
-          <FontAwesomeIcon icon={faBars} style={{ fontSize: '28px', padding: '0px 10px 0px' }} />
+          <FontAwesomeIcon icon={faBars} style={{ fontSize: '28px', padding: '0px 10px 0px' }}
+                     onMouseEnter={handleMouseEnterMenu}
+                     onMouseLeave={handleMouseLeaveMenu}/>
           {isMenuOpen && (
             <div 
               style={{
