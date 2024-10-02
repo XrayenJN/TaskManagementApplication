@@ -127,13 +127,33 @@ export const getUserProjectIds = async(uid) => {
 export const createNewProjectDocument = async(project) => {
   // auto-generate the random id 
   const ref = doc(collection(db, "projects")).withConverter(projectConverter);
-  await setDoc(ref, project);
+  const contributors = project.contributors;
+  const emptyContributorsProject = project;
+  emptyContributorsProject.contributors = []
+  await setDoc(ref, emptyContributorsProject);
 
-  // Update the project that the user has
+  // Update the project that the creator user has
   await updateUserProject(auth.currentUser.uid, ref.id);
 
   // Update the contributor of the project
   await updateProjectContributors(ref.id, auth.currentUser.uid)
+
+  // Update the added contributors' project list.
+  const userRef = collection(db, "users");
+  contributors.forEach(async contributor => {
+    const q = query(userRef, where("email", "==", contributor.email))
+
+    const querySnapshot = await getDocs(q);
+    const user = []
+
+    querySnapshot.forEach((doc) => {
+      user.push({id: doc.id})
+    })
+
+    const contributorUserId = user[0].id
+    await updateUserProject(contributorUserId, ref.id)
+    await updateProjectContributors(ref.id, contributorUserId)
+  })
 }
 
 /**
