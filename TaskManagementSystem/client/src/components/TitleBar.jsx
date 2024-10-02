@@ -101,9 +101,9 @@ const TitleBar = () => {
       if (currentPath.includes('project') && !currentPath.includes('projects')) {
         return projects[chosenProjectId].name;
       } else if (currentPath.includes('profile')) {
-        return "Profile | TMS";
+        return "Profile";
       } else if (currentPath.includes('settings')) {
-        return "Settings | TMS";
+        return "Settings";
       }
     } catch (e) {
       return "Task Management System";
