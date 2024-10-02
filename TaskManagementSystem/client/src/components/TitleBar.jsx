@@ -57,14 +57,14 @@ const TitleBar = () => {
 
   useEffect(() => {
     const allTasks = Object.values(projectTasks).flatMap(arr => arr)
-
+    console.log(lookaheadPeriod)
     let lookaheadDays = 7;
-    if ({lookaheadPeriod} == "2 weeks") {
+    if (lookaheadPeriod == "2 weeks") {
       lookaheadDays = 14;
-    } else if ({lookaheadPeriod} == "1 month") {
+    } else if (lookaheadPeriod == "1 month") {
       lookaheadDays = 31;
     }
-
+    console.log(lookaheadDays)
     setNotifTasks(filterLookAheadDate(lookaheadDays, allTasks));
   }, [projectTasks]);
 

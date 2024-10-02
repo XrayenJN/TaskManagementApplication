@@ -22,7 +22,7 @@ export default function SortData(contributors, tasks) {
       }
       // Add the background color
       if (new Date() > new Date(task.endDate)){
-        if (task.status == "Done"){
+        if (task.status == "Completed"){
           formattedData.bgColor = 'rgb(27,160,152)'
         }
         else{
