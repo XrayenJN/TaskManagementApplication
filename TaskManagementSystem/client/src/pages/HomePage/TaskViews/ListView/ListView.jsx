@@ -128,15 +128,15 @@ const ListView = () => {
   }
 
   const handleSortByChanges = (selectedOption) => {
-    setSelectedSortBy(selectedOption ? selectedOption.value : null);
-    handleSortBy(selectedSortBy);
+    const sortByValue = selectedOption ? selectedOption.value : null;
+    setSelectedSortBy(sortByValue);
+    handleSortBy(sortByValue);
   }
 
   const handleFilterChanges = (selectedOptions) => {
     const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
     setSelectedFilter(values);
     handleFilter(values);
-    console.log(values);
   }
 
   const handleSortBy = (sortByValue) => {
@@ -200,36 +200,34 @@ const ListView = () => {
     return sortedGroupedTasks;
   };
 
-  const sortGroupedTasksByKeyZToA = (groupedTasks) => {
-    // Sort the grouped tasks by end date key
-    const sortedKeys = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
-  
-    // Create a new object with sorted keys
-    const sortedGroupedTasks = {};
-    sortedKeys.forEach((key) => {
-      // Sort tasks inside each group from A to Z by their name
-      const sortedTasks = groupedTasks[key].sort((taskA, taskB) =>
-        taskA.name.localeCompare(taskB.name)
-      );
-      sortedGroupedTasks[key] = sortedTasks;
-    });
-  
-    return sortedGroupedTasks;
+  const sortGroupedTasksByKeyAToZ = (groupedTasks) => {
+  // Create a new object to store the sorted tasks
+  const sortedGroupedTasks = {};
+
+  // Iterate through each group and sort the tasks within each group
+  Object.entries(groupedTasks).forEach(([key, tasks]) => {
+    // Sort tasks from A to Z by their name
+    sortedGroupedTasks[key] = tasks.sort((taskA, taskB) =>
+      taskA.name.localeCompare(taskB.name)
+    );
+  });
+
+  return sortedGroupedTasks;
   };
 
-  const sortGroupedTasksByKeyAToZ = (groupedTasks) => {
-    const sortedKeys = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
-  
-    const sortedGroupedTasks = {};
-    sortedKeys.forEach((key) => {
-      // Sort tasks alphabetically from Z to A
-      const sortedTasks = groupedTasks[key].sort((taskA, taskB) =>
-        taskB.name.localeCompare(taskA.name)
-      );
-      sortedGroupedTasks[key] = sortedTasks;
-    });
-  
-    return sortedGroupedTasks;
+  const sortGroupedTasksByKeyZToA = (groupedTasks) => {
+      // Create a new object to store the sorted tasks
+  const sortedGroupedTasks = {};
+
+  // Iterate through each group and sort the tasks within each group
+  Object.entries(groupedTasks).forEach(([key, tasks]) => {
+    // Sort tasks from Z to A by their name
+    sortedGroupedTasks[key] = tasks.sort((taskA, taskB) =>
+      taskB.name.localeCompare(taskA.name)
+    );
+  });
+
+  return sortedGroupedTasks;
   };
 
   const filterGroupedTasksByOwnerName = (groupedTasks, ownerName) => {
