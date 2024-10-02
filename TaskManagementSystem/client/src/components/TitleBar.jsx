@@ -17,6 +17,11 @@ const TitleBar = () => {
   const { chosenProjectId } = useContext(TaskContext);
   const location = useLocation();
 
+  const currentPath = location.pathname;
+  if (currentPath.includes('project') && !currentPath.includes('projects')) {
+    setInViewPage(true);
+  }
+
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
@@ -27,7 +32,7 @@ const TitleBar = () => {
       setInViewPage(JSON.parse(storedInViewPage));
     }
   }, [setInViewPage]);
-  
+
   useEffect(() => {
     localStorage.setItem('inViewPage', JSON.stringify(inViewPage));
   }, [inViewPage]);
@@ -49,7 +54,7 @@ const TitleBar = () => {
     setIsDropdownOpen(false);
   };
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     await oktaAuth.signOut();
     await auth.signOut();;
   };
@@ -77,8 +82,8 @@ const TitleBar = () => {
         return "Settings | TMS";
       }
     } catch (e) {
-        return "Task Management System";
-      }
+      return "Task Management System";
+    }
     return "Task Management System";
   };
 
@@ -86,14 +91,16 @@ const TitleBar = () => {
     document.title = getPageHeading() + " | TMS",
     <div style={{ backgroundColor: '#051622', color: '#fff', display: 'flex', alignItems: 'center', padding: '20px 20px', position: 'fixed', width: '100%', top: 0, left: 0, zIndex: 10 }}>
       {inViewPage && (
-        <div 
-          style={{ marginRight: '20px', cursor: 'pointer' }} 
+        <div
+          style={{ marginRight: '20px', cursor: 'pointer' }}
           onMouseEnter={handleMouseEnterMenu}
           onMouseLeave={handleMouseLeaveMenu}
         >
-          <FontAwesomeIcon icon={faBars} style={{ fontSize: '28px', padding: '0px 10px 0px' }} />
+          <FontAwesomeIcon icon={faBars} style={{ fontSize: '28px', padding: '0px 10px 0px' }}
+            onMouseEnter={handleMouseEnterMenu}
+            onMouseLeave={handleMouseLeaveMenu} />
           {isMenuOpen && (
-            <div 
+            <div
               style={{
                 position: 'absolute',
                 top: '45px',
@@ -111,28 +118,33 @@ const TitleBar = () => {
             >
               <ul style={{ listStyle: 'none', padding: '0px 30px', textAlign: 'left' }}>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
-                  <FontAwesomeIcon icon={faClock} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}/timeline`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/timeline`) ? 'bold' : 'normal'  }}>Timeline View</Link>
+                  <Link to={`/project/${chosenProjectId}/timeline`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/timeline`) ? 'bold' : 'normal' }}>
+                    <FontAwesomeIcon icon={faClock} style={{ marginRight: '10px' }} />
+                    Timeline View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
-                  <FontAwesomeIcon icon={faList} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}`) ? 'bold' : 'normal' }}>List View</Link>
+                  <Link to={`/project/${chosenProjectId}`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}`) ? 'bold' : 'normal' }}>
+                    <FontAwesomeIcon icon={faList} style={{ marginRight: '10px' }} />
+                    List View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
-                  <FontAwesomeIcon icon={faColumns} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}/kanban`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/kanban`) ? 'bold' : 'normal' }}>Kanban View</Link>
+                  <Link to={`/project/${chosenProjectId}/kanban`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/kanban`) ? 'bold' : 'normal' }}>
+                    <FontAwesomeIcon icon={faColumns} style={{ marginRight: '10px' }} />
+                    Kanban View</Link>
                 </li>
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
-                  <FontAwesomeIcon icon={faCalendar} style={{ marginRight: '10px' }} />
-                  <Link to={`/project/${chosenProjectId}/calendar`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/calendar`) ? 'bold' : 'normal'}}>Calendar View</Link>
+                  <Link to={`/project/${chosenProjectId}/calendar`} style={{ color: 'white', fontWeight: isActive(`/project/${chosenProjectId}/calendar`) ? 'bold' : 'normal' }}>
+                    <FontAwesomeIcon icon={faCalendar} style={{ marginRight: '10px' }} />
+                    Calendar View</Link>
                 </li>
-                <hr/>
+                <hr />
                 <li style={{ padding: '10px 0', cursor: 'pointer' }}>
-                  <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '10px' }} />
                   <Link to="/projects" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => {
                     localStorage.setItem('inViewPage', JSON.stringify(false));
                     setInViewPage(false);
-                  }}>Exit to Projects</Link>
+                  }}>
+                    <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '10px' }} />
+                    Exit to Projects</Link>
                 </li>
               </ul>
             </div>
@@ -143,7 +155,7 @@ const TitleBar = () => {
       <div style={{ flex: 1 }}></div>
       <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>{getPageHeading()}</h1>
       {user && (
-        <div 
+        <div
           style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}
           onMouseEnter={handleDropdownToggle}
           onMouseLeave={handleMouseLeave}
@@ -175,6 +187,13 @@ const TitleBar = () => {
                 </li>
                 <li style={{ padding: '5px 10px' }}>
                   <Link to="/settings" style={{ color: '#fff', textDecoration: 'none' }}>Settings</Link>
+                </li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>
+                  <Link to="/projects" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => {
+                    localStorage.setItem('inViewPage', JSON.stringify(false));
+                    setInViewPage(false);
+                  }}>
+                    Projects</Link>
                 </li>
                 <hr></hr>
                 <li
