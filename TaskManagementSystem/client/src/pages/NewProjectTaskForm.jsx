@@ -45,7 +45,11 @@ const NewProjectTaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedStartDate = startTime ? addTimeToDate(startTime, isMeeting) : startTime 
+    if ((startTime && !endTime) || (!startTime && endTime)) {
+      alert('Please ensure both Start Date and End Date are filled, or leave both empty.');
+      return;
+    }
+    const formattedStartDate = startTime ? addTimeToDate(startTime, isMeeting) : startTime
     const formattedEndDate = endTime ? addTimeToDate(endTime, isMeeting) : endTime
     const newProjectTask = new ProjectTask(name, description, formattedStartDate, formattedEndDate, comments, links, isMeeting, status, owners);
 
