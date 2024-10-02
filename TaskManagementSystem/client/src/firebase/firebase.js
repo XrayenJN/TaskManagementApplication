@@ -51,7 +51,7 @@ export const googleSignIn = async () => {
       // const email = error.customData.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      // console.log(errorCode, errorMessage, credential)
+      console.log(errorCode, errorMessage, credential)
     });
 
   const user = new User(userResult.displayName, userResult.email, []);
@@ -67,7 +67,7 @@ export const customSignIn = async (token) => {
     }).catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      // console.log(errorCode, errorMessage)
+      console.log(errorCode, errorMessage)
     });
 
   const user = new User(userResult.displayName, userResult.email, []);
