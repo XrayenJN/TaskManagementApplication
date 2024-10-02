@@ -199,6 +199,11 @@ export const updateProject = async (pid, newUpdateProject) => {
     await updateDoc(pRef, {
       contributors: arrayUnion(ref)
     })
+
+    // update the user's project list
+    await updateDoc(ref, {
+      projects: arrayUnion(pRef)
+    })
   })
 }
 
