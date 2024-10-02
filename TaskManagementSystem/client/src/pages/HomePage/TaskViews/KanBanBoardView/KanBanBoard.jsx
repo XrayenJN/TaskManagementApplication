@@ -1,13 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import React, { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import moment from 'moment';
 import '../../../../assets/styles/KanbanView.css';
 import Select from 'react-select';
 import { sortTaskByAToZ, sortTaskByZToA, sortTaskByDueDate, filterTaskByActiveStatus, filterTaskByExpiredStatus, filterTaskByOwner } from '../../../../utils/taskUtility';
-
-import { getContributors } from '../../../../firebase/firebase';
 import TaskEditPopup from '../../../../components/TaskEditPopup';
 
 const KanbanView = () => {
