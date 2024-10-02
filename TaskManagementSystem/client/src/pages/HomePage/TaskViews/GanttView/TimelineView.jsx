@@ -35,11 +35,6 @@ export default function GanttChart() {
     setChosenProjectId(projectId)
   }, [projectId])
 
-  const handleTaskClick = (task) => {
-    setSelectedTask(task);
-    setIsPopupOpen(true);
-  };
-
   const handleClosePopup = () => {
     setIsPopupOpen(false);
     setSelectedTask(null);
@@ -55,6 +50,13 @@ export default function GanttChart() {
     startDate: new Date(),
     endDate: new Date()
   });
+
+
+  const handleTaskClick = (selectedTask) => {
+    const task = projectTasks[projectId].filter(eachTask => eachTask.id === selectedTask.id)
+    setSelectedTask(task);
+    setIsPopupOpen(true);
+  };
 
   const handleRangeChange = useCallback((range) => {
     setRange(range);
