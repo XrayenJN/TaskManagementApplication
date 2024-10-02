@@ -48,7 +48,11 @@ const ListView = () => {
 
   useEffect(() => {
     if (projectTasks && projectTasks[projectId]) {
+
+      // Group tasks by end date first
       const grouped = groupTasksByEndDate(projectTasks, projectId);
+  
+      // Update the state with the sorted grouped tasks
       setGroupedTasks(grouped);
     }
   }, [projectTasks, projectId]);
@@ -116,12 +120,13 @@ const ListView = () => {
   }
 
   const handleFilterAndSortBy = (sortByValue, filterValue) => {
+    const name = "Libin Yang";
     if (sortByValue === 'sortTaskByAToZ') {
-      setGroupedTasks(sortTaskByAToZ(groupedTasks));
+      setGroupedTasks(sortGroupedTasksByKeyAToZ(groupedTasks));
     } else if (sortByValue === 'sortTaskByZToA') {
-      setGroupedTasks(sortTaskByZToA(groupedTasks));
+      setGroupedTasks(sortGroupedTasksByKeyZToA(groupedTasks));
     } else if (sortByValue === 'sortTaskByDueDate') {
-      setGroupedTasks(sortTaskByDueDate(groupedTasks));
+      setGroupedTasks(sortGroupedTasksByDueDate(groupedTasks));
     }
   }
 
@@ -135,6 +140,70 @@ const ListView = () => {
       return acc;
     }, {});
   }
+
+  const sortGroupedTasksByDueDate = (groupedTasks) => {
+    // Convert the keys to an array and sort them as dates
+    const sortedKeys = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
+  
+    // Create a new object with the sorted keys
+    const sortedGroupedTasks = sortedKeys.reduce((acc, key) => {
+      acc[key] = groupedTasks[key];
+      return acc;
+    }, {});
+  
+    return sortedGroupedTasks;
+  };
+
+  const sortGroupedTasksByKeyZToA = (groupedTasks) => {
+    // Sort the grouped tasks by end date key
+    const sortedKeys = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
+  
+    // Create a new object with sorted keys
+    const sortedGroupedTasks = {};
+    sortedKeys.forEach((key) => {
+      // Sort tasks inside each group from A to Z by their name
+      const sortedTasks = groupedTasks[key].sort((taskA, taskB) =>
+        taskA.name.localeCompare(taskB.name)
+      );
+      sortedGroupedTasks[key] = sortedTasks;
+    });
+  
+    return sortedGroupedTasks;
+  };
+
+  const sortGroupedTasksByKeyAToZ = (groupedTasks) => {
+    const sortedKeys = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
+  
+    const sortedGroupedTasks = {};
+    sortedKeys.forEach((key) => {
+      // Sort tasks alphabetically from Z to A
+      const sortedTasks = groupedTasks[key].sort((taskA, taskB) =>
+        taskB.name.localeCompare(taskA.name)
+      );
+      sortedGroupedTasks[key] = sortedTasks;
+    });
+  
+    return sortedGroupedTasks;
+  };
+
+  const filterGroupedTasksByContributor = (groupedTasks, contributorNames) => {
+    // Create a new grouped object to store the filtered tasks
+    const filteredGroupedTasks = {};
+
+    // Iterate through each group (each end date)
+    Object.entries(groupedTasks).forEach(([date, tasks]) => {
+    // Filter tasks that have at least one of the specified contributors
+    const filteredTasks = tasks.filter(task =>
+      task.owners.some(owner => contributorNames.includes(owner.name))
+    );
+
+    // Only add the group if there are filtered tasks for that date
+    if (filteredTasks.length > 0) {
+      filteredGroupedTasks[date] = filteredTasks;
+    }
+    return filteredGroupedTasks;
+  })};
+
 
   const tasksOutput = () => {
     if (projectTasks) {
