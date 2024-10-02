@@ -49,17 +49,16 @@ const TitleBar = () => {
     }
   }, [location.pathname, setInViewPage]);
 
-  const [lookaheadPeriod, setLookaheadPeriod] = useState('7 days');
-
-  const dummyTasks = [{comments: "HEHEHEHAsdf", description: "By Jordan aaaaa", endDate: "2024-08-31", id: "FmJiYS4JtlQslStnTkog", isMilestone: false, links: "sdfaPLS", name: "Task", owners: ["Blah"], startDate: "2024-08-07", status: "InProgress"},
-  {comments: "wow", description: "By John wow", endDate: "2024-09-20", id: "FmJiYS4JtlQslStnTkoh", isMilestone: true, links: "asd", name: "Task 2", owners: ["Blah"], startDate: "2024-09-07", status: "Backlog"}];
-
   const { projectId } = useParams();
   const { projectTasks } = useContext(TaskContext);
 
+  // Ready for Edward
+  const dummyTasks = [{comments: "HEHEHEHAsdf", description: "By Jordan aaaaa", endDate: "2024-08-31", id: "FmJiYS4JtlQslStnTkog", isMilestone: false, links: "sdfaPLS", name: "Task", owners: ["Blah"], startDate: "2024-08-07", status: "InProgress"},
+  {comments: "wow", description: "By John wow", endDate: "2024-09-20", id: "FmJiYS4JtlQslStnTkoh", isMilestone: true, links: "asd", name: "Task 2", owners: ["Blah"], startDate: "2024-09-07", status: "Backlog"}];
+
   console.log(projectTasks)
 
-  // Ready for Edward
+
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -110,11 +109,11 @@ const TitleBar = () => {
       {inViewPage && (
         <div
           style={{ marginRight: '20px', cursor: 'pointer' }}
-          onMouseEnter={handleMouseEnterMenu}
+          onMouseEnter={handleMenuToggle}
           onMouseLeave={handleMouseLeaveMenu}
         >
           <FontAwesomeIcon icon={faBars} style={{ fontSize: '28px', padding: '0px 10px 0px' }}
-            onMouseEnter={handleMouseEnterMenu}
+            onMouseEnter={handleMenuToggle}
             onMouseLeave={handleMouseLeaveMenu} />
           {isMenuOpen && (
             <div

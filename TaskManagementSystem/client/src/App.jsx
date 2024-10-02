@@ -23,22 +23,24 @@ function App() {
     <Router>
       <Switch>
         <AuthProvider>
-          <Route path="/" exact={true} component={Login}/>
-          <Route path="/login/callback" component={LoginCallback}/>
-          <PrivateRoute path="/profile" component={Profile}/>
-          <Route path="/settings" component={Settings} />
-          <ProjectProvider>
-            <PrivateRoute path="/projects" component={ProjectList} />
-            <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
-            <TaskProvider>
-              <TitleBar toggleNavbar={() => {}} />
-              <PrivateRoute path="/project/:projectId/timeline" exact={true} component={GanttChart} />
-              <PrivateRoute path="/project/:projectId/" exact={true} component={ListView} />
-              <Route path="/project/:projectId/kanban" component={KanbanView} />
-              <Route path="/project/:projectId/calendar" component={CalendarView} />
-              <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
-            </TaskProvider>
-          </ProjectProvider>
+          <SettingsProvider>
+            <Route path="/" exact={true} component={Login}/>
+            <Route path="/login/callback" component={LoginCallback}/>
+            <PrivateRoute path="/profile" component={Profile}/>
+            <Route path="/settings" component={Settings} />
+            <ProjectProvider>
+              <PrivateRoute path="/projects" component={ProjectList} />
+              <PrivateRoute path="/new-project-form" component={NewProjectForm}/>
+              <TaskProvider>
+                <TitleBar toggleNavbar={() => {}} />
+                <PrivateRoute path="/project/:projectId/timeline" exact={true} component={GanttChart} />
+                <PrivateRoute path="/project/:projectId/" exact={true} component={ListView} />
+                <Route path="/project/:projectId/kanban" component={KanbanView} />
+                <Route path="/project/:projectId/calendar" component={CalendarView} />
+                <PrivateRoute path="/project/:projectId/new-project-task-form" component={NewProjectTaskForm} />
+              </TaskProvider>
+            </ProjectProvider>
+          </SettingsProvider>
         </AuthProvider>
       </Switch>
     </Router>
