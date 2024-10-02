@@ -111,22 +111,32 @@ const ListView = () => {
 
   const handleSortByChanges = (selectedOption) => {
     setSelectedSortBy(selectedOption ? selectedOption.value : null);
-    handleFilterAndSortBy(selectedSortBy, selectedFilter);
+    handleSortBy(selectedSortBy);
   }
 
   const handleFilterChanges = (selectedOptions) => {
     const values = selectedOptions.map(option => option.value);
     setSelectedFilter(values);
+    handleFilter(values);
   }
 
-  const handleFilterAndSortBy = (sortByValue, filterValue) => {
-    const name = "Libin Yang";
+  const handleSortBy = (sortByValue) => {
     if (sortByValue === 'sortTaskByAToZ') {
       setGroupedTasks(sortGroupedTasksByKeyAToZ(groupedTasks));
     } else if (sortByValue === 'sortTaskByZToA') {
       setGroupedTasks(sortGroupedTasksByKeyZToA(groupedTasks));
     } else if (sortByValue === 'sortTaskByDueDate') {
       setGroupedTasks(sortGroupedTasksByDueDate(groupedTasks));
+    }
+  }
+
+  const handleFilter = (filterValue) => {
+    if (filterValue != 'filterTaskByActiveStatus' && filterValue != 'filterTaskByExpiredStatus') {
+      setGroupedTasks(filterGroupedTasksByOwnerName(groupedTasks, filterValue));
+    } else if (filterValue == 'filterTaskByActiveStatus') {
+      setGroupedTasks(filterGroupedTasksByActiveStatus(groupedTasks));
+    } else if (filterValue == 'filterTaskByExpiredStatus') {
+      setGroupedTasks(filterGroupedTasksByExpiredStatus(groupedTasks));
     }
   }
 
@@ -186,24 +196,75 @@ const ListView = () => {
     return sortedGroupedTasks;
   };
 
-  const filterGroupedTasksByContributor = (groupedTasks, contributorNames) => {
+  const filterGroupedTasksByOwnerName = (groupedTasks, ownerName) => {
     // Create a new grouped object to store the filtered tasks
     const filteredGroupedTasks = {};
-
+  
     // Iterate through each group (each end date)
     Object.entries(groupedTasks).forEach(([date, tasks]) => {
-    // Filter tasks that have at least one of the specified contributors
-    const filteredTasks = tasks.filter(task =>
-      task.owners.some(owner => contributorNames.includes(owner.name))
-    );
-
-    // Only add the group if there are filtered tasks for that date
-    if (filteredTasks.length > 0) {
-      filteredGroupedTasks[date] = filteredTasks;
-    }
+      // Filter tasks that have the specified owner's name
+      const filteredTasks = tasks.filter(task =>
+        task.owners.some(owner => owner.name === ownerName)
+      );
+  
+      // Only add the group if there are filtered tasks for that date
+      if (filteredTasks.length > 0) {
+        filteredGroupedTasks[date] = filteredTasks;
+      }
+    });
+  
     return filteredGroupedTasks;
-  })};
+  };
 
+  const filterGroupedTasksByActiveStatus = (groupedTasks) => {
+    const currentDate = new Date();
+  
+    // Create a new grouped object to store the filtered tasks
+    const filteredGroupedTasks = {};
+  
+    // Iterate through each group (each end date)
+    Object.entries(groupedTasks).forEach(([date, tasks]) => {
+      // Filter tasks whose end date is in the future
+      const filteredTasks = tasks.filter(task => {
+        const endDate = new Date(task.endDate);
+        return endDate >= currentDate; // Task is active if the end date has not passed
+      });
+  
+      // Only add the group if there are filtered tasks for that date
+      if (filteredTasks.length > 0) {
+        filteredGroupedTasks[date] = filteredTasks;
+      }
+    });
+  
+    return filteredGroupedTasks;
+  };
+
+  const filterGroupedTasksByExpiredStatus = (groupedTasks) => {
+    const currentDate = new Date();
+  
+    // Create a new grouped object to store the filtered tasks
+    const filteredGroupedTasks = {};
+  
+    // Iterate through each group (each end date)
+    Object.entries(groupedTasks).forEach(([date, tasks]) => {
+      // Filter tasks whose end date has already passed
+      const filteredTasks = tasks.filter(task => {
+        const endDate = new Date(task.endDate);
+        return endDate < currentDate; // Task is expired if the end date has passed
+      });
+  
+      // Only add the group if there are filtered tasks for that date
+      if (filteredTasks.length > 0) {
+        filteredGroupedTasks[date] = filteredTasks;
+      }
+    });
+  
+    return filteredGroupedTasks;
+  };
+  
+
+  // console.log(projectTasks[projectId]);
+  // console.log(groupedTasks);
 
   const tasksOutput = () => {
     if (projectTasks) {
