@@ -1,10 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { TaskContext } from '../contexts/TaskContext';
 import { ProjectContext } from '../contexts/ProjectContext';
+import { SettingsContext } from '../contexts/SettingsContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft, faBell } from '@fortawesome/free-solid-svg-icons';
+import { filterLookAheadDate } from '../utils/taskFilter'
 
 const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
@@ -13,14 +15,18 @@ const TitleBar = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const { chosenProjectId } = useContext(TaskContext);
   const location = useLocation();
 
+  const { lookaheadPeriod } = useContext(SettingsContext);
   const currentPath = location.pathname;
   if (currentPath.includes('project') && !currentPath.includes('projects')) {
     setInViewPage(true);
   }
+
+  const [notifTasks, setNotifTasks] = useState([]);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -46,6 +52,22 @@ const TitleBar = () => {
     }
   }, [location.pathname, setInViewPage]);
 
+  const { projectId } = useParams();
+  const { projectTasks } = useContext(TaskContext);
+
+  useEffect(() => {
+    const allTasks = Object.values(projectTasks).flatMap(arr => arr)
+
+    let lookaheadDays = 7;
+    if ({lookaheadPeriod} == "2 weeks") {
+      lookaheadDays = 14;
+    } else if ({lookaheadPeriod} == "1 month") {
+      lookaheadDays = 31;
+    }
+
+    setNotifTasks(filterLookAheadDate(lookaheadDays, allTasks));
+  });
+
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -59,7 +81,7 @@ const TitleBar = () => {
     await auth.signOut();;
   };
 
-  const handleMouseEnterMenu = () => {
+  const handleMenuToggle = () => {
     setIsMenuOpen(true);
   };
 
@@ -67,9 +89,11 @@ const TitleBar = () => {
     setIsMenuOpen(false);
   };
 
-  const isActive = (path) => {
-    location.pathname === path;
+  const handleNotificationToggle = () => {
+    setIsNotificationOpen(!isNotificationOpen);
   };
+
+  const isActive = (path) => location.pathname === path;
 
   const getPageHeading = () => {
     const currentPath = location.pathname;
@@ -93,11 +117,11 @@ const TitleBar = () => {
       {inViewPage && (
         <div
           style={{ marginRight: '20px', cursor: 'pointer' }}
-          onMouseEnter={handleMouseEnterMenu}
+          onMouseEnter={handleMenuToggle}
           onMouseLeave={handleMouseLeaveMenu}
         >
           <FontAwesomeIcon icon={faBars} style={{ fontSize: '28px', padding: '0px 10px 0px' }}
-            onMouseEnter={handleMouseEnterMenu}
+            onMouseEnter={handleMenuToggle}
             onMouseLeave={handleMouseLeaveMenu} />
           {isMenuOpen && (
             <div
@@ -113,7 +137,7 @@ const TitleBar = () => {
                 borderRadius: '5px',
                 boxShadow: '2px 0px 5px rgba(0,0,0,0.5)',
               }}
-              onMouseEnter={handleMouseEnterMenu}
+              onMouseEnter={handleMenuToggle}
               onMouseLeave={handleMouseLeaveMenu}
             >
               <ul style={{ listStyle: 'none', padding: '0px 30px', textAlign: 'left' }}>
@@ -155,22 +179,73 @@ const TitleBar = () => {
       <div style={{ flex: 1 }}></div>
       <h1 style={{ margin: 0, textAlign: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>{getPageHeading()}</h1>
       {user && (
-        <div
-          style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}
-          onMouseEnter={handleDropdownToggle}
-          onMouseLeave={handleMouseLeave}
-        >
-          <FontAwesomeIcon
-            icon={faUser}
-            style={{ fontSize: '30px', marginLeft: '10px' }}
-          />
-          <span style={{ marginLeft: '10px' }}>{user.displayName || user.name}</span>
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
+            <div 
+            onMouseEnter={handleNotificationToggle}
+            onMouseLeave={handleNotificationToggle}
+            style={{ position: 'relative' }}
+          >
+            <FontAwesomeIcon
+              icon={faBell}
+              style={{ fontSize: '30px', marginLeft: '10px', cursor: 'pointer', marginRight: '20px' }}
+            />
+            {isNotificationOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '30px',
+                right: '0',
+                backgroundColor: '#051622',
+                borderRadius: '5px',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                zIndex: 10,
+                width: '200px',
+                padding: '10px',
+                color: 'white'
+              }}>
+                <ul style={{
+                  listStyle: 'none',
+                  padding: '0',
+                  margin: '0'
+                }}>
+                  <li style={{ padding: '5px 10px' }}>
+                    <label style={{ marginRight: '10px' }}>Look ahead:</label>
+                    <span>{lookaheadPeriod}</span>
+                  </li>
+                  <hr />
+                  {notifTasks.length > 0 ? (
+                    notifTasks.map((task) => (
+                      <li key={task.id} style={{ padding: '10px', borderBottom: '1px solid #fff' }}>
+                        <strong>{task.name}</strong>
+                        <p style={{ margin: '5px 0' }}>
+                          <em>End Date: {task.endDate}</em><br/>
+                          Status: {task.status}
+                        </p>
+                      </li>
+                    ))
+                  ) : (
+                    <li style={{ padding: '10px' }}>No tasks found</li>
+                  )}
+                </ul>
+              </div>
+            )}
+          </div>
+          
+          <div 
+            onMouseEnter={handleDropdownToggle}
+            onMouseLeave={handleDropdownToggle}
+            style={{ position: 'relative' }}
+          >
+            <FontAwesomeIcon
+              icon={faUser}
+              style={{ fontSize: '30px', marginLeft: '10px', cursor: 'pointer' }}
+            />
+            <span style={{ marginLeft: '10px' }}>{user.displayName || user.name}</span>
 
-          {isDropdownOpen && (
+            {isDropdownOpen && (
             <div style={{
               position: 'absolute',
-              top: '50px',
-              right: '10px',
+              top: '30px',
+              right: '-50px',
               backgroundColor: '#051622',
               borderRadius: '5px',
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
@@ -204,7 +279,8 @@ const TitleBar = () => {
                 </li>
               </ul>
             </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
