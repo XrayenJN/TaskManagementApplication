@@ -55,9 +55,6 @@ const TitleBar = () => {
   const { projectId } = useParams();
   const { projectTasks } = useContext(TaskContext);
 
-  const dummyTasks = [{comments: "HEHEHEHAsdf", description: "By Jordan aaaaa", endDate: "2024-08-31", id: "FmJiYS4JtlQslStnTkog", isMilestone: false, links: "sdfaPLS", name: "Task", owners: ["Blah"], startDate: "2024-08-07", status: "InProgress"},
-  {comments: "wow", description: "By John wow", endDate: "2024-09-20", id: "FmJiYS4JtlQslStnTkoh", isMilestone: true, links: "asd", name: "Task 2", owners: ["Blah"], startDate: "2024-09-07", status: "Backlog"}];
-
   useEffect(() => {
     const allTasks = Object.values(projectTasks).flatMap(arr => arr)
 
