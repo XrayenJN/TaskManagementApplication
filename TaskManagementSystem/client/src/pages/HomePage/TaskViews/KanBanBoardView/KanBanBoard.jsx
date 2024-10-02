@@ -18,6 +18,7 @@ const KanbanView = () => {
   const [isSortByOpen, setIsSortByOpen] = useState(false);
   const [selectedSortBy, setSelectedSortBy] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState([]);
+  const [outputTasks, setOutputTasks] = useState({});
 
   const filterOptions = [
     { value: 'filterTaskByActiveStatus', label: 'Active Task' },
@@ -41,8 +42,7 @@ const KanbanView = () => {
       // If the filter panel is closing, reset groupedTasks to the original state
       if (projectTasks && projectTasks[projectId]) {
         // Call groupTasksByEndDate to re-group the tasks without any filters
-        const grouped = groupTasksByEndDate(projectTasks, projectId);
-        setGroupedTasks(grouped);
+        setOutputTasks(groupedTasks);
         setSelectedFilter([]);
       }
     }
@@ -54,8 +54,7 @@ const KanbanView = () => {
       // If the filter panel is closing, reset groupedTasks to the original state
       if (projectTasks && projectTasks[projectId]) {
         // Call groupTasksByEndDate to re-group the tasks without any filters
-        const grouped = groupTasksByEndDate(projectTasks, projectId);
-        setGroupedTasks(grouped);
+        setOutputTasks(groupedTasks);
         setSelectedSortBy(null);
       }
     }
@@ -64,13 +63,58 @@ const KanbanView = () => {
   const handleSortByChanges = (selectedOption) => {
     const sortByValue = selectedOption ? selectedOption.value : null;
     setSelectedSortBy(sortByValue);
-    // applyFilterAndSort(selectedFilter, sortByValue);
+    applyFilterAndSort(selectedFilter, sortByValue);
   }
 
   const handleFilterChanges = (selectedOptions) => {
     const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
     setSelectedFilter(values);
-    // applyFilterAndSort(values, selectedSortBy);
+    applyFilterAndSort(values, selectedSortBy);
+  }
+
+  const applyFilterAndSort = (filterValues, sortByValue) => {
+    let updatedGroupedTasks = { ...groupedTasks };
+    
+    Object.keys(updatedGroupedTasks).forEach((groupKey) => {
+      let updatedTasks = updatedGroupedTasks[groupKey];
+      // Apply filtering if any filter values exist
+      if (filterValues && filterValues.length > 0) {
+        const activeStatusFilter = filterValues.includes('filterTaskByActiveStatus');
+        const expiredStatusFilter = filterValues.includes('filterTaskByExpiredStatus');
+        const ownerNameFilters = filterValues.filter(value => value !== 'filterTaskByActiveStatus' && value !== 'filterTaskByExpiredStatus');
+  
+        if (activeStatusFilter) {
+          updatedTasks = filterTaskByActiveStatus(updatedTasks);
+        }
+  
+        if (expiredStatusFilter) {
+          updatedTasks = filterTaskByExpiredStatus(updatedTasks);
+        }
+  
+        if (ownerNameFilters.length > 0) {
+          ownerNameFilters.forEach(owner => {
+            updatedTasks = filterTaskByOwner(updatedTasks, owner);
+          });
+        }
+      }
+  
+      // Apply sorting
+      if (sortByValue) {
+        if (sortByValue === 'sortTaskByAToZ') {
+          updatedTasks = sortTaskByAToZ(updatedTasks);
+        } else if (sortByValue === 'sortTaskByZToA') {
+          updatedTasks = sortTaskByZToA(updatedTasks);
+        } else if (sortByValue === 'sortTaskByDueDate') {
+          updatedTasks = sortTaskByDueDate(updatedTasks);
+        }
+      }
+  
+      // Update the group with the filtered and sorted tasks
+      updatedGroupedTasks[groupKey] = updatedTasks;
+    });
+
+    setOutputTasks(updatedGroupedTasks);
+    console.log(updatedGroupedTasks);
   }
 
   const formatDate = (date) => {
