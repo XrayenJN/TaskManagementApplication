@@ -39,7 +39,7 @@ const KanbanView = () => {
   };
 
   const formatDate = (date) => {
-    if (!date) return "None";
+    if (!date) return "No date";
     if (date.seconds) {
       return moment(date.toDate()).format('MMMM Do, YYYY');
     }
@@ -48,7 +48,10 @@ const KanbanView = () => {
 
   const renderTasks = (tasks) => {
     return tasks.map((task, index) => {
-      const taskEndDate = task.endDate.seconds ? task.endDate.toDate() : task.endDate;
+      let taskEndDate = ""
+      if (task.endDate != null) {
+        taskEndDate = task.endDate.seconds ? task.endDate.toDate() : task.endDate;
+      }
       const isPastDue = new Date(taskEndDate) < currentDate;
       const taskBoxClass = isPastDue ? 'task-box past-due' : 'task-box';
 
