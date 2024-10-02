@@ -86,6 +86,7 @@ export default function GanttChart() {
             zoom: 1,
             filterButtonState: -1,
             showThemeToggle: true,
+            showTooltip: false
           }}
         />
       </div>
