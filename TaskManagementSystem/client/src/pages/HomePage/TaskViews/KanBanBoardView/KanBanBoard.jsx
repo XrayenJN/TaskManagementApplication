@@ -120,7 +120,6 @@ const KanbanView = () => {
     });
 
     setOutputTasks(updatedGroupedTasks);
-    console.log(updatedGroupedTasks);
   }
 
   const formatDate = (date) => {
