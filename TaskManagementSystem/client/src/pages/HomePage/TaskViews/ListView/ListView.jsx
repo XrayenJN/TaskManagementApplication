@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import { getContributors, updateTask } from '../../../../firebase/firebase';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { sortTaskByAToZ, sortTaskByZToA, sortTaskByDueDate, filterTaskByActiveStatus, filterTaskByExpiredStatus, filterTaskByOwner } from '../../../../utils/taskUtility';
 import moment from 'moment';
 
@@ -103,10 +103,28 @@ const ListView = () => {
 
   const handleFilterButtonClick = () => {
     setIsFilterOpen(!isFilterOpen);
+    if (isFilterOpen) {
+      // If the filter panel is closing, reset groupedTasks to the original state
+      if (projectTasks && projectTasks[projectId]) {
+        // Call groupTasksByEndDate to re-group the tasks without any filters
+        const grouped = groupTasksByEndDate(projectTasks, projectId);
+        setGroupedTasks(grouped);
+        setSelectedFilter([]);
+      }
+    }
   }
 
   const handleSortButtonClick = () => {
     setIsSortByOpen(!isSortByOpen);
+    if (isSortByOpen) {
+      // If the filter panel is closing, reset groupedTasks to the original state
+      if (projectTasks && projectTasks[projectId]) {
+        // Call groupTasksByEndDate to re-group the tasks without any filters
+        const grouped = groupTasksByEndDate(projectTasks, projectId);
+        setGroupedTasks(grouped);
+        setSelectedSortBy(null);
+      }
+    }
   }
 
   const handleSortByChanges = (selectedOption) => {
@@ -115,9 +133,10 @@ const ListView = () => {
   }
 
   const handleFilterChanges = (selectedOptions) => {
-    const values = selectedOptions.map(option => option.value);
+    const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
     setSelectedFilter(values);
     handleFilter(values);
+    console.log(values);
   }
 
   const handleSortBy = (sortByValue) => {
@@ -130,14 +149,31 @@ const ListView = () => {
     }
   }
 
-  const handleFilter = (filterValue) => {
-    if (filterValue != 'filterTaskByActiveStatus' && filterValue != 'filterTaskByExpiredStatus') {
-      setGroupedTasks(filterGroupedTasksByOwnerName(groupedTasks, filterValue));
-    } else if (filterValue == 'filterTaskByActiveStatus') {
-      setGroupedTasks(filterGroupedTasksByActiveStatus(groupedTasks));
-    } else if (filterValue == 'filterTaskByExpiredStatus') {
-      setGroupedTasks(filterGroupedTasksByExpiredStatus(groupedTasks));
+  const handleFilter = (filterValues) => {
+    let updatedTasks = groupedTasks;
+
+    // Separate the filters into different categories for better processing
+    const activeStatusFilter = filterValues.includes('filterTaskByActiveStatus');
+    const expiredStatusFilter = filterValues.includes('filterTaskByExpiredStatus');
+    const ownerNameFilters = filterValues.filter(value => value !== 'filterTaskByActiveStatus' && value !== 'filterTaskByExpiredStatus');
+
+    // Apply active status filter if selected
+    if (activeStatusFilter) {
+      updatedTasks = filterGroupedTasksByActiveStatus(updatedTasks);
     }
+
+    // Apply expired status filter if selected
+    if (expiredStatusFilter) {
+      updatedTasks = filterGroupedTasksByExpiredStatus(updatedTasks);
+    }
+
+    // Apply owner name filters if selected
+    if (ownerNameFilters.length > 0) {
+      updatedTasks = filterGroupedTasksByOwnerName(updatedTasks, ownerNameFilters);
+    }
+
+    // Update the groupedTasks state with the filtered tasks
+    setGroupedTasks(updatedTasks);
   }
 
   const groupTasksByEndDate = (projectTasks, projectId) => {
@@ -204,7 +240,7 @@ const ListView = () => {
     Object.entries(groupedTasks).forEach(([date, tasks]) => {
       // Filter tasks that have the specified owner's name
       const filteredTasks = tasks.filter(task =>
-        task.owners.some(owner => owner.name === ownerName)
+        task.owners.some(owner => ownerName.includes(owner.name))
       );
   
       // Only add the group if there are filtered tasks for that date
@@ -436,7 +472,7 @@ const ListView = () => {
         <h1 style={{ textAlign: 'left', marginTop: '50px' }}>List View</h1>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ position: 'relative', marginRight: '5px' }}>
-            <button onClick={handleFilterButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer', marginRight: '25px' }}>Filter</button>
+            <button onClick={handleFilterButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer', marginRight: '25px', borderRadius: '0' }}>Filter</button>
             {isFilterOpen && (
               <div style={{ position: 'absolute', top: '100%', left: '0', marginTop: '5px', zIndex: '1' }}>
                 <Select
@@ -446,13 +482,14 @@ const ListView = () => {
                   placeholder='Select one or more'
                   styles={{ container: () => ({ width: '300px' }) }}
                   onChange={handleFilterChanges}
+                  isClearable={false}
                   isMulti
                 />
               </div>
             )}
           </div>
           <div style={{ position: 'relative', marginRight: '15px' }}>
-            <button onClick={handleSortButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>Sort By</button>
+            <button onClick={handleSortButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer', borderRadius: '0' }}>Sort By</button>
             {isSortByOpen && (
               <div style={{ position: 'absolute', top: '100%', left: '0', marginTop: '5px', zIndex: '1' }}>
                 <Select
