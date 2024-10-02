@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { createNewProjectDocument, checkUsersExists } from '../../firebase/firebase';
 import { Project } from '../../models/Project';
-
+import { ProjectContext } from '../../contexts/ProjectContext';
 
 const NewProjectForm = () => {
+  const { setRefreshTrigger } = useContext(ProjectContext);
   const [name, setName] = useState('New Project');
   const [description, setDescription] = useState('No Description Given');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [contributors, setContributor] = useState([]);
+  const [contributors, setContributors] = useState([]);
   const [userId, setUserId] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [email, setEmail] = useState('');
@@ -30,12 +31,13 @@ const NewProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newProject = new Project( name, description, startDate, endDate, [] );
+    const newProject = new Project( name, description, startDate, endDate, contributors );
 
     /**
      * @todo : Ethan said that "this return needs to be cleaned up its way too long"
      */
     await createNewProjectDocument(newProject);
+    setRefreshTrigger(true)
     history.replace('/projects');
   };
 
@@ -52,15 +54,21 @@ const NewProjectForm = () => {
     const result = await checkUsersExists(email);
     // @todo: refactor it later, if we have time
     if (result.length > 0) {
+      const user = result[0]
       setUserId(result[0].userId);
+      alert('The email is valid');
+      setContributors(value => [...value, user])
       setIsEmailValid(true);
-      await updateProjectContributors(projectId, userId);
-      await updateUserProject(userId, projectId);
       setEmail('');
     } else {
       alert('Please enter a valid email.');
       setIsEmailValid(false);
     }
+  }
+
+  const handleRemoveContributor = async (contributorEmail) => {
+    const filteredContributors = contributors.filter(email => email !== contributorEmail);
+    setContributors(filteredContributors)
   }
 
   return (
@@ -106,6 +114,20 @@ const NewProjectForm = () => {
           <div style={{paddingTop: '10px'}}>
 
             <h2>Add Contributor</h2>
+            <table style={{ margin: 'auto' }}>
+              <tbody>
+                {contributors.map((contributor, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{contributor?.name}</td>
+                      <td>
+                        <button onClick={() => handleRemoveContributor(contributor)} style={{ backgroundColor: '#BD7676', padding: '4px'}}>x</button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
             <input
               type="text"
               placeholder='Email Address'
