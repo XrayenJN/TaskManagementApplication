@@ -54,7 +54,7 @@ export default function GanttChart() {
 
   const handleTaskClick = (selectedTask) => {
     const task = projectTasks[projectId].filter(eachTask => eachTask.id === selectedTask.id)
-    setSelectedTask(task);
+    setSelectedTask(task[0]);
     setIsPopupOpen(true);
   };
 
