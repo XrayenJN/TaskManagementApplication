@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import { getContributors, updateTask } from '../../../../firebase/firebase';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { sortTaskByAToZ, sortTaskByZToA, sortTaskByDueDate, filterTaskByActiveStatus, filterTaskByExpiredStatus, filterTaskByOwner } from '../../../../utils/taskUtility';
 import moment from 'moment';
 
@@ -48,7 +48,11 @@ const ListView = () => {
 
   useEffect(() => {
     if (projectTasks && projectTasks[projectId]) {
+
+      // Group tasks by end date first
       const grouped = groupTasksByEndDate(projectTasks, projectId);
+  
+      // Update the state with the sorted grouped tasks
       setGroupedTasks(grouped);
     }
   }, [projectTasks, projectId]);
@@ -99,31 +103,79 @@ const ListView = () => {
 
   const handleFilterButtonClick = () => {
     setIsFilterOpen(!isFilterOpen);
+    if (isFilterOpen) {
+      // If the filter panel is closing, reset groupedTasks to the original state
+      if (projectTasks && projectTasks[projectId]) {
+        // Call groupTasksByEndDate to re-group the tasks without any filters
+        const grouped = groupTasksByEndDate(projectTasks, projectId);
+        setGroupedTasks(grouped);
+        setSelectedFilter([]);
+      }
+    }
   }
 
   const handleSortButtonClick = () => {
     setIsSortByOpen(!isSortByOpen);
+    if (isSortByOpen) {
+      // If the filter panel is closing, reset groupedTasks to the original state
+      if (projectTasks && projectTasks[projectId]) {
+        // Call groupTasksByEndDate to re-group the tasks without any filters
+        const grouped = groupTasksByEndDate(projectTasks, projectId);
+        setGroupedTasks(grouped);
+        setSelectedSortBy(null);
+      }
+    }
   }
 
   const handleSortByChanges = (selectedOption) => {
-    setSelectedSortBy(selectedOption ? selectedOption.value : null);
-    handleFilterAndSortBy(selectedSortBy, selectedFilter);
+    const sortByValue = selectedOption ? selectedOption.value : null;
+    setSelectedSortBy(sortByValue);
+    applyFilterAndSort(selectedFilter, sortByValue);
   }
 
   const handleFilterChanges = (selectedOptions) => {
-    const values = selectedOptions.map(option => option.value);
+    const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
     setSelectedFilter(values);
+    applyFilterAndSort(values, selectedSortBy);
   }
 
-  const handleFilterAndSortBy = (sortByValue, filterValue) => {
-    if (sortByValue === 'sortTaskByAToZ') {
-      setGroupedTasks(sortTaskByAToZ(groupedTasks));
-    } else if (sortByValue === 'sortTaskByZToA') {
-      setGroupedTasks(sortTaskByZToA(groupedTasks));
-    } else if (sortByValue === 'sortTaskByDueDate') {
-      setGroupedTasks(sortTaskByDueDate(groupedTasks));
+  const applyFilterAndSort = (filterValues, sortByValue) => {
+    // Start with the original grouped tasks
+    let updatedTasks = groupTasksByEndDate(projectTasks, projectId);
+  
+    // Apply filtering
+    if (filterValues && filterValues.length > 0) {
+      const activeStatusFilter = filterValues.includes('filterTaskByActiveStatus');
+      const expiredStatusFilter = filterValues.includes('filterTaskByExpiredStatus');
+      const ownerNameFilters = filterValues.filter(value => value !== 'filterTaskByActiveStatus' && value !== 'filterTaskByExpiredStatus');
+  
+      if (activeStatusFilter) {
+        updatedTasks = filterGroupedTasksByActiveStatus(updatedTasks);
+      }
+  
+      if (expiredStatusFilter) {
+        updatedTasks = filterGroupedTasksByExpiredStatus(updatedTasks);
+      }
+  
+      if (ownerNameFilters.length > 0) {
+        updatedTasks = filterGroupedTasksByOwnerName(updatedTasks, ownerNameFilters);
+      }
     }
-  }
+  
+    // Apply sorting
+    if (sortByValue) {
+      if (sortByValue === 'sortTaskByAToZ') {
+        updatedTasks = sortGroupedTasksByKeyAToZ(updatedTasks);
+      } else if (sortByValue === 'sortTaskByZToA') {
+        updatedTasks = sortGroupedTasksByKeyZToA(updatedTasks);
+      } else if (sortByValue === 'sortTaskByDueDate') {
+        updatedTasks = sortGroupedTasksByDueDate(updatedTasks);
+      }
+    }
+  
+    // Update the groupedTasks state with the filtered and sorted tasks
+    setGroupedTasks(updatedTasks);
+  }  
 
   const groupTasksByEndDate = (projectTasks, projectId) => {
     return projectTasks[projectId]?.reduce((acc, task) => {
@@ -136,6 +188,115 @@ const ListView = () => {
     }, {});
   }
 
+  const sortGroupedTasksByDueDate = (groupedTasks) => {
+    // Convert the keys to an array and sort them as dates
+    const sortedKeys = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
+  
+    // Create a new object with the sorted keys
+    const sortedGroupedTasks = sortedKeys.reduce((acc, key) => {
+      acc[key] = groupedTasks[key];
+      return acc;
+    }, {});
+  
+    return sortedGroupedTasks;
+  };
+
+  const sortGroupedTasksByKeyAToZ = (groupedTasks) => {
+  // Create a new object to store the sorted tasks
+  const sortedGroupedTasks = {};
+
+  // Iterate through each group and sort the tasks within each group
+  Object.entries(groupedTasks).forEach(([key, tasks]) => {
+    // Sort tasks from A to Z by their name
+    sortedGroupedTasks[key] = tasks.sort((taskA, taskB) =>
+      taskA.name.localeCompare(taskB.name)
+    );
+  });
+
+  return sortedGroupedTasks;
+  };
+
+  const sortGroupedTasksByKeyZToA = (groupedTasks) => {
+      // Create a new object to store the sorted tasks
+  const sortedGroupedTasks = {};
+
+  // Iterate through each group and sort the tasks within each group
+  Object.entries(groupedTasks).forEach(([key, tasks]) => {
+    // Sort tasks from Z to A by their name
+    sortedGroupedTasks[key] = tasks.sort((taskA, taskB) =>
+      taskB.name.localeCompare(taskA.name)
+    );
+  });
+
+  return sortedGroupedTasks;
+  };
+
+  const filterGroupedTasksByOwnerName = (groupedTasks, ownerName) => {
+    // Create a new grouped object to store the filtered tasks
+    const filteredGroupedTasks = {};
+  
+    // Iterate through each group (each end date)
+    Object.entries(groupedTasks).forEach(([date, tasks]) => {
+      // Filter tasks that have the specified owner's name
+      const filteredTasks = tasks.filter(task =>
+        task.owners.some(owner => ownerName.includes(owner.name))
+      );
+  
+      // Only add the group if there are filtered tasks for that date
+      if (filteredTasks.length > 0) {
+        filteredGroupedTasks[date] = filteredTasks;
+      }
+    });
+  
+    return filteredGroupedTasks;
+  };
+
+  const filterGroupedTasksByActiveStatus = (groupedTasks) => {
+    const currentDate = new Date();
+  
+    // Create a new grouped object to store the filtered tasks
+    const filteredGroupedTasks = {};
+  
+    // Iterate through each group (each end date)
+    Object.entries(groupedTasks).forEach(([date, tasks]) => {
+      // Filter tasks whose end date is in the future
+      const filteredTasks = tasks.filter(task => {
+        const endDate = new Date(task.endDate);
+        return endDate >= currentDate; // Task is active if the end date has not passed
+      });
+  
+      // Only add the group if there are filtered tasks for that date
+      if (filteredTasks.length > 0) {
+        filteredGroupedTasks[date] = filteredTasks;
+      }
+    });
+  
+    return filteredGroupedTasks;
+  };
+
+  const filterGroupedTasksByExpiredStatus = (groupedTasks) => {
+    const currentDate = new Date();
+  
+    // Create a new grouped object to store the filtered tasks
+    const filteredGroupedTasks = {};
+  
+    // Iterate through each group (each end date)
+    Object.entries(groupedTasks).forEach(([date, tasks]) => {
+      // Filter tasks whose end date has already passed
+      const filteredTasks = tasks.filter(task => {
+        const endDate = new Date(task.endDate);
+        return endDate < currentDate; // Task is expired if the end date has passed
+      });
+  
+      // Only add the group if there are filtered tasks for that date
+      if (filteredTasks.length > 0) {
+        filteredGroupedTasks[date] = filteredTasks;
+      }
+    });
+  
+    return filteredGroupedTasks;
+  };
+
   const tasksOutput = () => {
     if (projectTasks) {
       return (
@@ -146,7 +307,7 @@ const ListView = () => {
                 <i>{moment(date).format('ddd - DD, MMM, YYYY')}</i>
               </div>
               {tasks.map(task => (
-                <div key={task.id} style={{ backgroundColor: '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }} onClick={() => togglePopup(task)}>
+                <div key={task.id} style={{ backgroundColor: new Date(task.endDate) < new Date() ? '#BD7676' : '#3BAEA0', padding: '20px', cursor: 'pointer', marginTop: '15px' }} onClick={() => togglePopup(task)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                       <p style={{ textAlign: 'left', margin: 0, fontWeight: 'bold', color: 'black', fontSize: '24px' }}>{task.name}</p>
@@ -306,9 +467,9 @@ const ListView = () => {
         <h1 style={{ textAlign: 'left', marginTop: '50px' }}>List View</h1>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ position: 'relative', marginRight: '5px' }}>
-            <button onClick={handleFilterButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer', marginRight: '25px' }}>Filter</button>
+            <button onClick={handleFilterButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer', marginRight: '25px', borderRadius: '0' }}>Filter</button>
             {isFilterOpen && (
-              <div style={{ position: 'absolute', top: '100%', left: '0', marginTop: '5px', zIndex: '1' }}>
+              <div style={{ position: 'absolute', top: '100%', left: '-215%', marginTop: '5px', zIndex: '1' }}>
                 <Select
                   className='basic-multi-select'
                   classNamePrefix='select'
@@ -316,13 +477,14 @@ const ListView = () => {
                   placeholder='Select one or more'
                   styles={{ container: () => ({ width: '300px' }) }}
                   onChange={handleFilterChanges}
+                  isClearable={false}
                   isMulti
                 />
               </div>
             )}
           </div>
           <div style={{ position: 'relative', marginRight: '15px' }}>
-            <button onClick={handleSortButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>Sort By</button>
+            <button onClick={handleSortButtonClick} style={{ backgroundColor: '#DEB992', color: 'black', padding: '10px 20px', border: 'none', cursor: 'pointer', borderRadius: '0' }}>Sort By</button>
             {isSortByOpen && (
               <div style={{ position: 'absolute', top: '100%', left: '0', marginTop: '5px', zIndex: '1' }}>
                 <Select
