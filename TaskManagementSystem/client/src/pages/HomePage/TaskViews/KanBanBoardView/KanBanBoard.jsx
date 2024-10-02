@@ -46,6 +46,10 @@ const KanbanView = () => {
     return moment(date).format('DD/MM/YYYY');
   };
 
+  useEffect(() => {
+    setChosenProjectId(projectId)
+  }, [projectId])
+
   const renderTasks = (tasks) => {
     return tasks.map((task, index) => {
       let taskEndDate = ""

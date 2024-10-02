@@ -127,13 +127,33 @@ export const getUserProjectIds = async(uid) => {
 export const createNewProjectDocument = async(project) => {
   // auto-generate the random id 
   const ref = doc(collection(db, "projects")).withConverter(projectConverter);
-  await setDoc(ref, project);
+  const contributors = project.contributors;
+  const emptyContributorsProject = project;
+  emptyContributorsProject.contributors = []
+  await setDoc(ref, emptyContributorsProject);
 
-  // Update the project that the user has
+  // Update the project that the creator user has
   await updateUserProject(auth.currentUser.uid, ref.id);
 
   // Update the contributor of the project
   await updateProjectContributors(ref.id, auth.currentUser.uid)
+
+  // Update the added contributors' project list.
+  const userRef = collection(db, "users");
+  contributors.forEach(async contributor => {
+    const q = query(userRef, where("email", "==", contributor.email))
+
+    const querySnapshot = await getDocs(q);
+    const user = []
+
+    querySnapshot.forEach((doc) => {
+      user.push({id: doc.id})
+    })
+
+    const contributorUserId = user[0].id
+    await updateUserProject(contributorUserId, ref.id)
+    await updateProjectContributors(ref.id, contributorUserId)
+  })
 }
 
 /**
@@ -279,18 +299,19 @@ export const createNewProjectTaskDocument = async(projectTask, projectId) => {
   const q = query(userCollectionRef, where("email", "==", projectTask.owners))
 
   // get the user uid for the ref
-  const userUids = []
+  const userUid = []
   const userQuerySnapshot = await getDocs(q);
   userQuerySnapshot.forEach((doc) => {
-    userUids.push(doc.id)
+    userUid.push({id: doc.id, name:doc.data().name, email: doc.data().email})
   })
 
+  const user = userUid[0]
   // get the user reference
-  const userRef = doc(db, "users", userUids[0])
+  const userRef = doc(db, "users", user.id)
 
   // Update the owner of the projectTask so that it would link to the particular user
   await updateDoc(ref, {
-    owners: [userRef]
+    owners: [{ref: userRef, name: user.name, email: user.email}]
   })
 
   // update the project data to link to the task that the project has

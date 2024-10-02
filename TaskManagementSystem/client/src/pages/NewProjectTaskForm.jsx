@@ -45,13 +45,17 @@ const NewProjectTaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedStartDate = startTime ? addTimeToDate(startTime, isMeeting) : startTime 
+    if ((startTime && !endTime) || (!startTime && endTime)) {
+      alert('Please ensure both Start Date and End Date are filled, or leave both empty.');
+      return;
+    }
+    const formattedStartDate = startTime ? addTimeToDate(startTime, isMeeting) : startTime
     const formattedEndDate = endTime ? addTimeToDate(endTime, isMeeting) : endTime
     const newProjectTask = new ProjectTask(name, description, formattedStartDate, formattedEndDate, comments, links, isMeeting, status, owners);
 
     await createNewProjectTaskDocument(newProjectTask, projectId);
     refreshTasks();  // Call refreshTasks function
-    history.replace(`/project/${projectId}`);
+    history.goBack();
   };
 
   const meetingComponent = () => {
@@ -138,11 +142,13 @@ const NewProjectTaskForm = () => {
         </div>
         <div style={{ paddingTop: '10px' }}>
           <label>
+          <b>Meeting</b>
+            <div>
             <input
               type="checkbox"
               onChange={(e) => setMeeting(e.target.checked)}
             />
-            Meeting
+            </div>
           </label>
         </div>
         <div style={{ paddingTop: '10px' }}>
@@ -158,6 +164,7 @@ const NewProjectTaskForm = () => {
             ))}
           </select>
         </div>
+        
         {meetingComponent()}
 
         <div style={{ paddingTop: "10px" }}>
