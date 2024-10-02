@@ -22,7 +22,8 @@ const TaskEditPopup = ({ task, contributors, onClose }) => {
 
   useEffect(() => {
     const fetchOwnerDetails = async () => {
-      const ownerDetails = await getUser(task.owners[0]);
+      console.log(task.owners)
+      const ownerDetails = await getUser(task.owners[0].ref);
       setEditedTask({
         ...task,
         owners: ownerDetails.email,
