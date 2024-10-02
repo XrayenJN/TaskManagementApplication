@@ -1,19 +1,41 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import moment from 'moment';
 import '../../../../assets/styles/KanbanView.css';
+import { getContributors } from '../../../../firebase/firebase';
+import TaskEditPopup from '../../../../components/TaskEditPopup';
 
 const KanbanView = () => {
   const currentDate = new Date();
-
   const { projectId } = useParams();
-  const { projectTasks } = useContext(TaskContext);
+  const { projectTasks, setInViewPage } = useContext(TaskContext);
+  const { setChosenProjectId } = useContext(TaskContext);
   const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
+  const [contributors, setContributors] = useState([]);
 
-  /* Used for future implementation of task edit popup */
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  useEffect(() => {
+    const retrieveContributors = async () => {
+      const theContributors = await getContributors(projectId);
+      setContributors(theContributors);
+    };
+
+    retrieveContributors();
+    setInViewPage(true);
+    setChosenProjectId(projectId);
+  }, [projectId]);
+
   const handleTaskClick = (task) => {
-    console.log('Task clicked:', task);
+    setSelectedTask(task);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedTask(null);
   };
 
   const formatDate = (date) => {
@@ -54,7 +76,7 @@ const KanbanView = () => {
   return (
     <div className="kanban-view">
       <div className="kanban-header">
-      <h1 style={{ textAlign: 'left', padding: '40px 0 0 0' }}>Kanban View</h1>
+        <h1 style={{ textAlign: 'left', padding: '40px 0 0 0' }}>Kanban View</h1>
         <div className="kanban-buttons">
           <button className="kanban-button">Filter</button>
           <button className="kanban-button">Sort by</button>
@@ -82,6 +104,14 @@ const KanbanView = () => {
           {renderTasks(groupedTasks.Done)}
         </div>
       </div>
+
+      {isPopupOpen && selectedTask && (
+        <TaskEditPopup
+          task={selectedTask}
+          contributors={contributors}
+          onClose={handleClosePopup}
+        />
+      )}
     </div>
   );
 };

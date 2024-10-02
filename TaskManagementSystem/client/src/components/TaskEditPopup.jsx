@@ -17,7 +17,7 @@ const TaskEditPopup = ({ task, contributors, onClose }) => {
     links: '',
     isMeeting: false,
     status: null,
-    owners: [],
+    owners: '',
   });
 
   useEffect(() => {
