@@ -6,6 +6,7 @@ import { ProjectContext } from '../contexts/ProjectContext';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars, faClock, faList, faColumns, faCalendar, faArrowLeft, faBell } from '@fortawesome/free-solid-svg-icons';
+import { filterLookAheadDate } from '../utils/taskFilter'
 
 const TitleBar = () => {
   const { user, oktaAuth, auth } = useContext(AuthContext);
@@ -24,6 +25,8 @@ const TitleBar = () => {
   if (currentPath.includes('project') && !currentPath.includes('projects')) {
     setInViewPage(true);
   }
+
+  const [notifTasks, setNotifTasks] = useState([]);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -52,13 +55,21 @@ const TitleBar = () => {
   const { projectId } = useParams();
   const { projectTasks } = useContext(TaskContext);
 
-  // Ready for Edward
   const dummyTasks = [{comments: "HEHEHEHAsdf", description: "By Jordan aaaaa", endDate: "2024-08-31", id: "FmJiYS4JtlQslStnTkog", isMilestone: false, links: "sdfaPLS", name: "Task", owners: ["Blah"], startDate: "2024-08-07", status: "InProgress"},
   {comments: "wow", description: "By John wow", endDate: "2024-09-20", id: "FmJiYS4JtlQslStnTkoh", isMilestone: true, links: "asd", name: "Task 2", owners: ["Blah"], startDate: "2024-09-07", status: "Backlog"}];
 
-  console.log(projectTasks)
+  useEffect(() => {
+    const allTasks = Object.values(projectTasks).flatMap(arr => arr)
 
+    let lookaheadDays = 7;
+    if ({lookaheadPeriod} == "2 weeks") {
+      lookaheadDays = 14;
+    } else if ({lookaheadPeriod} == "1 month") {
+      lookaheadDays = 31;
+    }
 
+    setNotifTasks(filterLookAheadDate(lookaheadDays, allTasks));
+  });
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -200,12 +211,12 @@ const TitleBar = () => {
                   margin: '0'
                 }}>
                   <li style={{ padding: '5px 10px' }}>
-                    <label style={{ marginRight: '10px' }}>Lookahead:</label>
+                    <label style={{ marginRight: '10px' }}>Look ahead:</label>
                     <span>{lookaheadPeriod}</span>
                   </li>
                   <hr />
-                  {dummyTasks.length > 0 ? (
-                    dummyTasks.map((task) => (
+                  {notifTasks.length > 0 ? (
+                    notifTasks.map((task) => (
                       <li key={task.id} style={{ padding: '10px', borderBottom: '1px solid #fff' }}>
                         <strong>{task.name}</strong>
                         <p style={{ margin: '5px 0' }}>
