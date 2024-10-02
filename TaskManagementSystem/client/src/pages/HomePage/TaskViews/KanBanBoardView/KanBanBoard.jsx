@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import moment from 'moment';
@@ -6,13 +7,14 @@ import '../../../../assets/styles/KanbanView.css';
 import Select from 'react-select';
 import { sortTaskByAToZ, sortTaskByZToA, sortTaskByDueDate, filterTaskByActiveStatus, filterTaskByExpiredStatus, filterTaskByOwner } from '../../../../utils/taskUtility';
 
+import { getContributors } from '../../../../firebase/firebase';
+import TaskEditPopup from '../../../../components/TaskEditPopup';
 
 const KanbanView = () => {
   const currentDate = new Date();
-
   const { projectId } = useParams();
+  const { projectTasks, setInViewPage } = useContext(TaskContext);
   const { setChosenProjectId } = useContext(TaskContext);
-  const { projectTasks } = useContext(TaskContext);
   const tasks = projectTasks && projectTasks[projectId] ? projectTasks[projectId] : [];
   const groupedTasks = {
     Backlog: tasks.filter(task => task.status === "Backlog"),
@@ -39,7 +41,13 @@ const KanbanView = () => {
 
   /* Used for future implementation of task edit popup */
   const handleTaskClick = (task) => {
-    console.log('Task clicked:', task);
+    setSelectedTask(task);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedTask(null);
   };
 
   const handleFilterButtonClick = () => {
@@ -123,7 +131,7 @@ const KanbanView = () => {
   }
 
   const formatDate = (date) => {
-    if (!date) return "None";
+    if (!date) return "No date";
     if (date.seconds) {
       return moment(date.toDate()).format('MMMM Do, YYYY');
     }
@@ -136,7 +144,10 @@ const KanbanView = () => {
 
   const renderTasks = (tasks) => {
     return tasks.map((task, index) => {
-      const taskEndDate = task.endDate?.seconds ? task.endDate.toDate() : task.endDate;
+      let taskEndDate = ""
+      if (task.endDate != null) {
+        taskEndDate = task.endDate.seconds ? task.endDate.toDate() : task.endDate;
+      }
       const isPastDue = new Date(taskEndDate) < currentDate;
       const taskBoxClass = isPastDue ? 'task-box past-due' : 'task-box';
 
@@ -157,7 +168,7 @@ const KanbanView = () => {
   return (
     <div className="kanban-view">
       <div className="kanban-header">
-      <h1 style={{ textAlign: 'left', padding: '40px 0 0 0' }}>Kanban View</h1>
+        <h1 style={{ textAlign: 'left', padding: '40px 0 0 0' }}>Kanban View</h1>
         <div className="kanban-buttons">
           <button className="kanban-button" onClick={() => handleFilterButtonClick()}>Filter</button>
           {isFilterOpen && (
@@ -209,6 +220,14 @@ const KanbanView = () => {
           {renderTasks(outputTasks.Done)}
         </div>
       </div>
+
+      {isPopupOpen && selectedTask && (
+        <TaskEditPopup
+          task={selectedTask}
+          contributors={contributors}
+          onClose={handleClosePopup}
+        />
+      )}
     </div>
   );
 };

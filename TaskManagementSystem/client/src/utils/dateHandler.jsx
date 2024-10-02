@@ -12,5 +12,8 @@ export const addTimeToDate = (dateString, isMeeting) => {
 };
 
 export const extractDate = (dateTimeString) => {
-  return dateTimeString ? dateTimeString.split(' ')[0] : null;
+  if (typeof dateTimeString === 'string') {
+    return dateTimeString.split(' ')[0];
+  }
+  return '';
 };

@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithCustomToken } from "firebase/auth";
-import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, getFirestore, collection, query, where, getDoc, getDocs, updateDoc, arrayUnion, documentId, deleteDoc, arrayRemove } from "firebase/firestore";
 import { User, userConverter } from "../models/User";
 import { projectTaskConverter } from "../models/ProjectTask";
 import { projectConverter } from "../models/Project";
@@ -285,9 +285,14 @@ export const removeProjectWithAllTasks = async (projectId) => {
   }
 }
 
-export const removeParticularTask = async (taskId) => {
+export const removeParticularTask = async (taskId, chosenProjectId) => {
   const ref = doc(db, "projectTasks", taskId);
   await deleteDoc(ref)
+
+  const pRef = doc(db, 'projects', chosenProjectId);
+  await updateDoc(pRef, {
+    tasks: arrayRemove(ref)
+  })
 }
 
 export const createNewProjectTaskDocument = async(projectTask, projectId) => {
@@ -345,7 +350,6 @@ export const getTaskDocuments = async(projectId) => {
 
 export const updateTask = async(taskId, editedTask) => {
   const taskRef = doc(db, "projectTasks", taskId);
-  await updateDoc(taskRef, editedTask);
 
   // update the owner so that we will have the docRef, instead of email only
   const userCollectionRef = collection(db, "users");
@@ -355,14 +359,16 @@ export const updateTask = async(taskId, editedTask) => {
   const userUids = []
   const userQuerySnapshot = await getDocs(q);
   userQuerySnapshot.forEach((doc) => {
-    userUids.push(doc.id)
+    userUids.push({id: doc.id, data: doc.data()})
   })
 
   // get the user reference
-  const userRef = doc(db, "users", userUids[0])
+  const userDetails = userUids[0];
+  const userRef = doc(db, "users", userDetails.id)
 
-  // Update the owner of the projectTask so that it would link to the particular user
+  // // Update the owner of the projectTask so that it would link to the particular user
   await updateDoc(taskRef, {
-    owners: [userRef]
+    ...editedTask,
+    owners: [{name: userDetails.data.name, email: userDetails.data.email, ref: userRef}]
   })
 }

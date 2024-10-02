@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
 import { getContributors } from "../../../../firebase/firebase";
 import SortData from "./GanttChartAux";
+import TaskEditPopup from '../../../../components/TaskEditPopup';
 
 dayjs.extend(isBetween);
 
@@ -16,6 +17,8 @@ export default function GanttChart() {
   const { projectTasks } = useContext(TaskContext);
   const { setChosenProjectId } = useContext(TaskContext);
   const [contributors, setContributors] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   var loadingStatus = true;
 
   // Get contributors for this project
@@ -32,6 +35,10 @@ export default function GanttChart() {
     setChosenProjectId(projectId)
   }, [projectId])
 
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedTask(null);
+  };
 
   // Once we have the data 
   var finialisedData = []
@@ -43,6 +50,13 @@ export default function GanttChart() {
     startDate: new Date(),
     endDate: new Date()
   });
+
+
+  const handleTaskClick = (selectedTask) => {
+    const task = projectTasks[projectId].filter(eachTask => eachTask.id === selectedTask.id)
+    setSelectedTask(task[0]);
+    setIsPopupOpen(true);
+  };
 
   const handleRangeChange = useCallback((range) => {
     setRange(range);
@@ -66,12 +80,12 @@ export default function GanttChart() {
   return (
     <div>
       <div class="divWrapper*" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-      <h1 class="heading">Timeline View</h1>
-      <button class="linkButton">
-        <Link to={`/project/${projectId}/new-project-task-form`} style={{ color: 'black' }}>
-          Add Project Task
-        </Link>
-      </button>
+        <h1 class="heading">Timeline View</h1>
+        <button class="linkButton">
+          <Link to={`/project/${projectId}/new-project-task-form`} style={{ color: 'black' }}>
+            Add Project Task
+          </Link>
+        </button>
       </div>
       <div>
         <hr />
@@ -82,6 +96,7 @@ export default function GanttChart() {
           isLoading={loadingStatus}
           data={data}
           onRangeChange={handleRangeChange}
+          onTileClick={handleTaskClick}
           config={{
             zoom: 1,
             filterButtonState: -1,
@@ -90,6 +105,13 @@ export default function GanttChart() {
           }}
         />
       </div>
+      {isPopupOpen && selectedTask && (
+        <TaskEditPopup 
+          task={selectedTask}
+          contributors={contributors}
+          onClose={handleClosePopup}
+        />
+      )}
     </div>
   );
 }
