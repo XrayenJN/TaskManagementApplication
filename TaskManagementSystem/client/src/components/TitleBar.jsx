@@ -188,6 +188,13 @@ const TitleBar = () => {
                 <li style={{ padding: '5px 10px' }}>
                   <Link to="/settings" style={{ color: '#fff', textDecoration: 'none' }}>Settings</Link>
                 </li>
+                <li style={{ padding: '10px 0', cursor: 'pointer' }}>
+                  <Link to="/projects" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => {
+                    localStorage.setItem('inViewPage', JSON.stringify(false));
+                    setInViewPage(false);
+                  }}>
+                    Projects</Link>
+                </li>
                 <hr></hr>
                 <li
                   style={{ padding: '0px 10px', cursor: 'pointer' }}
