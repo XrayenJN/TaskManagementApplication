@@ -139,43 +139,6 @@ const ListView = () => {
     applyFilterAndSort(values, selectedSortBy);
   }
 
-  // const handleSortBy = (sortByValue) => {
-  //   if (sortByValue === 'sortTaskByAToZ') {
-  //     setGroupedTasks(sortGroupedTasksByKeyAToZ(groupedTasks));
-  //   } else if (sortByValue === 'sortTaskByZToA') {
-  //     setGroupedTasks(sortGroupedTasksByKeyZToA(groupedTasks));
-  //   } else if (sortByValue === 'sortTaskByDueDate') {
-  //     setGroupedTasks(sortGroupedTasksByDueDate(groupedTasks));
-  //   }
-  // }
-
-  // const handleFilter = (filterValues) => {
-  //   let updatedTasks = groupedTasks;
-
-  //   // Separate the filters into different categories for better processing
-  //   const activeStatusFilter = filterValues.includes('filterTaskByActiveStatus');
-  //   const expiredStatusFilter = filterValues.includes('filterTaskByExpiredStatus');
-  //   const ownerNameFilters = filterValues.filter(value => value !== 'filterTaskByActiveStatus' && value !== 'filterTaskByExpiredStatus');
-
-  //   // Apply active status filter if selected
-  //   if (activeStatusFilter) {
-  //     updatedTasks = filterGroupedTasksByActiveStatus(updatedTasks);
-  //   }
-
-  //   // Apply expired status filter if selected
-  //   if (expiredStatusFilter) {
-  //     updatedTasks = filterGroupedTasksByExpiredStatus(updatedTasks);
-  //   }
-
-  //   // Apply owner name filters if selected
-  //   if (ownerNameFilters.length > 0) {
-  //     updatedTasks = filterGroupedTasksByOwnerName(updatedTasks, ownerNameFilters);
-  //   }
-
-  //   // Update the groupedTasks state with the filtered tasks
-  //   setGroupedTasks(updatedTasks);
-  // }
-
   const applyFilterAndSort = (filterValues, sortByValue) => {
     // Start with the original grouped tasks
     let updatedTasks = groupTasksByEndDate(projectTasks, projectId);
