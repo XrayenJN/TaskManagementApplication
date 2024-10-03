@@ -1,8 +1,14 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom'
 import { SettingsContext } from '../contexts/SettingsContext';
 
 const Settings = () => {
+  const history = useHistory();
   const { lookaheadPeriod, setLookaheadPeriod } = useContext(SettingsContext);
+
+  const goBack = () => {
+    history.goBack();
+  };
 
   return (
     <div style={{ padding: '20px' }}>
@@ -20,6 +26,8 @@ const Settings = () => {
           <option value="1 month">1 month</option>
         </select>
       </div>
+      <br/>
+      <button onClick={goBack}>Back</button>
     </div>
   );
 };
