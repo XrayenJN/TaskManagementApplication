@@ -49,6 +49,12 @@ const NewProjectTaskForm = () => {
       alert('Please ensure both Start Date and End Date are filled, or leave both empty.');
       return;
     }
+
+    if (new Date(startTime) > new Date(endTime)){
+      alert("Start date should be before the End Date!");
+      return;
+    }
+
     const formattedStartDate = startTime ? addTimeToDate(startTime, isMeeting) : startTime
     const formattedEndDate = endTime ? addTimeToDate(endTime, isMeeting) : endTime
     const newProjectTask = new ProjectTask(name, description, formattedStartDate, formattedEndDate, comments, links, isMeeting, status, owners);

@@ -31,6 +31,12 @@ const NewProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (new Date(startDate) > new Date(endDate)){
+      alert("Start date should be before the End Date!");
+      return;
+    }
+
     const newProject = new Project( name, description, startDate, endDate, contributors );
 
     /**
