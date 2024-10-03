@@ -271,6 +271,13 @@ const ListView = () => {
     return filteredGroupedTasks;
   };
 
+  const formatDate = (date) => {
+    if (date == 'null') {
+      return "No Date";
+    }
+    return moment(date).format('ddd - DD/MM/YYYY');
+  }
+
   const tasksOutput = () => {
     if (projectTasks) {
       return (
@@ -278,7 +285,7 @@ const ListView = () => {
           {Object.entries(groupedTasks).map(([date, tasks]) => (
             <li key={date} style={{ marginBottom: '30px' }}>
               <div style={{ textAlign: 'left', marginBottom: '10px', color: 'black', fontSize: '20px', fontWeight: 'bold' }}>
-                <i>{moment(date).format('ddd - DD, MMM, YYYY')}</i>
+                <i>{formatDate(date)}</i>
               </div>
               {tasks.map((task) => (
                 <div
