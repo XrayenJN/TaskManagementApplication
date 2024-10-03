@@ -254,6 +254,7 @@ export const checkUsersExists = async(userEmail) => {
  * @param {*} userProjectIds list of project that the user owns
  */
 export const getProjects = async(userProjectIds) => {
+  if (!userProjectIds) return [];
   if (userProjectIds.length == 0) return [];
 
   const ref = collection(db, "projects");
