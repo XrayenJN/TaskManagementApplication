@@ -63,8 +63,9 @@ const TitleBar = () => {
     } else if (lookaheadPeriod == "1 month") {
       lookaheadDays = 31;
     }
-    setNotifTasks(filterLookAheadDate(lookaheadDays, allTasks));
-  }, [projectTasks]);
+    const filteredTasks = filterLookAheadDate(lookaheadDays, allTasks);
+    setNotifTasks(filteredTasks);
+  }, [projectTasks, lookaheadPeriod]);
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
