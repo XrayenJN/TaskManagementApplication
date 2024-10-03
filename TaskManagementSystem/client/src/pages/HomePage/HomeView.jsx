@@ -38,6 +38,7 @@ const ProjectList = () => {
     setEmail('');
     setProjectId(project.id);
     setContributors([]); // reset it again
+    setDeletedContributors([]);
     retrieveContributors(project.contributors)
     setEditedProject({
       name: project.name,
