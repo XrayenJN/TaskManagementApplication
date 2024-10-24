@@ -4,7 +4,7 @@ import { TaskContext } from '../../../../contexts/TaskContext';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { getContributors } from '../../../../firebase/firebase';
+import { getContributors } from '../../../../firebase/project';
 import TaskEditPopup from '../../../../components/TaskEditPopup';
 
 const localizer = momentLocalizer(moment);

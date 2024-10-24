@@ -6,7 +6,7 @@ import '../../../../assets/styles/TimelineView.css';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
-import { getContributors } from "../../../../firebase/firebase";
+import { getContributors } from "../../../../firebase/project";
 import SortData from "./GanttChartAux";
 import TaskEditPopup from '../../../../components/TaskEditPopup';
 

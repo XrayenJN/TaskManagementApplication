@@ -2,7 +2,8 @@ import React, { createContext, useState, useEffect } from 'react';
 import { Security } from '@okta/okta-react';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { toRelativeUrl } from '@okta/okta-auth-js';
-import { auth, customSignIn } from '../firebase/firebase';
+import { auth } from '../firebase/firebase';
+import { customSignIn } from '../firebase/auth';
 import axios from 'axios';
 
 const AuthContext = createContext();

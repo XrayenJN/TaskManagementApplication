@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import '../../assets/styles/Login.css';
 import Slideshow from '../../components/Slideshow';
 import { AuthContext } from '../../contexts/AuthContext';
-import { googleSignIn } from '../../firebase/firebase';
+import { googleSignIn } from '../../firebase/auth';
 
 import landingSplashVideo from '../../assets/Task Management System - Landing Splash.mp4';
 import oktaLogo from '../../assets/images/okta-logo.png';

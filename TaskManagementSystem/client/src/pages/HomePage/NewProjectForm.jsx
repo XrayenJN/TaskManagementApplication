@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { createNewProjectDocument, checkUsersExists } from '../../firebase/firebase';
+import { checkUsersExists } from '../../firebase/user';
+import { createNewProjectDocument } from '../../firebase/project';
 import { Project } from '../../models/Project';
 import { ProjectContext } from '../../contexts/ProjectContext';
 

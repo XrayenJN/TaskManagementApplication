@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { getProjects, getUserProjectIds, getContributors } from "../firebase/firebase";
 import { AuthContext } from './AuthContext';
+import { getProjects, getContributors } from '../firebase/project';
+import { getUserProjectIds } from '../firebase/user';
 
 const ProjectContext = createContext();
 

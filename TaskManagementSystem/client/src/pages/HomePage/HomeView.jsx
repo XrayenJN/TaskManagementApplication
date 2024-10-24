@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { checkUsersExists, getUser, updateProject, removeProjectWithAllTasks, removeUserProjectList } from '../../firebase/firebase';
+import { checkUsersExists, getUser } from '../../firebase/user';
+import { updateProject, removeProjectWithAllTasks } from '../../firebase/project';
+import { removeUserProjectList } from '../../firebase/project';
 import { isExpired } from '../../utils/dateHandler';
 import { ProjectContext } from '../../contexts/ProjectContext';
 import { projectListSortedByEndDate, reverseDictionary } from '../../utils/projectSorting';

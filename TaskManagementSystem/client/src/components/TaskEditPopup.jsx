@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { getUser, updateTask, removeParticularTask } from '../firebase/firebase';
+import { updateTask, removeParticularTask } from '../firebase/task';
+import { getUser } from '../firebase/user';
 import { TaskContext } from '../contexts/TaskContext';
 import { DatePicker, Space } from 'antd';
 import { addTimeToDate, extractDate } from '../utils/dateHandler';
