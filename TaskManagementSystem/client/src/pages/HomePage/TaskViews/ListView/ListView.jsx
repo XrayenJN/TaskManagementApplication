@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TaskContext } from '../../../../contexts/TaskContext';
-import { getContributors, updateTask } from '../../../../firebase/firebase';
-import Select, { components } from 'react-select';
-import { sortTaskByAToZ, sortTaskByZToA, sortTaskByDueDate, filterTaskByActiveStatus, filterTaskByExpiredStatus, filterTaskByOwner } from '../../../../utils/taskUtility';
+import { getContributors } from '../../../../firebase/project';
+import { updateTask } from '../../../../firebase/task';
+import Select from 'react-select';
 import moment from 'moment';
 import TaskEditPopup from '../../../../components/TaskEditPopup';
 

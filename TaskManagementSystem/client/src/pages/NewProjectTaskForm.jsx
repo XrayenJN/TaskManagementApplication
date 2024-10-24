@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { createNewProjectTaskDocument, getContributors } from '../firebase/firebase';
+import { createNewProjectTaskDocument } from '../firebase/task';
+import { getContributors } from '../firebase/project';
 import { ProjectTask } from '../models/ProjectTask';
 import { TaskContext } from '../contexts/TaskContext';
 import { DatePicker, Space } from 'antd';
